@@ -4,16 +4,14 @@
 ひとまず最低限動かすための設定項目
 
 --------------------------------------------------------------
-フレームワークルートURL(暫定) ドキュメントルートの設定を外している為CSS等が適用されない
+フレームワークルートURL(暫定)
 http://localhost/happy2/web/
 
-web-socketルートURL
-http://localhost/happy2/php-websocket-master/client/
 
 web-socket起動コマンド
 ApacheのShellで以下のコマンドで起動させる
 
-php htdocs/happy2/php-websocket-master/server/server.php
+php htdocs/happy2/websocket-server/server.php
 --------------------------------------------------------------
 
 windows設定----------------------------------------------------
@@ -27,6 +25,17 @@ C:\Windows\System32\drivers\etc\hosts
 	127.0.0.1       localhost1
 	127.0.0.1       localhost2
 
+.htaccess設定-------------------------------------------------
+	ブラウザでの httpリクエストは全て(ドキュメントルート内の)index.phpで受け取る設定に変更
+
+
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+--------------------------------------------------------------
 
 xampp設定------------------------------------------------------
 現状コメントアウト中
@@ -50,7 +59,7 @@ C:\xampp\apache\conf\extra\htppd-vhosts.conf
 
 ------------------------------------------------------
 
-php-websocket-master設定---------------------------------
+websocket-server設定---------------------------------
 
 client/coffee/client.coffee
 	5行目あたり

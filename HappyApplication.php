@@ -1,6 +1,6 @@
 <?php
 
-class MiniBlogApplication extends Application
+class HappyApplication extends Application
 {
 	protected $login_action = array('account', 'signin');
 
@@ -13,6 +13,8 @@ class MiniBlogApplication extends Application
 	{
 		//Router の foreach (array_expression as $key => $value) で使用
 		return array(
+			'admin/signin'
+				=> array('controller' => 'admin', 'action' => 'index'),
 			'/'
 				=> array('controller' => 'status', 'action' => 'index'),
 			'/status/post'
@@ -33,7 +35,7 @@ class MiniBlogApplication extends Application
 	protected function configure()
 	{
 		$this->db_manager->connect('master', array(
-			'dsn' => 'mysql:dbname=mini_blog;host=localhost',
+			'dsn' => 'mysql:dbname=happy2;host=localhost',
 			'user' => 'root',
 			'password' => 'penpen',
 		));

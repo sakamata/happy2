@@ -2,6 +2,7 @@
 
 class AccountController extends Controller
 {
+	// ログインが必要なActionを記述登録
 	protected $auth_actions = array('index', 'signout','follow');
 
 	public function signupAction()
