@@ -1,11 +1,11 @@
 	<table>
-		<tbody>
 			<tr>
 				<th>ユーザーID</th>
 				<td>
-					<input type="text" name="user_id" value="<?php echo $this->escape($user_id); ?>">
+					<input type="text" name="user_name" value="<?php echo $this->escape($user_name); ?>">
 				</td>
 			</tr>
+		<tbody>
 			<tr>
 				<th>パスワード</th>
 				<td>

@@ -4,7 +4,6 @@ body {
 	margin: 0;
 	padding: 0;
 	color: #222222;
-	background-color: #ccffe0;
 }
 
 a {
@@ -12,7 +11,7 @@ a {
 }
 
 #header {
-	background-color: #7ECE15;
+	background-color: #DDDDDD;
 	padding: 20px;
 	border-bottom: 3px solid #CCCCCC;
 }
@@ -22,7 +21,7 @@ a {
 }
 
 #header h1 a {
-	color: #ffffff;
+	color: #222222;
 	text-decoration: none;
 }
 

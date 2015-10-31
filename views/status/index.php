@@ -16,48 +16,6 @@
 	</p>
 </form>
 
-<div id="ws_test">
-
-
-<script>
-jQuery(function($) {
-	var socket;
-	// if ( $.browser.mozilla ){
-	// 	socket = new MozWebSocket('ws://127.0.0.1:80/echo');
-	// }else{
-	// 	socket = new WebSocket('ws://127.0.0.1:80/echo');
-	// }
-
-		socket = new WebSocket('ws://127.0.0.1:80/echo');
-		// socket = new WebSocket('ws://192.168.11.5/echo');
-
-
-	socket.onopen = function(msg){
-		$('#status').text('online');
-	};
-	socket.onmessage = function(msg){
-		$('#res').text( $('#res').text() + msg.data );
-		// $('#res').text( msg.data );
-	};
-	socket.onclose = function(msg){
-		$('#status').text('offline');
-	};
-	$('#button').click(function(){
-		socket.send($('#mes').val());
-	});
-});
-
-</script>
-
-<div id="status"></div>
-<input type="text" id="mes">
-<input type="button" id="button" value="send">
-<div id="res"></div>
-
-
-
-</div>
-
 <div id="statuses">
 	<?php foreach ($statuses as $status): ?>
 	<?php echo $this->render('status/status', array('status' => $status)); ?>
