@@ -39,6 +39,7 @@ abstract class Controller
 		return $content;
 	}
 
+	// ログイン中に必要なActionか確認
 	protected function needsAuthentication($action)
 	{
 		if ($this->auth_actions === true || (is_array($this->auth_actions) && in_array($action, $this->auth_actions))
@@ -70,7 +71,7 @@ abstract class Controller
 
 	protected function forward404()
 	{
-		throw new HttpNotFoundException('Forwarded 404 page from ' . $this->controller_name . '/' . $this->action_name);
+		throw new HttpNotFoundException('404エラーForwarded 404 page from → ' . $this->controller_name . '/' . $this->action_name);
 	}
 
 	protected function redirect($url)

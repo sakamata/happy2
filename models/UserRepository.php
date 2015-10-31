@@ -3,40 +3,49 @@
 class UserRepository extends DbRepository
 {
 
-	public function insert($user_name, $password)
+	public function insert($user_id, $password, $user_name)
 	{
 		$password = $this->hashPassword($password);
 		$now = new DateTime();
+		$img =  "dummy.png";
+		//***ToDo***定数設定で呼びたい
+		// ???? AdminSettingController::userDefaultPoint;
+		$nowPt = 100;
+
+		$ip = $_SERVER['REMOTE_ADDR'];
+		$host = gethostbyaddr($ip);
 
 		$sql = "
-			INSERT INTO user(user_name, password, created_at)
-			VALUES(:user_name, :password, :created_at)
+			INSERT INTO tbus (usId,usPs,usName,usImg,nowPt,ip,host,regDate)
+			VALUES(:user_id, :password, :user_name, '$img', '$nowPt', '$ip', '$host', :regDate)
 		";
 
 		$stmt = $this->execute($sql, array(
-			':user_name' => $user_name,
+			':user_id' => $user_id,
 			':password' => $password,
-			':created_at' => $now->format('Y-m-d H:i:s'),
+			':user_name' => $user_name,
+			':regDate' => $now->format('Y-m-d H:i:s'),
 		));
 	}
+
 
 	public function hashPassword($password)
 	{
 		return sha1($password . 'zyx7532cba');
 	}
 
-	public function fetchByUserName($user_name)
+	public function fetchByUserName($user_id)
 	{
-		$sql = "SELECT * FROM user WHERE user_name =:user_name";
+		$sql = "SELECT * FROM tbus WHERE usId = :user_id";
 
-		return $this->fetch($sql, array(':user_name' => $user_name));
+		return $this->fetch($sql, array(':user_id' => $user_id));
 	}
 
-	public function isUniqueUserName($user_name)
+	public function isUniqueUserName($user_id)
 	{
-		$sql = "SELECT COUNT(id) as count FROM user WHERE user_name = :user_name";
+		$sql = "SELECT COUNT(usNo) as count FROM tbus WHERE usId = :user_id";
 
-		$row = $this->fetch($sql, array(':user_name' => $user_name));
+		$row = $this->fetch($sql, array(':user_id' => $user_id));
 		if ($row['count'] === '0') {
 			return true;
 		}

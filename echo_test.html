@@ -20,8 +20,8 @@ jQuery(function($) {
 		$('#status').text('online');
 	};
 	socket.onmessage = function(msg){
-		// $('#res').text( $('#res').text() + msg.data );
-		$('#res').text( msg.data );
+		$('#res').text( $('#res').text() + msg.data );
+		// $('#res').text( msg.data );
 	};
 	socket.onclose = function(msg){
 		$('#status').text('offline');
