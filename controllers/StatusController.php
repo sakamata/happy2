@@ -3,7 +3,7 @@
 class StatusController extends Controller
 {
 	protected $auth_actions = array('index', 'post');
-/*
+
 	public function indexAction()
 	{
 		$user = $this->session->get('user');
@@ -15,7 +15,7 @@ class StatusController extends Controller
 			'_token' => $this->generateCsrfToken('status/post'),
 		));
 	}
-*/
+
 	public function userAction($params)
 	{
 		$user = $this->db_manager->get('User')->fetchByUserName($params['user_name']);
