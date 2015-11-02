@@ -5,15 +5,19 @@ class AccountController extends Controller
 	// ログインが必要なActionを記述登録
 	protected $auth_actions = array('index', 'signout','follow');
 
+	// generateCsrfToken( controller名 / action名 )
+	// 単にレンダリングをさせるだけだが フォームの為の_tokenを発行
 	public function signupAction()
 	{
 		return $this->render(array(
 			'user_name' => '',
+			'user_id' => '',
 			'password' => '',
 			'_token' => $this->generateCsrfToken('account/signup'),
 		));
 	}
-
+	// ***ToDo*** まだ動かず、完成させる
+	// ユーザーアカウント登録とチェック
 	public function registerAction()
 	{
 		if (!$this->request->isPost()) {
@@ -26,15 +30,22 @@ class AccountController extends Controller
 		}
 
 		$user_name = $this->request->getPost('user_name');
+		$user_id = $this->request->getPost('user_id');
 		$password = $this->request->getPost('password');
 
 		$errors = array();
 
-		if (!strlen($user_name)) {
+		if (!mb_strlen($user_name)) {
+			$errors[] = '名前を入力してください';
+		} elseif (2 > mb_strlen($user_name) || mb_strlen($user_name) > 16) {
+			$errors[] = '名前は2～16文字以内で入力してください。';
+		}
+
+		if (!strlen($user_id)) {
 			$errors[] = 'ユーザーIDを入力してください';
-		} else if (!preg_match('/^\w{3,20}$/', $user_name)) {
+		} else if (!preg_match('/^\w{3,20}$/', $user_id)) {
 			$errors[] = 'ユーザーIDは半角英数字及びアンダースコアを3～20文字以内で入力してください。';
-		} elseif (!$this->db_manager->get('User')->isUniqueUserName($user_name)) {
+		} elseif (!$this->db_manager->get('User')->isUniqueUserName($user_id)) {
 			$errors[] = 'このユーザーIDは既に使用されています。';
 		}
 
@@ -45,10 +56,10 @@ class AccountController extends Controller
 		}
 
 		if (count($errors) === 0) {
-			$this->db_manager->get('User')->insert($user_name, $password);
+			$this->db_manager->get('User')->insert($user_id, $password, $user_name);
 			$this->session->setAuthenticated(true);
 
-			$user = $this->db_manager->get('User')->fetchByUserName($user_name);
+			$user = $this->db_manager->get('User')->fetchByUserName($user_id);
 			$this->session->set('user', $user);
 
 			return $this->redirect('/');
@@ -56,12 +67,13 @@ class AccountController extends Controller
 
 		return $this->render(array(
 			'user_name' => $user_name,
+			'user_id' => $user_id,
 			'password' => $password,
 			'errors' => $errors,
 			'_token' => $this->generateCsrfToken('account/signup'),
 		), 'signup');
 	}
-
+/*
 	public function indexAction()
 	{
 		$user = $this->session->get('user');
@@ -72,7 +84,7 @@ class AccountController extends Controller
 			'followings' => $followings,
 		));
 	}
-
+*/
 	public function signinAction()
 	{
 		if ($this->session->isAuthenticated()) {
