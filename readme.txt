@@ -95,19 +95,3 @@ server/lib/WebSocket/Socket.php
 	public function __construct($host = 'localhost', $port = 80, $ssl = false)
 
 ------------------------------------------------------
-
-
-------------------------------------------------------
-フレームワークの使い方
-------------------------------------------------------
-
-HogeController内 generateCsrfTokenについて
-	generateCsrfToken( controller名 / action名 )
-
-
-Viewファイル内 renderメソッドについて
-
-	$this->render(' viewフォルダpath 拡張子不要 ' , array(' key ' => $var , ' key2 ' => $var2 ...));
-
-	例：
-	$this->render('account/inputs', array('user_name' => $user_name, 'password' => $password,));

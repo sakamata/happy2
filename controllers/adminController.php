@@ -9,23 +9,34 @@ class AdminController extends Controller
 	public function signupAction()
 	{
 		return $this->render(array(
-			'usId' => '',
-			'usPs' => '',
-			'_token' => $this->generateCsrfToken('admin/signin'),
+			'user_name' => '',
+			'password' => '',
+			'_token' => $this->generateCsrfToken('account/signup'),
 		));
 	}
 
 
-	public function admin_signinAction()
+	public function indexAction()
+	{
+		$user = $this->session->get('user');
+		$followings = $this->db_manager->get('User')->fetchAllFollowingsByUserId($user['id']);
+
+		return $this->render(array(
+			'user' => $user,
+			'followings' => $followings,
+		));
+	}
+
+	public function signinAction()
 	{
 		if ($this->session->isAuthenticated()) {
-			return $this->redirect('admin/signin');
+			return $this->redirect('/account');
 		}
-		// generateCsrfToken(' コントローラ名 / アクション名 ')
+
 		return $this->render(array(
-			'usId' => '',
-			'usPs' => '',
-			'_token' => $this->generateCsrfToken('admin/admin_signin'),
+			'user_name' => '',
+			'password' => '',
+			'_token' => $this->generateCsrfToken('account/signin'),
 		));
 
 	}
@@ -34,7 +45,7 @@ class AdminController extends Controller
 	public function authenticateAction()
 	{
 		if ($this->session->isAuthenticated()) {
-			return $this->redirect('admin/signin');
+			return $this->redirect('/account');
 		}
 
 		if (!$this->request->isPost()) {
@@ -42,16 +53,16 @@ class AdminController extends Controller
 		}
 
 		$token = $this->request->getPost('_token');
-		if (!$this->checkCsrfToken('admin/signin', $token)) {
-			return $this->redirect('/admin/signin');
+		if (!$this->checkCsrfToken('account/signin', $token)) {
+			return $this->redirect('/account/signin');
 		}
 
-		$usId = $this->request->getPost('usId');
-		$password = $this->request->getPost('usPs');
+		$user_name = $this->request->getPost('user_name');
+		$password = $this->request->getPost('password');
 
 		$errors = array();
 
-		if (!strlen($usId)) {
+		if (!strlen($user_name)) {
 			$errors[] = 'ユーザーIDを入力してください';
 		}
 
@@ -61,24 +72,24 @@ class AdminController extends Controller
 
 		if (count($errors) === 0) {
 
-			$user_repository = $this->db_manager->get('usId');
-			$user = $user_repository->fetchByUserName($usId);
+			$user_repository = $this->db_manager->get('user');
+			$user = $user_repository->fetchByUserName($user_name);
 
-			if (!$user || $user['usPs'] !== $user_repository->hashPassword($password)) {
+			if (!$user || $user['password'] !== $user_repository->hashPassword($password)) {
 				$errors[] = 'ユーザーIDかパスワードが正しくありません。';
 			} else {
 				$this->session->setAuthenticated(true);
-				$this->session->set('usId', $user);
-				return $this->redirect('admin/signin');
+				$this->session->set('user', $user);
+				return $this->redirect('/');
 			}
 		}
 
 		return $this->render(array(
-			'usId' => $usId,
-			'usPs' => $password,
+			'user_name' => $user_name,
+			'password' => $password,
 			'errors' => $errors,
-			'_token' => $this->generateCsrfToken('admin/signin'),
-		), 'admin_signin');
+			'_token' => $this->generateCsrfToken('account/signin'),
+		), 'signin');
 	}
 
 	public function signoutAction()
