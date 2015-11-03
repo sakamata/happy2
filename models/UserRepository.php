@@ -8,10 +8,7 @@ class UserRepository extends DbRepository
 		$password = $this->hashPassword($password);
 		$now = new DateTime();
 		$img =  "dummy.png";
-		//***ToDo***定数設定で呼びたい
-		// ???? AdminSettingController::userDefaultPoint;
-		$nowPt = 100;
-
+		$nowPt = AdminSettingRepository::userDefaultPoint;
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$host = gethostbyaddr($ip);
 

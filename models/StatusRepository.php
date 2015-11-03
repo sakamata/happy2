@@ -2,6 +2,7 @@
 
 class StatusRepository extends DbRepository
 {
+	// const userDefaultPoint = 100;
 
 	public function insert($user_id, $body)
 	{
