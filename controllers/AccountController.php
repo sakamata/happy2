@@ -7,6 +7,7 @@ class AccountController extends Controller
 
 	// generateCsrfToken( controller名 / action名 )
 	// 単にレンダリングをさせるだけだが フォームの為の_tokenを発行
+	//Done
 	public function signupAction()
 	{
 		return $this->render(array(
@@ -16,7 +17,8 @@ class AccountController extends Controller
 			'_token' => $this->generateCsrfToken('account/signup'),
 		));
 	}
-	// ***ToDo*** まだ動かず、完成させる
+
+	//Done
 	// ユーザーアカウント登録とチェック
 	public function registerAction()
 	{
@@ -73,6 +75,7 @@ class AccountController extends Controller
 			'_token' => $this->generateCsrfToken('account/signup'),
 		), 'signup');
 	}
+
 /*
 	public function indexAction()
 	{
@@ -85,6 +88,8 @@ class AccountController extends Controller
 		));
 	}
 */
+
+	//Done
 	public function signinAction()
 	{
 		if ($this->session->isAuthenticated()) {
@@ -92,11 +97,10 @@ class AccountController extends Controller
 		}
 
 		return $this->render(array(
-			'user_name' => '',
+			'user_id' => '',
 			'password' => '',
 			'_token' => $this->generateCsrfToken('account/signin'),
 		));
-
 	}
 
 	public function followAction()
@@ -130,6 +134,7 @@ class AccountController extends Controller
 		return $this->redirect('/account');
 	}
 
+	//Done
 	public function authenticateAction()
 	{
 		if ($this->session->isAuthenticated()) {
@@ -145,12 +150,12 @@ class AccountController extends Controller
 			return $this->redirect('/account/signin');
 		}
 
-		$user_name = $this->request->getPost('user_name');
+		$user_id = $this->request->getPost('user_id');
 		$password = $this->request->getPost('password');
 
 		$errors = array();
 
-		if (!strlen($user_name)) {
+		if (!strlen($user_id)) {
 			$errors[] = 'ユーザーIDを入力してください';
 		}
 
@@ -160,10 +165,10 @@ class AccountController extends Controller
 
 		if (count($errors) === 0) {
 
-			$user_repository = $this->db_manager->get('user');
-			$user = $user_repository->fetchByUserName($user_name);
+			$user_repository = $this->db_manager->get('User');
+			$user = $user_repository->fetchByUserName($user_id);
 
-			if (!$user || $user['password'] !== $user_repository->hashPassword($password)) {
+			if (!$user || $user['usPs'] !== $user_repository->hashPassword($password)) {
 				$errors[] = 'ユーザーIDかパスワードが正しくありません。';
 			} else {
 				$this->session->setAuthenticated(true);
@@ -173,13 +178,14 @@ class AccountController extends Controller
 		}
 
 		return $this->render(array(
-			'user_name' => $user_name,
+			'user_id' => $user_id,
 			'password' => $password,
 			'errors' => $errors,
 			'_token' => $this->generateCsrfToken('account/signin'),
 		), 'signin');
 	}
 
+	//Done
 	public function signoutAction()
 	{
 		$this->session->clear();

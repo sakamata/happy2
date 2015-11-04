@@ -12,17 +12,21 @@ class HappyApplication extends Application
 	protected function registerRoutes()
 	{
 		//Router の foreach (array_expression as $key => $value) で使用
-		// URL  /account/:action => account/signup
+		// URL  /account/:action =>
+		// 				account/signup
+		// 				account/signin
+		// 				account/signout
 		return array(
+			'/'
+				=> array('controller' => 'status', 'action' => 'index'),
 			'/account'
 				=> array('controller' => 'account', 'action' => 'index'),
 			'/account/:action'
 				=> array('controller' => 'account'),
-			'/'
-				=> array('controller' => 'status', 'action' => 'index'),
 		);
 	}
 
+	// ***ToDo*** Hide!!!
 	protected function configure()
 	{
 		$this->db_manager->connect('master', array(

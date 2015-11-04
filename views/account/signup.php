@@ -2,6 +2,11 @@
 
 <h2>アカウント登録</h2>
 
+<p>
+	<a href="<?php echo $base_url; ?>/account/signin">ログイン</a>
+</p>
+
+
 <form action="<?php echo $base_url; ?>/account/register" method="post" accept-charset="utf-8">
 	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 
