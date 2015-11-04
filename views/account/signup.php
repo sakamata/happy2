@@ -19,14 +19,14 @@
 			<tr>
 				<th>名前</th>
 				<td>
-					<input type="text" name="user_name" value="<?php echo $this->escape($user_name); ?>">
+					<input type="text" name="usName" value="<?php echo $this->escape($usName); ?>">
 				</td>
 			</tr>
 		</tbody>
 	</table>
 
 
-	<?php echo $this->render('account/inputs', array('user_name' => $user_name, 'user_id' => $user_id, 'password' => $password,)); ?>
+	<?php echo $this->render('account/inputs', array('usName' => $usName, 'usId' => $usId, 'usPs' => $usPs,)); ?>
 
 	<p>
 		<input type="submit" value="登録">

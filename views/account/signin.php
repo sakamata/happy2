@@ -13,7 +13,7 @@
 	<?php echo $this->render('errors', array('errors' => $errors)); ?>
 	<?php endif; ?>
 
-	<?php echo $this->render('account/inputs', array('user_id' => $user_id, 'password' => $password,)); ?>
+	<?php echo $this->render('account/inputs', array('usId' => $usId, 'usPs' => $usPs,)); ?>
 
 	<p>
 		<input type="submit" value="ログイン">
