@@ -12,6 +12,17 @@ web-socket起動コマンド
 ApacheのShellで以下のコマンドで起動させる
 
 php htdocs/happy2/websocket-server/server.php
+
+現状coreアプリ側のルーティング設定された以下のURLでは動かない（描画されない）
+http://localhost2/
+
+ルーティング設定しない以下のダイレクトなディレクトリ指定でなら動く(ただしCSSは反映されない)
+http://localhost/happy2/web/index.php/
+
+***ToDo***
+コンソールlogエラー文言でソース検索し原因究明
+http headerが無いためか？
+
 --------------------------------------------------------------
 
 windows設定----------------------------------------------------

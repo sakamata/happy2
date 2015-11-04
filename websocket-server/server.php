@@ -25,6 +25,7 @@ $server->setCheckOrigin(true);
 // $server->setAllowedOrigin('foo.lh');
 // $server->setAllowedOrigin('192.168.11.5');
 $server->setAllowedOrigin('localhost');
+$server->setAllowedOrigin('localhost2');
 $server->setAllowedOrigin('happy-project.org');
 
 $server->setMaxConnectionsPerIp(100);
@@ -35,9 +36,9 @@ $server->registerApplication('status', \WebSocket\Application\StatusApplication:
 $server->registerApplication('demo', \WebSocket\Application\DemoApplication::getInstance());
 
 //個別のアプリケーションの登録　blog記事のtest用
-$server->registerApplication('echo', \WebSocket\Application\EchoApplication::getInstance());
+// $server->registerApplication('echo', \WebSocket\Application\EchoApplication::getInstance());
 
 //個別のアプリケーションの登録　Happy2用
-// $server->registerApplication('echo', \WebSocket\Application\Happy2Application::getInstance());
+$server->registerApplication('happy2', \WebSocket\Application\Happy2Application::getInstance());
 
 $server->run();

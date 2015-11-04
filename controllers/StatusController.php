@@ -1,13 +1,17 @@
 <?php
 
+
+
 class StatusController extends Controller
 {
+	// $user['usNo'] => $user['usNo']
+
 	protected $auth_actions = array('index', 'post');
-/*
+
 	public function indexAction()
 	{
 		$user = $this->session->get('user');
-		$statuses = $this->db_manager->get('Status')->fetchAllPersonalArchivesByUserId($user['id']);
+		$statuses = $this->db_manager->get('Status')->fetchUserStatus($user['usNo']);
 
 		return $this->render(array(
 			'statuses' => $statuses,
@@ -15,7 +19,7 @@ class StatusController extends Controller
 			'_token' => $this->generateCsrfToken('status/post'),
 		));
 	}
-*/
+
 	public function userAction($params)
 	{
 		$user = $this->db_manager->get('User')->fetchByUserName($params['user_name']);
@@ -24,13 +28,13 @@ class StatusController extends Controller
 			$this->forward404();
 		}
 
-		$statuses = $this->db_manager->get('Status')->fetchAllByUserId($user['id']);
+		$statuses = $this->db_manager->get('Status')->fetchAllByUserId($user['usNo']);
 
 		$following = null;
 		if ($this->session->isAuthenticated()) {
 			$my = $this->session->get('user');
-			if ($my['id'] !== $user['id']) {
-				$following = $this->db_manager->get('Following')->isFollowing($my['id'], $user['id']);
+			if ($my['usNo'] !== $user['usNo']) {
+				$following = $this->db_manager->get('Following')->isFollowing($my['usNo'], $user['usNo']);
 			}
 		}
 
@@ -45,7 +49,7 @@ class StatusController extends Controller
 
 	public function showAction($params)
 	{
-		$status = $this->db_manager->get('Status')->fetchByIDAndUserName($params['id'], $params['user_name']);
+		$status = $this->db_manager->get('Status')->fetchByIDAndUserName($params['usNo'], $params['user_name']);
 
 		if (!$status) {
 			$this->forward404();
@@ -78,13 +82,13 @@ class StatusController extends Controller
 
 		if (count($errors) === 0) {
 			$user = $this->session->get('user');
-			$this->db_manager->get('Status')->insert($user['id'], $body);
+			$this->db_manager->get('Status')->insert($user['usNo'], $body);
 
 			return $this->redirect('/');
 		}
 
 		$user = $this->session->get('user');
-		$statuses = $this->db_manager->get('Status')->fetchAllPersonalArchivesByUserId($user['id']);
+		$statuses = $this->db_manager->get('Status')->fetchAllPersonalArchivesByUserId($user['usNo']);
 
 		return $this->render(array(
 			'errors' => $errors,

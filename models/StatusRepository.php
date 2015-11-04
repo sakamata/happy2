@@ -2,25 +2,21 @@
 
 class StatusRepository extends DbRepository
 {
-	// const userDefaultPoint = 100;
 
-	public function insert($user_id, $body)
-	{
-		$now = new DateTime();
+// ***ToDo*** メイン画面でのUserの基本情報を呼び出す
+// ***ToDo*** 引数追加, $order, $limit 等
+public function fetchUserStatus($usNo)
+{
+	$sql ="
+		SELECT usNo, usId, usName, usImg, nowPt FROM tbus
+		ORDER BY usNo = :usNo DESC, usNo ASC
+	";
+	return $this->fetchAll($sql, array(':usNo' => $usNo));
 
-		$sql = "
-			INSERT INTO status(user_id, body, created_at)
-			VALUES(:user_id, :body, :created_at)
-		";
+}
 
-		$stmt = $this->execute($sql, array(
-			':user_id' => $user_id,
-			':body' => $body,
-			':created_at' => $now->format('Y-m-d H:i:s'),
-		));
-	}
 
-	// 引数 $user_id : str 単数配列で来る。 $user['id']
+	// 引数 $user_id : str 単数配列で来る。 $user['usNo']
 	public function fetchAllPersonalArchivesByUserId($user_id)
 	{
 		$sql = "

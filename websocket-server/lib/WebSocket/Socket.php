@@ -28,7 +28,7 @@ class Socket
 	protected $ssl = false;
 
 	// public function __construct($host = 'localhost', $port = 8000, $ssl = false)
-	public function __construct($host = 'localhost', $port = 80, $ssl = false)
+	public function __construct($host = 'localhost2', $port = 80, $ssl = false)
     {
         ob_implicit_flush(true);
 		$this->ssl = $ssl;
