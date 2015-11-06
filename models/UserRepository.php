@@ -3,9 +3,9 @@
 class UserRepository extends DbRepository
 {
 
-	public function insert($user_id, $password, $user_name)
+	public function insert($usId, $usPs, $usName)
 	{
-		$password = $this->hashPassword($password);
+		$usPs = $this->hashPassword($usPs);
 		$now = new DateTime();
 		$img =  "dummy.png";
 		$nowPt = AdminSettingRepository::userDefaultPoint;
@@ -14,35 +14,35 @@ class UserRepository extends DbRepository
 
 		$sql = "
 			INSERT INTO tbus (usId,usPs,usName,usImg,nowPt,ip,host,regDate)
-			VALUES(:user_id, :password, :user_name, '$img', '$nowPt', '$ip', '$host', :regDate)
+			VALUES(:usId, :usPs, :usName, '$img', '$nowPt', '$ip', '$host', :regDate)
 		";
 
 		$stmt = $this->execute($sql, array(
-			':user_id' => $user_id,
-			':password' => $password,
-			':user_name' => $user_name,
+			':usId' => $usId,
+			':usPs' => $usPs,
+			':usName' => $usName,
 			':regDate' => $now->format('Y-m-d H:i:s'),
 		));
 	}
 
 
-	public function hashPassword($password)
+	public function hashPassword($usPs)
 	{
-		return sha1($password . 'zyx7532cba');
+		return sha1($usPs . 'zyx7532cba');
 	}
 
-	public function fetchByUserName($user_id)
+	public function fetchByUserName($usId)
 	{
-		$sql = "SELECT * FROM tbus WHERE usId = :user_id";
+		$sql = "SELECT * FROM tbus WHERE usId = :usId";
 
-		return $this->fetch($sql, array(':user_id' => $user_id));
+		return $this->fetch($sql, array(':usId' => $usId));
 	}
 
-	public function isUniqueUserName($user_id)
+	public function isUniqueUserName($usId)
 	{
-		$sql = "SELECT COUNT(usNo) as count FROM tbus WHERE usId = :user_id";
+		$sql = "SELECT COUNT(usNo) as count FROM tbus WHERE usId = :usId";
 
-		$row = $this->fetch($sql, array(':user_id' => $user_id));
+		$row = $this->fetch($sql, array(':usId' => $usId));
 		if ($row['count'] === '0') {
 			return true;
 		}
@@ -50,16 +50,16 @@ class UserRepository extends DbRepository
 		return false;
 	}
 
-	public function fetchAllFollowingsByUserId($user_id)
+	public function fetchAllFollowingsByUserId($usId)
 	{
 		$sql = "
 			SELECT u.*
 			FROM user u
 				LEFT JOIN following f ON f.following_id = u.id
-			WHERE f.user_id = :user_id
+			WHERE f.usId = :usId
 		";
 
-		return $this->fetchAll($sql, array(':user_id' => $user_id));
+		return $this->fetchAll($sql, array(':usId' => $usId));
 	}
 
 }

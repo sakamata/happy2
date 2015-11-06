@@ -16,49 +16,49 @@ public function fetchUserStatus($usNo)
 }
 
 
-	// 引数 $user_id : str 単数配列で来る。 $user['usNo']
-	public function fetchAllPersonalArchivesByUserId($user_id)
+	// 引数 $usId : str 単数配列で来る。 $user['usNo']
+	public function fetchAllPersonalArchivesByUserId($usId)
 	{
 		$sql = "
-			SELECT a.*, u.user_name
+			SELECT a.*, u.usName
 			FROM status a
-				LEFT JOIN user u ON a.user_id = u.id
-				LEFT JOIN following f ON f.following_id = a.user_id
-					AND f.user_id = :user_id
-			WHERE f.user_id = :user_id OR u.id = :user_id
+				LEFT JOIN user u ON a.usId = u.id
+				LEFT JOIN following f ON f.following_id = a.usId
+					AND f.usId = :usId
+			WHERE f.usId = :usId OR u.id = :usId
 			ORDER BY a.created_at DESC
 		";
 
-		return $this->fetchAll($sql, array(':user_id' => $user_id));
+		return $this->fetchAll($sql, array(':usId' => $usId));
 	}
 
-	public function fetchAllByUserId($user_id)
+	public function fetchAllByUserId($usId)
 	{
 		$sql = "
-			SELECT a.*, u.user_name
+			SELECT a.*, u.usName
 			FROM status a
-				LEFT JOIN user u ON a.user_id = u.id
-			WHERE u.id = :user_id
+				LEFT JOIN user u ON a.usId = u.id
+			WHERE u.id = :usId
 			ORDER BY a.created_at DESC
 		";
 
-		return $this->fetchAll($sql, array(':user_id' => $user_id));
+		return $this->fetchAll($sql, array(':usId' => $usId));
 
 	}
 
-	public function fetchByIdAndUserName($id, $user_name)
+	public function fetchByIdAndUserName($id, $usName)
 	{
 		$sql = "
-			SELECT a.*, u.user_name
+			SELECT a.*, u.usName
 			FROM status a
-				LEFT JOIN user u ON u.id = a.user_id
+				LEFT JOIN user u ON u.id = a.usId
 			WHERE a.id = :id
-				AND u.user_name = :user_name
+				AND u.usName = :usName
 		";
 
 		return $this->fetch($sql, array(
 			':id' => $id,
-			':user_name' => $user_name,
+			':usName' => $usName,
 		));
 
 	}

@@ -3,8 +3,8 @@
 <h2>アカウント</h2>
 
 <p>
-	ユーザID:<a href="<?php echo $base_url; ?>/user/<?php echo $this->escape($user['user_name']); ?>">
-	<strong><?php echo $this->escape($user['user_name']); ?></strong>
+	ユーザID:<a href="<?php echo $base_url; ?>/user/<?php echo $this->escape($user['usName']); ?>">
+	<strong><?php echo $this->escape($user['usName']); ?></strong>
 	</a>
 </p>
 
@@ -22,8 +22,8 @@
 <ul>
 	<?php foreach ($followings as $following): ?>
 	<li>
-		<a href="<?php echo $base_url; ?>/user/<?php echo $this->escape($following['user_name']); ?>">
-		<?php echo $this->escape($following['user_name']); ?>
+		<a href="<?php echo $base_url; ?>/user/<?php echo $this->escape($following['usName']); ?>">
+		<?php echo $this->escape($following['usName']); ?>
 		</a>
 	</li>
 	<?php endforeach; ?>

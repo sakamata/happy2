@@ -22,7 +22,7 @@ class StatusController extends Controller
 
 	public function userAction($params)
 	{
-		$user = $this->db_manager->get('User')->fetchByUserName($params['user_name']);
+		$user = $this->db_manager->get('User')->fetchByUserName($params['usName']);
 
 		if (!$user) {
 			$this->forward404();
@@ -49,7 +49,7 @@ class StatusController extends Controller
 
 	public function showAction($params)
 	{
-		$status = $this->db_manager->get('Status')->fetchByIDAndUserName($params['usNo'], $params['user_name']);
+		$status = $this->db_manager->get('Status')->fetchByIDAndUserName($params['usNo'], $params['usName']);
 
 		if (!$status) {
 			$this->forward404();

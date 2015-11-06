@@ -1,3 +1,3 @@
-<?php $this->setLayoutVar('title', $user['user_name']) ?>
+<?php $this->setLayoutVar('title', $user['usName']) ?>
 
 <?php echo $this->render('status/status', array('status' => $status)); ?>

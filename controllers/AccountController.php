@@ -11,9 +11,9 @@ class AccountController extends Controller
 	public function signupAction()
 	{
 		return $this->render(array(
-			'user_name' => '',
-			'user_id' => '',
-			'password' => '',
+			'usName' => '',
+			'usId' => '',
+			'usPs' => '',
 			'_token' => $this->generateCsrfToken('account/signup'),
 		));
 	}
@@ -31,46 +31,46 @@ class AccountController extends Controller
 			return $this->redirect('/account/signup');
 		}
 
-		$user_name = $this->request->getPost('user_name');
-		$user_id = $this->request->getPost('user_id');
-		$password = $this->request->getPost('password');
+		$usName = $this->request->getPost('usName');
+		$usId = $this->request->getPost('usId');
+		$usPs = $this->request->getPost('usPs');
 
 		$errors = array();
 
-		if (!mb_strlen($user_name)) {
+		if (!mb_strlen($usName)) {
 			$errors[] = '名前を入力してください';
-		} elseif (2 > mb_strlen($user_name) || mb_strlen($user_name) > 16) {
+		} elseif (2 > mb_strlen($usName) || mb_strlen($usName) > 16) {
 			$errors[] = '名前は2～16文字以内で入力してください。';
 		}
 
-		if (!strlen($user_id)) {
+		if (!strlen($usId)) {
 			$errors[] = 'ユーザーIDを入力してください';
-		} else if (!preg_match('/^\w{3,20}$/', $user_id)) {
+		} else if (!preg_match('/^\w{3,20}$/', $usId)) {
 			$errors[] = 'ユーザーIDは半角英数字及びアンダースコアを3～20文字以内で入力してください。';
-		} elseif (!$this->db_manager->get('User')->isUniqueUserName($user_id)) {
+		} elseif (!$this->db_manager->get('User')->isUniqueUserName($usId)) {
 			$errors[] = 'このユーザーIDは既に使用されています。';
 		}
 
-		if (!strlen($password)) {
+		if (!strlen($usPs)) {
 			$errors[] = 'パスワードを入力してください';
-		} elseif (4 > strlen($password) || strlen($password) > 30) {
+		} elseif (4 > strlen($usPs) || strlen($usPs) > 30) {
 			$errors[] = 'パスワードは4～30文字以内で入力してください。';
 		}
 
 		if (count($errors) === 0) {
-			$this->db_manager->get('User')->insert($user_id, $password, $user_name);
+			$this->db_manager->get('User')->insert($usId, $usPs, $usName);
 			$this->session->setAuthenticated(true);
 
-			$user = $this->db_manager->get('User')->fetchByUserName($user_id);
+			$user = $this->db_manager->get('User')->fetchByUserName($usId);
 			$this->session->set('user', $user);
 
 			return $this->redirect('/');
 		}
 
 		return $this->render(array(
-			'user_name' => $user_name,
-			'user_id' => $user_id,
-			'password' => $password,
+			'usName' => $usName,
+			'usId' => $usId,
+			'usPs' => $usPs,
 			'errors' => $errors,
 			'_token' => $this->generateCsrfToken('account/signup'),
 		), 'signup');
@@ -97,8 +97,8 @@ class AccountController extends Controller
 		}
 
 		return $this->render(array(
-			'user_id' => '',
-			'password' => '',
+			'usId' => '',
+			'usPs' => '',
 			'_token' => $this->generateCsrfToken('account/signin'),
 		));
 	}
@@ -150,25 +150,25 @@ class AccountController extends Controller
 			return $this->redirect('/account/signin');
 		}
 
-		$user_id = $this->request->getPost('user_id');
-		$password = $this->request->getPost('password');
+		$usId = $this->request->getPost('usId');
+		$usPs = $this->request->getPost('usPs');
 
 		$errors = array();
 
-		if (!strlen($user_id)) {
+		if (!strlen($usId)) {
 			$errors[] = 'ユーザーIDを入力してください';
 		}
 
-		if (!strlen($password)) {
+		if (!strlen($usPs)) {
 			$errors[] = 'パスワードを入力してください';
 		}
 
 		if (count($errors) === 0) {
 
 			$user_repository = $this->db_manager->get('User');
-			$user = $user_repository->fetchByUserName($user_id);
+			$user = $user_repository->fetchByUserName($usId);
 
-			if (!$user || $user['usPs'] !== $user_repository->hashPassword($password)) {
+			if (!$user || $user['usPs'] !== $user_repository->hashPassword($usPs)) {
 				$errors[] = 'ユーザーIDかパスワードが正しくありません。';
 			} else {
 				$this->session->setAuthenticated(true);
@@ -178,8 +178,8 @@ class AccountController extends Controller
 		}
 
 		return $this->render(array(
-			'user_id' => $user_id,
-			'password' => $password,
+			'usId' => $usId,
+			'usPs' => $usPs,
 			'errors' => $errors,
 			'_token' => $this->generateCsrfToken('account/signin'),
 		), 'signin');
