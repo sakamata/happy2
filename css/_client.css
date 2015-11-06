@@ -10,13 +10,13 @@ body {
 }
 
 a,
-a:hover { 
+a:hover {
 	color: #169;
 }
 
 p {
 	margin: 0;
-	padding: 0 0 21px 0; 
+	padding: 0 0 21px 0;
 }
 
 #container {

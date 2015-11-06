@@ -4,8 +4,15 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" content="ja">
 	<title>Happy<?php if (isset($title)):echo "-" . $this->escape($title) ; endif; ?></title>
-	<link rel="stylesheet" type="text/css" media="screen" href="/css/style.css">
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" media="screen" href="/css/style.css">
+	<link href="/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="/js/bootstrap.min.js"></script>
+
+
 
 	<script>
 	jQuery(function($) {
@@ -28,7 +35,7 @@
 		socket.onclose = function(msg){
 			$('#wsStatus').text('offline');
 		};
-		$('#button').click(function(){
+		$('#wsButton').click(function(){
 			socket.send($('#mes').val());
 		});
 	});
