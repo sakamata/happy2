@@ -23,6 +23,12 @@ class HappyApplication extends Application
 				=> array('controller' => 'account', 'action' => 'index'),
 			'/account/:action'
 				=> array('controller' => 'account'),
+			'/admin/signin'
+				=> array('controller' => 'admin', 'action' => 'signin'),
+			'/admin/:action'
+				=> array('controller' => 'admin'),
+			'/admin/'
+				=> array('controller' => 'admin', 'action' => 'index'),
 		);
 	}
 

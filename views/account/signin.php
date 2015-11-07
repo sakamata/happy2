@@ -18,4 +18,6 @@
 	<p>
 		<input type="submit" value="ログイン">
 	</p>
+
+		<a href="admin/signin">admin_signin</a>
 </form>

@@ -4,7 +4,6 @@
 
 class StatusController extends Controller
 {
-	// $user['usNo'] => $user['usNo']
 
 	protected $auth_actions = array('index', 'post');
 

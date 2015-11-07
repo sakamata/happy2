@@ -2,7 +2,8 @@ $(document).ready ->
 	log = (msg) -> $('#log').prepend("#{msg}<br />")
 	# MEMO $_SERVER で確認取得を試みてない！
 	# serverUrl = 'ws://localhost:8000/status'
-	serverUrl = 'ws://127.0.0.1:80/status'
+	# serverUrl = 'ws://127.0.0.1:80/status'
+	serverUrl = 'ws://127.0.0.1:80//websocket-server'
 	if window.MozWebSocket
 		socket = new MozWebSocket serverUrl
 	else if window.WebSocket

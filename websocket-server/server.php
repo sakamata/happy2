@@ -24,9 +24,9 @@ $server->setCheckOrigin(true);
 
 // $server->setAllowedOrigin('foo.lh');
 // $server->setAllowedOrigin('192.168.11.5');
+// $server->setAllowedOrigin('happy-project.org');
 $server->setAllowedOrigin('localhost');
 $server->setAllowedOrigin('localhost2');
-$server->setAllowedOrigin('happy-project.org');
 
 $server->setMaxConnectionsPerIp(100);
 $server->setMaxRequestsPerMinute(2000);
