@@ -23,6 +23,7 @@ abstract class DbRepository
 		$stmt = $this->con->prepare($sql);
 		$stmt->execute($params);
 
+		// var_dump($stmt);
 		return $stmt;
 	}
 
@@ -35,6 +36,23 @@ abstract class DbRepository
 	public function fetchAll($sql, $params = array())
 	{
 		return $this->execute($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+
+	public function fetchAll_bindParam($sql, $params = array())
+	{
+		$stmt = $this->con->prepare($sql);
+		foreach ($params as $key => $values) {
+			// PDOexecuteバグ対策 :limit が文字列で渡る為INTを指定
+			// ***ToDo*** 不完全、limit でも :hoge 等の任意の値が渡る
+			// ***ToDo*** POSTされた値を拾った時点で型確認をさせる
+			if ($key == ':limit' || ':offset') {
+				$stmt->bindParam($key, $values, PDO::PARAM_INT);
+			}
+			$stmt->bindParam($key, $values);
+		}
+		$stmt->execute();
+		return $stmt->fetchall(PDO::FETCH_ASSOC);
 	}
 
 }

@@ -88,20 +88,3 @@ class DbManager
 		}
 	}
 }
-
-
-
-// ここから最後は本来いらないソース、P224の使用例をそのまま書いている。
-/*
-$DbManager = new DbManager;
-$DbManager->connect('master', array(
-	'dsn'	=> 'mysql:dbname=online_bbs;host=localhost',
-	'user'	=> 'root',
-	'password'	=> 'penpen',
-));
-
-$DbManager->getConnection('master');
-$hoge = $DbManager->getConnection();
-
-var_dump($hoge);
-*/

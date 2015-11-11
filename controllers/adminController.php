@@ -4,17 +4,49 @@ class AdminController extends Controller
 	public function indexAction()
 	{
 		$session = $this->session->get('admin');
+		$admin_repository = $this->db_manager->get('Admin');
+		$adsetting_repository = $this->getAdminSetting();
 
-		$admin_repository = $this->db_manager->get('Admim');
-		$users = $admin_repository->fetchAlltbus($limit);
+		$setting = $adsetting_repository->fetchSettingValue();
+		$limit = $setting['adminTablesViewLimit'];
 
+		// ***ToDo***ページ送り制御でlimit数で増減させる
+		$offset = 0;
+
+		$ad_tbuses = $admin_repository->fetchAlltbus($limit, $offset);
+
+		$tables = [];
+		$tbCounts = [];
+		$tableArray = array('tbus', 'tbgvn', 'tbset', 'tbfollow');
+		foreach ($tableArray as $tableName) {
+			if ($tableName !== 'tbus') {
+				$tables[$tableName] = $admin_repository->fetchAllTable($tableName, $limit, $offset);
+			}
+			$key = $admin_repository->tableCount($tableName);
+			$tbCounts += array($tableName => $key[$tableName]);
+		}
 
 		return $this->render(array(
 			'body' => '',
-			'users' => '',
+			'ad_tbuses' => $ad_tbuses,
+			'tbCounts' => $tbCounts,
+			'tables' => $tables,
 			'_token' => $this->generateCsrfToken('admin/post'),
 		));
 	}
+
+	public function getAdminSetting()
+	{
+		$adsetting_repository = $this->db_manager->get('AdminSetting');
+		return $adsetting_repository;
+	}
+
+	// ***ToDo***
+	public function pagerAction($table, $page, $offset)
+	{
+		return $page;
+	}
+
 
 	public function signinAction()
 	{
@@ -78,6 +110,14 @@ class AdminController extends Controller
 			'errors' => $errors,
 			'_token' => $this->generateCsrfToken('admin/signin'),
 		), 'signin');
+	}
+
+	public function signoutAction()
+	{
+		$this->session->clear();
+		$this->session->setAuthenticated(false);
+
+		return $this->redirect('/admin/signin');
 	}
 
 }
