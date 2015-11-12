@@ -15,6 +15,8 @@ class AdminController extends Controller
 		$tables = [];
 		$tbCounts = [];
 		$tableNames = array('tbus', 'tbgvn', 'tbset', 'tbfollow');
+		$command = array('create', 'delete', 'dummyIn');
+
 
 		foreach ($tableNames as $tableName) {
 			if ($tableName == 'tbus') {
@@ -31,10 +33,42 @@ class AdminController extends Controller
 		return $this->render(array(
 			'body' => '',
 			'tableNames' => $tableNames,
+			'command' => $command,
 			'tables' => $tables,
 			'tbCounts' => $tbCounts,
 			'_token' => $this->generateCsrfToken('admin/post'),
 		));
+	}
+
+	// 3つのコマンドを集約させる create delete dummyIn
+	public function tableCommandAction()
+	{
+		// $token = $this->request->getPost('_token');
+		// if (!$this->checkCsrfToken('admin/post', $token)) {
+		// 	return $this->redirect('/admin/index');
+		// }
+
+		// hiddenを２つ用意し、判定材料にする
+		$Post = $this->request->getPost('tbfollow');
+
+		$tableName = $this->request->getPost('tbfollow');
+		$this->db_manager->get('Admin')->tableDelete($tableName);
+		return $this->redirect('/admin/index');
+
+	}
+
+	public function tableCreateAction()
+	{
+		// $tableName = $this->request->getPost('tbfollow');
+		$this->db_manager->get('Admin')->tbfollowCreate();
+		return $this->redirect('/admin/index');
+
+	}
+
+	public function tableDummyInsertAction()
+	{
+		$this->db_manager->get('Admin')->tbfollowDummyInsert();
+		return $this->redirect('/admin/index');
 	}
 
 	public function getAdminSetting()
@@ -48,7 +82,6 @@ class AdminController extends Controller
 	{
 		return $page;
 	}
-
 
 	public function signinAction()
 	{

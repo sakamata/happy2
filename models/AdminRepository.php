@@ -52,4 +52,38 @@ class AdminRepository extends DbRepository
 		));
 	}
 
+	public function tbfollowCreate()
+	{
+		$sql="
+		CREATE TABLE IF NOT EXISTS `happy2`.`tbfollow` (
+			`usNo` INT(11) NULL,
+			`followingNo` INT(11) NULL
+		)
+		ENGINE = InnoDB
+		";
+
+		$stmt = $this->execute($sql, array(
+		));
+	}
+
+	public function tbfollowDummyInsert()
+	{
+		$sql="
+			INSERT INTO tbfollow(usNo,followingNo) value(3,4);
+		";
+
+		$stmt = $this->execute($sql, array(
+		));
+	}
+
+	public function tableDelete($tableName)
+	{
+		$sql ="
+			DROP TABLE :tableName
+		";
+		$stmt = $this->execute($sql, array(
+			':tableName' => $tableName,
+		));
+	}
+
 }

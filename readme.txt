@@ -122,3 +122,27 @@ Viewファイル内 renderメソッドについて
 
 	例：
 	$this->render('account/inputs', array('usName' => $usName, 'usPs' => $usPs,));
+
+------------------------------------------------------
+
+■Viewファイル内 form等の actionの値について
+	base_url に続き、使用するcontrollerのActionをpathで指定する
+
+	<form action="<?php echo $base_url; ?>/admin/tableDummyInsert" method="post" accept-charset="utf-8">
+
+
+■SQLインジェクション対策で $_token　をhiddenフォームで入れる
+
+	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
+
+
+■POSTの値は name="hoge" で運ばれる
+
+	<input type="text" name="hoge" value="<?php echo $this->escape($hoge); ?>">
+
+
+■controller内Actionでは　getPost('hoge')　で値を受け取れる
+
+	例;	$PostValue = $this->request->getPost('hoge');
+
+------------------------------------------------------

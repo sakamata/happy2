@@ -12,20 +12,32 @@
 </ul>
 
 <?php
-$tableName = 0;
+$tbNo = 0;
 foreach ($tables as $table){
+	$tableName = $this->escape($tableNames[$tbNo]);
+	$cntNo = $tableNames[$tbNo];
+	$tableCount = $this->escape($tbCounts[$cntNo]);
 
-	echo "<h3>";
-	echo $this->escape($tableNames[$tableName]) . "(";
-	$tNo = $tableNames[$tableName];
-	$tableName++;
-	echo $this->escape($tbCounts[$tNo]);
-	echo ")</h3>";
+	echo "<h3>" .$tableName. "(" .$tableCount. ")";
+	echo	'<form action="' .$base_url. '/admin/tableCommand" method="post" accept-charset="utf-8">　table操作	:';
+
+	foreach ($command as $cmd) {
 ?>
+		<!-- <input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>"> -->
+		<input type="hidden" name="<?php echo $cmd; ?>" value="<?php echo $cmd; ?>">
+		<input type="submit" name="<?php echo $tableName; ?>" value="<?php echo $cmd; ?>">
+
+<?php
+	}
+?>
+		</form>
+	</h3>
+
 	<div>
 		<table class='table table-striped table-bordered table-hover table-condensed'>
 			<thead>
 				<tr>
+
 <?php
 	$field_no = 0;
 	foreach ($table[0] as $noUseValue){
@@ -45,6 +57,8 @@ foreach ($tables as $table){
 			</tbody>
 		</table>
 	</div>
+	<hr>
 
 <?php
+	$tbNo++;
 }
