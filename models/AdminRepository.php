@@ -8,7 +8,7 @@ class AdminRepository extends DbRepository
 		return $this->fetch($sql, array(':usId' => $usId));
 	}
 
-	// PassWordを非表示とするため別メソッドとした
+	// PassWordを非表示とするため別処理
 	public function fetchAlltbus($limit, $offset)
 	{
 		// ***危険*** 変数を直接クエリに入れている（mysqlの limitバグの為）
@@ -25,9 +25,10 @@ class AdminRepository extends DbRepository
 		));
 	}
 
-
 	public function fetchAllTable($tableName, $limit, $offset)
 	{
+		// ***危険*** 変数を直接クエリに入れている（mysqlの limitバグの為）
+		// ***ToDo*** ここにPOSTされた値を拾った時点で型確認checkを書く
 		$sql = "
 			SELECT * from $tableName
 			LIMIT $limit
@@ -40,7 +41,6 @@ class AdminRepository extends DbRepository
 			':offset' => $offset,
 		));
 	}
-
 
 	public function tableCount($tableName)
 	{

@@ -12,25 +12,27 @@ class AdminController extends Controller
 
 		// ***ToDo***ページ送り制御でlimit数で増減させる
 		$offset = 0;
-
-		$ad_tbuses = $admin_repository->fetchAlltbus($limit, $offset);
-
 		$tables = [];
 		$tbCounts = [];
-		$tableArray = array('tbus', 'tbgvn', 'tbset', 'tbfollow');
-		foreach ($tableArray as $tableName) {
-			if ($tableName !== 'tbus') {
+		$tableNames = array('tbus', 'tbgvn', 'tbset', 'tbfollow');
+
+		foreach ($tableNames as $tableName) {
+			if ($tableName == 'tbus') {
+				// PassWord非表示の為の別処理
+				$tables[$tableName] = $admin_repository->fetchAlltbus($limit, $offset);
+			} else {
 				$tables[$tableName] = $admin_repository->fetchAllTable($tableName, $limit, $offset);
 			}
+
 			$key = $admin_repository->tableCount($tableName);
 			$tbCounts += array($tableName => $key[$tableName]);
 		}
 
 		return $this->render(array(
 			'body' => '',
-			'ad_tbuses' => $ad_tbuses,
-			'tbCounts' => $tbCounts,
+			'tableNames' => $tableNames,
 			'tables' => $tables,
+			'tbCounts' => $tbCounts,
 			'_token' => $this->generateCsrfToken('admin/post'),
 		));
 	}
