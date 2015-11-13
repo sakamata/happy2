@@ -12,6 +12,7 @@
 </ul>
 
 <?php
+
 $tbNo = 0;
 foreach ($tables as $table){
 	$tableName = $this->escape($tableNames[$tbNo]);
@@ -21,11 +22,11 @@ foreach ($tables as $table){
 	echo "<h3>" .$tableName. "(" .$tableCount. ")";
 	echo	'<form action="' .$base_url. '/admin/tableCommand" method="post" accept-charset="utf-8">　table操作	:';
 
-	foreach ($command as $cmd) {
+	foreach ($commands as $cmd) {
 ?>
-		<!-- <input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>"> -->
-		<input type="hidden" name="<?php echo $cmd; ?>" value="<?php echo $cmd; ?>">
-		<input type="submit" name="<?php echo $tableName; ?>" value="<?php echo $cmd; ?>">
+		<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
+		<input type="hidden" name="tableName" value="<?php echo $tableName; ?>">
+		<input type="submit" name="command" value="<?php echo $cmd; ?>">
 
 <?php
 	}

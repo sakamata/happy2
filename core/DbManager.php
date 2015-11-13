@@ -29,7 +29,8 @@ class DbManager
 			$params['options']
 		);
 
-		$con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);	//3
+		// クエリエラー時にエラーレポート　例外を投げる
+		$con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		$this->connections[$name] = $con;
 	}

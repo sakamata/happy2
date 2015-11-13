@@ -1,6 +1,9 @@
 <?php
 class AdminController extends Controller
 {
+	public $tableNames = array('tbus', 'tbgvn', 'tbset', 'tbfollow', 'tbcalctime');
+	public $commands = array('Reset', 'DummyIn');
+
 	public function indexAction()
 	{
 		$session = $this->session->get('admin');
@@ -14,60 +17,49 @@ class AdminController extends Controller
 		$offset = 0;
 		$tables = [];
 		$tbCounts = [];
-		$tableNames = array('tbus', 'tbgvn', 'tbset', 'tbfollow');
-		$command = array('create', 'delete', 'dummyIn');
-
-
-		foreach ($tableNames as $tableName) {
+		$key = [];
+		foreach ($this->tableNames as $tableName) {
 			if ($tableName == 'tbus') {
 				// PassWord非表示の為の別処理
 				$tables[$tableName] = $admin_repository->fetchAlltbus($limit, $offset);
 			} else {
 				$tables[$tableName] = $admin_repository->fetchAllTable($tableName, $limit, $offset);
 			}
-
-			$key = $admin_repository->tableCount($tableName);
+			if (!$admin_repository->tableCount($tableName)) {
+				$key = array_merge($key, array($tableName => 'no Table!'));
+			} else{
+				$key = $admin_repository->tableCount($tableName);
+			}
 			$tbCounts += array($tableName => $key[$tableName]);
 		}
 
 		return $this->render(array(
 			'body' => '',
-			'tableNames' => $tableNames,
-			'command' => $command,
+			'tableNames' => $this->tableNames,
+			'commands' => $this->commands,
 			'tables' => $tables,
 			'tbCounts' => $tbCounts,
 			'_token' => $this->generateCsrfToken('admin/post'),
 		));
 	}
 
-	// 3つのコマンドを集約させる create delete dummyIn
+	// table操作を集約 Reset,DummyIn を各テーブルで行わせる
 	public function tableCommandAction()
 	{
-		// $token = $this->request->getPost('_token');
-		// if (!$this->checkCsrfToken('admin/post', $token)) {
-		// 	return $this->redirect('/admin/index');
-		// }
+		$token = $this->request->getPost('_token');
+		if (!$this->checkCsrfToken('admin/post', $token)) {
+			return $this->redirect('/admin/index');
+		}
 
-		// hiddenを２つ用意し、判定材料にする
-		$Post = $this->request->getPost('tbfollow');
+		$tableName = $this->request->getPost('tableName');
+		$command = $this->request->getPost('command');
 
-		$tableName = $this->request->getPost('tbfollow');
-		$this->db_manager->get('Admin')->tableDelete($tableName);
-		return $this->redirect('/admin/index');
-
-	}
-
-	public function tableCreateAction()
-	{
-		// $tableName = $this->request->getPost('tbfollow');
-		$this->db_manager->get('Admin')->tbfollowCreate();
-		return $this->redirect('/admin/index');
-
-	}
-
-	public function tableDummyInsertAction()
-	{
-		$this->db_manager->get('Admin')->tbfollowDummyInsert();
+		// AdminRepossitoryのメソッド名を生成
+		$RepossitoryCommnd = $tableName.$command;
+		if (!method_exists('AdminRepository', $RepossitoryCommnd)) {
+			$this->forward404();
+		}
+		$this->db_manager->get('Admin')->$RepossitoryCommnd($tableName);
 		return $this->redirect('/admin/index');
 	}
 
@@ -86,7 +78,7 @@ class AdminController extends Controller
 	public function signinAction()
 	{
 		if ($this->session->isAuthenticated()) {
-			return $this->redirect('/account');
+			return $this->redirect('/admin');
 		}
 
 		return $this->render(array(
