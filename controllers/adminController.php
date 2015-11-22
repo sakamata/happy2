@@ -2,7 +2,7 @@
 class AdminController extends Controller
 {
 	public $tableNames = array('tbus', 'tbgvn', 'tbset', 'tbfollow', 'tbcalctime');
-	public $commands = array('Reset', 'DummyIn');
+	public $commands = array('Reset', 'DummyIn', 'DummysIn');
 
 	public function indexAction()
 	{
@@ -32,6 +32,7 @@ class AdminController extends Controller
 			}
 			$tbCounts += array($tableName => $key[$tableName]);
 		}
+		// var_dump($dummyNames = $this->RandomMaker());
 
 		return $this->render(array(
 			'body' => '',
@@ -53,14 +54,47 @@ class AdminController extends Controller
 
 		$tableName = $this->request->getPost('tableName');
 		$command = $this->request->getPost('command');
+		$dummyNames = $this->RandomMaker();
 
 		// AdminRepossitoryのメソッド名を生成
 		$RepossitoryCommnd = $tableName.$command;
 		if (!method_exists('AdminRepository', $RepossitoryCommnd)) {
 			$this->forward404();
 		}
-		$this->db_manager->get('Admin')->$RepossitoryCommnd($tableName);
-		return $this->redirect('/admin/index');
+		// var_dump($dummyNames = $this->RandomMaker());
+
+		$this->db_manager->get('Admin')->$RepossitoryCommnd($dummyNames);
+		return $this->redirect('/admin/index#anchor_'.$tableName);
+	}
+
+
+	public function RandomMaker() {
+		$length = 8;
+
+		//Thanks!! http://qiita.com/TetsuTaka/items/bb020642e75458217b8a
+		static $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJLKMNOPQRSTUVWXYZ0123456789';
+		$str = '';
+		for ($i = 0; $i < $length; ++$i) {
+			$str .= $chars[mt_rand(0, 61)];
+		}
+
+		// Thanks!! http://mitsuakikawamorita.com/blog/?p=1095
+		$hiragana = 'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわおん';
+		$kanji = '右雨王音火貝九玉金月犬見口左山子糸耳車手十女人水夕石川早足大竹虫天田土日年白文木目立力六一ニ三四五下七小上生中入八本円休出森正赤千男町名林花学気空校字青先草村百'; // 小学1年生で習う漢字
+
+		$jp_literals = $hiragana . $kanji;
+		$usName = "";
+		for ($i = 0; $i < $length; $i++) {
+			$usName .= mb_substr($jp_literals, mt_rand(0, mb_strlen($jp_literals, "UTF-8") - 1), 1, "utf-8");
+		}
+
+		$usId = $str;
+		$no1 = rand(1,10);
+		$no2 = rand(1,10);
+		$clk = rand(1,30);
+		$dummys = array('no1' => $no1, 'no2' => $no2, 'clk' => $clk, 'usId' =>$usId, 'usName' =>$usName);
+
+		return $dummys;
 	}
 
 	public function getAdminSetting()
@@ -69,11 +103,13 @@ class AdminController extends Controller
 		return $adsetting_repository;
 	}
 
+
 	// ***ToDo***
 	public function pagerAction($table, $page, $offset)
 	{
 		return $page;
 	}
+
 
 	public function signinAction()
 	{
@@ -145,6 +181,51 @@ class AdminController extends Controller
 		$this->session->setAuthenticated(false);
 
 		return $this->redirect('/admin/signin');
+	}
+
+
+	public function calcAction()
+	{
+		$session = $this->session->get('admin');
+		$admin_repository = $this->db_manager->get('Admin');
+		$last = $admin_repository->lastCalcTime();
+		$lastCalcTime = $last['date'];
+
+		// clkしたユーザーの合計クリック数とnowPt
+		$clkUsersStatus = $admin_repository->clkUsersClkSumAndPts($lastCalcTime);
+
+		// 集計1段階クリックしたユーザーのポイントを分配
+
+		$N = 0;
+		// ClkをしたuserNのPtを全クリック数に従い分配,tbsetにinsert
+		foreach ($clkUsersStatus as $noUse) {
+			$userNo = $clkUsersStatus[$N]['usNo'];
+			// ユーザーiがレコード毎にクリックした数を算出
+			$sendClksSumToUser = $admin_repository->sendClksSumToUser($lastCalcTime, $userNo);
+
+			$i = 0;
+			foreach ($sendClksSumToUser as $noUse) {
+				$usNo = $sendClksSumToUser[$i]['usNo'];
+				$seUs = $sendClksSumToUser[$i]['seUs'];
+				$seClk = $sendClksSumToUser[$i]['seClk'];
+				$dTm = $sendClksSumToUser[$i]['dTm'];
+
+				// clkしたユーザーの1クリックあたりのPt計算
+				// ユーザーNへのクリック数 / 全ユーザーへのクリック数 ＊ 現在のポイント
+				$getPt = $seClk / $clkUsersStatus[$N]['clk_sum'] * $clkUsersStatus[$N]['nowPt'];
+
+				$admin_repository->clkUsersPts_tbsetInsert($usNo, $seUs, $getPt, $dTm);
+				$i++;
+			}
+			$N++;
+		}
+
+		return $this->render(array(
+			'body' => '',
+			'lastCalcTime' => $lastCalcTime,
+			'clkUsersStatus' => $clkUsersStatus,
+			'_token' => $this->generateCsrfToken('admin/post'),
+		));
 	}
 
 }

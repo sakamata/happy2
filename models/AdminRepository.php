@@ -3,7 +3,11 @@ class AdminRepository extends DbRepository
 {
 	public function fetchByAdminUserName($usId)
 	{
-		$sql = "SELECT * FROM adtbus WHERE usId = :usId";
+		$sql = "
+			SELECT *
+			FROM adtbus
+			WHERE usId = :usId
+		";
 
 		return $this->fetch($sql, array(':usId' => $usId));
 	}
@@ -14,7 +18,8 @@ class AdminRepository extends DbRepository
 		// ***危険*** 変数を直接クエリに入れている（mysqlの limitバグの為）
 		// ***ToDo*** ここにPOSTされた値を拾った時点で型確認checkを書く
 		$sql = "
-			SELECT usNo, usId, usName, usImg, nowPt, ip, host, regDate from tbus
+			SELECT usNo, usId, usName, usImg, nowPt, ip, host, regDate
+			FROM tbus
 			LIMIT $limit
 			OFFSET $offset
 		";
@@ -30,7 +35,8 @@ class AdminRepository extends DbRepository
 		// ***危険*** 変数を直接クエリに入れている（mysqlの limitバグの為）
 		// ***ToDo*** ここにPOSTされた値を拾った時点で型確認checkを書く
 		$sql = "
-			SELECT * from $tableName
+			SELECT *
+			FROM $tableName
 			LIMIT $limit
 			OFFSET $offset
 		";
@@ -45,7 +51,8 @@ class AdminRepository extends DbRepository
 	public function tableCount($tableName)
 	{
 		$sql = "
-			SELECT COUNT(*) AS $tableName from $tableName
+			SELECT COUNT(*) AS $tableName
+			FROM $tableName
 		";
 
 		return $this->fetch($sql, array(
@@ -78,7 +85,7 @@ class AdminRepository extends DbRepository
 	public function tbgvnReset()
 	{
 		$sql="
-			DROP TABLE tagvn;
+			DROP TABLE tbgvn;
 			CREATE TABLE IF NOT EXISTS `happy2`.`tbgvn` (
 				`gvnNo` INT(11) NOT NULL AUTO_INCREMENT,
 				`usNo` INT(11) NULL,
@@ -114,12 +121,12 @@ class AdminRepository extends DbRepository
 	public function tbcalctimeReset()
 	{
 		$sql="
-		DROP TABLE tbcalctime;
-		CREATE TABLE IF NOT EXISTS `happy2`.`tbcalctime` (
-			`calcNo` INT(11) NOT NULL AUTO_INCREMENT,
-			`calcTime` DATETIME NULL,
-			PRIMARY KEY (`calcNo`))
-		ENGINE = InnoDB
+			DROP TABLE tbcalctime;
+			CREATE TABLE IF NOT EXISTS `happy2`.`tbcalctime` (
+				`calcNo` INT(11) NOT NULL AUTO_INCREMENT,
+				`calcTime` DATETIME NULL,
+				PRIMARY KEY (`calcNo`))
+			ENGINE = InnoDB
 		";
 
 		$stmt = $this->execute($sql, array(
@@ -129,79 +136,260 @@ class AdminRepository extends DbRepository
 	public function tbfollowReset()
 	{
 		$sql="
-		DROP TABLE tbfollow;
-		CREATE TABLE IF NOT EXISTS `happy2`.`tbfollow` (
-			`usNo` INT(11) NULL,
-			`followingNo` INT(11) NULL
-		)
-		ENGINE = InnoDB
+			DROP TABLE tbfollow;
+			CREATE TABLE IF NOT EXISTS `happy2`.`tbfollow` (
+				`usNo` INT(11) NULL,
+				`followingNo` INT(11) NULL
+			)
+			ENGINE = InnoDB
 		";
 
 		$stmt = $this->execute($sql, array(
 		));
 	}
 
-	public function tbusDummyIn()
+	public function tbusDummysIn()
+	{
+		$sql="
+		LOAD DATA INFILE '../../htdocs/happy2/data/tbus_dummy01.csv'
+		INTO TABLE tbus
+		FIELDS TERMINATED BY ','
+		IGNORE 1 LINES
+		";
+
+		$stmt = $this->execute($sql, array(
+		));
+	}
+
+	public function tbgvnDummysIn($dummys)
 	{
 		//ToDo CSV 読み込み
 		$sql="
-		INSERT INTO tbus(usId, usName, usImg, nowPt, regDate) value('dummy3', 'taro', 'dummy.jpg', 100, now());
+			INSERT INTO
+				tbgvn(usNo,seUs,seClk,dTm)
+				VALUE(1,2,5,now());
 		";
 
 		$stmt = $this->execute($sql, array(
 		));
 	}
 
-	public function tbgvnDummyIn()
+	public function tbsetDummysIn($dummys)
 	{
 		//ToDo CSV 読み込み
 		$sql="
-		INSERT INTO tbgvn(usNo,seUs,seClk,dTm) value(1,2,5,now());
+			INSERT INTO
+				tbset(usNo,seUs,getPt,dTm)
+				VALUE(1,2,10,now());
 		";
 
 		$stmt = $this->execute($sql, array(
 		));
 	}
 
-	public function tbsetDummyIn()
+	public function tbfollowDummsyIn($dummys)
+	{
+		$sql="
+			INSERT INTO
+				tbfollow(usNo,followingNo)
+				VALUE(3,4);
+		";
+
+		$stmt = $this->execute($sql, array(
+		));
+	}
+
+
+	// ***ToDo***乱数発生のIDと名前を変数に入れる
+	public function tbusDummyIn($dummys)
 	{
 		//ToDo CSV 読み込み
 		$sql="
-			INSERT INTO tbset(usNo,seUs,getPt,dTm) value(1,2,10,now());
+		INSERT INTO
+			tbus(usId, usName, usPs, usImg, nowPt, regDate)
+			VALUE(
+				:usId,
+				:usName,
+				'7599fcea685786ffa4f9314259a155301ed24f5d',
+				'dummy.jpg',
+				100,
+				now()
+			);
 		";
 
 		$stmt = $this->execute($sql, array(
+			':usId' => $dummys['usId'],
+			':usName' => $dummys['usName'],
 		));
 	}
 
-	public function tbfollowDummyIn()
+	public function tbgvnDummyIn($dummys)
 	{
+		//ToDo CSV 読み込み
 		$sql="
-			INSERT INTO tbfollow(usNo,followingNo) value(3,4);
+		INSERT INTO
+			tbgvn(usNo,seUs,seClk,dTm)
+			VALUE(:no1, :no2, :clk, now());
 		";
 
 		$stmt = $this->execute($sql, array(
+			':no1' => $dummys['no1'],
+			':no2' => $dummys['no2'],
+			':clk' => $dummys['clk'],
+		));
+	}
+
+	public function tbsetDummyIn($dummys)
+	{
+		//ToDo CSV 読み込み
+		$sql="
+			INSERT INTO
+				tbset(usNo,seUs,getPt,dTm)
+				VALUE(:no1, :no2, 10, now());
+		";
+
+		$stmt = $this->execute($sql, array(
+			':no1' => $dummys['no1'],
+			':no2' => $dummys['no2']
+		));
+	}
+
+	public function tbfollowDummyIn($dummys)
+	{
+		$sql="
+			INSERT INTO
+				tbfollow(usNo,followingNo)
+				VALUE(:no1, :no2);
+		";
+
+		$stmt = $this->execute($sql, array(
+			':no1' => $dummys['no1'],
+			':no2' => $dummys['no2']
 		));
 	}
 
 	public function tbcalctimeDummyIn()
 	{
 		$sql="
-			INSERT INTO tbcalctime(calcTime) value(now());
+			INSERT INTO
+				tbcalctime(calcTime)
+				VALUE(now());
 		";
 
 		$stmt = $this->execute($sql, array(
 		));
 	}
 
-	public function tableDelete($tableName)
+
+
+	// ***** calc *****
+
+	public function lastCalcTime()
 	{
-		$sql ="
-			DROP TABLE $tableName
+		$sql="
+			SELECT max(calcTime) AS date
+			FROM tbcalctime
 		";
-		$stmt = $this->execute($sql, array(
-			':tableName' => $tableName,
+
+		return $stmt = $this->fetch($sql, array(
 		));
 	}
+
+	public function clkUsersClkSumAndPts($lastCalcTime)
+	{
+		$sql="
+			SELECT gvn.usNo, gvn.clk_sum, user.nowPt
+			FROM tbus
+			AS user
+			JOIN(
+				SELECT usNo, sum(seClk) AS clk_sum
+				FROM tbgvn
+				WHERE tbgvn.dTm BETWEEN :lastCalcTime AND now()
+				GROUp BY usNo
+			)
+			AS gvn
+			ON user.usNo = gvn.usNo
+		";
+
+		return $stmt = $this->fetchall($sql, array(
+			':lastCalcTime' => $lastCalcTime,
+		));
+	}
+
+	public function usersClkSum($lastCalcTime)
+	{
+		$sql="
+			SELECT usNo, sum(seClk) AS clkSum
+			FROM tbgvn
+			WHERE dTm BETWEEN :lastCalcTime AND now()
+			GROUP by usNo
+		";
+
+		return $stmt = $this->fetchall($sql, array(
+			':lastCalcTime' => $lastCalcTime,
+		));
+	}
+
+// '2015-11-15 18:52:16'
+
+	public function OLD_sendClkSumToUserN($lastCalcTime, $usNo)
+	{
+		$sql="
+			SELECT seUs,sum(seClk) AS sendClkSum
+			FROM tbgvn
+			WHERE	dTm BETWEEN :lastCalcTime AND now()
+				AND usNo = :usNo
+			GROUP BY seUs
+		";
+
+		return $stmt = $this->fetchall($sql, array(
+			':lastCalcTime' => $lastCalcTime,
+			':usNo' => $usNo,
+		));
+	}
+
+	public function sendClksSumToUser($lastCalcTime, $usNo)
+	{
+		$sql = "
+			SELECT usNo, seUs, seClk, dTm
+			FROM tbgvn
+			WHERE
+					usNo = :usNo
+				AND
+					dTm BETWEEN :lastCalcTime
+				AND
+					now()
+					ORDER BY gvnNo
+		";
+		// SELECT usNo, seUs, sum(seClk) AS seClk, dTm
+		// FROM tbgvn
+		// WHERE dTm BETWEEN :lastCalcTime AND now()
+		// GROUP BY usNo, seUs
+		// ORDER BY usNo, seUs
+
+		return $this->fetchall($sql, array(
+			':lastCalcTime' => $lastCalcTime,
+			':usNo' => $usNo,
+		));
+
+	}
+
+	public function clkUsersPts_tbsetInsert($usNo, $seUs, $getPt, $dTm)
+	{
+		//ToDo CSV 読み込み
+		$sql="
+			INSERT INTO
+				tbset(usNo, seUs, getPt, dTm)
+				VALUE(:usNo, :seUs, :getPt, :dTm);
+		";
+
+		$stmt = $this->execute($sql, array(
+			':usNo' => $usNo,
+			':seUs' => $seUs,
+			':getPt' => $getPt,
+			':dTm' => $dTm,
+		));
+	}
+
 
 }

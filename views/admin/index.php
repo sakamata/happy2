@@ -2,16 +2,8 @@
 
 <h2>admin index!</h2>
 
-<ul>
-	<li>
-		<a href="<?php echo $base_url ?>">ホーム</a>
-	</li>
-	<li>
-		<a href="<?php echo $base_url; ?>/admin/signout">管理画面ログアウト</a>
-	</li>
-</ul>
-
 <?php
+echo $this->render('admin/header_menu', array());
 
 $tbNo = 0;
 foreach ($tables as $table){
@@ -19,7 +11,7 @@ foreach ($tables as $table){
 	$cntNo = $tableNames[$tbNo];
 	$tableCount = $this->escape($tbCounts[$cntNo]);
 
-	echo "<h3>" .$tableName. "(" .$tableCount. ")";
+	echo "<h3 id='anchor_" .$tableName. "'>" .$tableName. "(" .$tableCount. ")";
 	echo	'<form action="' .$base_url. '/admin/tableCommand" method="post" accept-charset="utf-8">　table操作	:';
 
 	foreach ($commands as $cmd) {
