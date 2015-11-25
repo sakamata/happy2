@@ -316,38 +316,6 @@ class AdminRepository extends DbRepository
 		));
 	}
 
-	public function usersClkSum($lastCalcTime)
-	{
-		$sql="
-			SELECT usNo, sum(seClk) AS clkSum
-			FROM tbgvn
-			WHERE dTm BETWEEN :lastCalcTime AND now()
-			GROUP by usNo
-		";
-
-		return $stmt = $this->fetchall($sql, array(
-			':lastCalcTime' => $lastCalcTime,
-		));
-	}
-
-// '2015-11-15 18:52:16'
-
-	public function OLD_sendClkSumToUserN($lastCalcTime, $usNo)
-	{
-		$sql="
-			SELECT seUs,sum(seClk) AS sendClkSum
-			FROM tbgvn
-			WHERE	dTm BETWEEN :lastCalcTime AND now()
-				AND usNo = :usNo
-			GROUP BY seUs
-		";
-
-		return $stmt = $this->fetchall($sql, array(
-			':lastCalcTime' => $lastCalcTime,
-			':usNo' => $usNo,
-		));
-	}
-
 	public function sendClksSumToUser($lastCalcTime, $usNo)
 	{
 		$sql = "
@@ -361,22 +329,15 @@ class AdminRepository extends DbRepository
 					now()
 					ORDER BY gvnNo
 		";
-		// SELECT usNo, seUs, sum(seClk) AS seClk, dTm
-		// FROM tbgvn
-		// WHERE dTm BETWEEN :lastCalcTime AND now()
-		// GROUP BY usNo, seUs
-		// ORDER BY usNo, seUs
 
 		return $this->fetchall($sql, array(
 			':lastCalcTime' => $lastCalcTime,
 			':usNo' => $usNo,
 		));
-
 	}
 
 	public function clkUsersPts_tbsetInsert($usNo, $seUs, $getPt, $dTm)
 	{
-		//ToDo CSV 読み込み
 		$sql="
 			INSERT INTO
 				tbset(usNo, seUs, getPt, dTm)

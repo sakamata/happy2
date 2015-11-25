@@ -18,6 +18,17 @@ class AdminController extends Controller
 		$tables = [];
 		$tbCounts = [];
 		$key = [];
+
+		$page = $this->request->getGet('tbus');
+
+		if (empty($page)) {
+			$page = 0;
+		}
+		$nextpage = $page + 1;
+		$prevpage = $page - 1;
+		$offset = $limit * $page;
+
+
 		foreach ($this->tableNames as $tableName) {
 			if ($tableName == 'tbus') {
 				// PassWord非表示の為の別処理
@@ -32,7 +43,6 @@ class AdminController extends Controller
 			}
 			$tbCounts += array($tableName => $key[$tableName]);
 		}
-		// var_dump($dummyNames = $this->RandomMaker());
 
 		return $this->render(array(
 			'body' => '',
@@ -40,6 +50,11 @@ class AdminController extends Controller
 			'commands' => $this->commands,
 			'tables' => $tables,
 			'tbCounts' => $tbCounts,
+			'offset' => $offset,
+			'limit' => $limit,
+			'page' => $page,
+			'nextpage' => $nextpage,
+			'prevpage' => $prevpage,
 			'_token' => $this->generateCsrfToken('admin/post'),
 		));
 	}
@@ -61,7 +76,6 @@ class AdminController extends Controller
 		if (!method_exists('AdminRepository', $RepossitoryCommnd)) {
 			$this->forward404();
 		}
-		// var_dump($dummyNames = $this->RandomMaker());
 
 		$this->db_manager->get('Admin')->$RepossitoryCommnd($dummyNames);
 		return $this->redirect('/admin/index#anchor_'.$tableName);
@@ -107,7 +121,20 @@ class AdminController extends Controller
 	// ***ToDo***
 	public function pagerAction($table, $page, $offset)
 	{
-		return $page;
+		$setting = $adsetting_repository->fetchSettingValue();
+		$limit = $setting['adminTablesViewLimit'];
+
+		$page = $this->request->getGet('tbus');
+
+		if (empty($page)) {
+			$page = 0;
+		}
+		$nextpage = $page + 1;
+		$prevpage = $page - 1;
+		$offset = $limit * $page;
+
+		$pager = array($offset, $limit, $page);
+		return $pager;
 	}
 
 
@@ -194,7 +221,7 @@ class AdminController extends Controller
 		// clkしたユーザーの合計クリック数とnowPt
 		$clkUsersStatus = $admin_repository->clkUsersClkSumAndPts($lastCalcTime);
 
-		// 集計1段階クリックしたユーザーのポイントを分配
+		// 集計1段階 クリックしたユーザーのポイントを分配
 
 		$N = 0;
 		// ClkをしたuserNのPtを全クリック数に従い分配,tbsetにinsert
@@ -219,6 +246,15 @@ class AdminController extends Controller
 			}
 			$N++;
 		}
+
+
+		// 集計第二段階 nowPtのベーシックインカム的な補正計算
+		$adsetting_repository = $this->getAdminSetting();
+		$setting = $adsetting_repository->fetchSettingValue();
+		$minPt = $setting['userMinPt'];
+		$defaultPt = $setting['userDefaultPt'];
+
+
 
 		return $this->render(array(
 			'body' => '',
