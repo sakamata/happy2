@@ -51,13 +51,13 @@ foreach ($tables as $table){
 		</table>
 	</div>
 
-	<?php if ($prevpage != -1 ): ?>
-		<a href="?<?php echo $tableName. '=' .$prevpage; ?>" name="prev">&lt;&lt;前のページ</a>
-	<?php endif; ?>
+<?php if ($prevpages[$tableName] != -1 ): ?>
+	<a href="?<?php echo 'table=' .$tableName. '&page=' .$prevpages[$tableName]. '&#anchor_' .$tableName; ?>" name="prev">&lt;&lt;前のページ</a>
+<?php endif; ?>
 
-	<?php if ($offset + $limit < $tableCount ): ?>
-		<a href="?<?php echo $tableName. '=' .$nextpage; ?>" name="next">次のページ&gt;&gt;</a>
-	<?php endif; ?>
+<?php if ($offsets[$tableName] + $limit < $tableCount ): ?>
+	<a href="?<?php echo 'table=' .$tableName. '&page=' .$nextpages[$tableName]. '&#anchor_' .$tableName; ?>" name="next">次のページ&gt;&gt;</a>
+<?php endif; ?>
 
 	<hr>
 

@@ -13,29 +13,34 @@ class AdminController extends Controller
 		$setting = $adsetting_repository->fetchSettingValue();
 		$limit = $setting['adminTablesViewLimit'];
 
-		// ***ToDo***ページ送り制御でlimit数で増減させる
-		$offset = 0;
+		// ToDo pager機能の分離
 		$tables = [];
 		$tbCounts = [];
 		$key = [];
-
-		$page = $this->request->getGet('tbus');
-
-		if (empty($page)) {
-			$page = 0;
-		}
-		$nextpage = $page + 1;
-		$prevpage = $page - 1;
-		$offset = $limit * $page;
-
+		$pages = [];
+		$offsets = [];
 
 		foreach ($this->tableNames as $tableName) {
+
+			$tb = $this->request->getGet('table');
+			if ($tb == $tableName) {
+				$pages[$tableName] = $this->request->getGet('page');
+			}
+
+			if (empty($pages[$tableName])) {
+				$pages[$tableName] = 0;
+			}
+			$nextpages[$tableName] = $pages[$tableName] + 1;
+			$prevpages[$tableName] = $pages[$tableName] - 1;
+			$offsets[$tableName] = $limit * $pages[$tableName];
+
 			if ($tableName == 'tbus') {
 				// PassWord非表示の為の別処理
-				$tables[$tableName] = $admin_repository->fetchAlltbus($limit, $offset);
+				$tables[$tableName] = $admin_repository->fetchAlltbus($limit, $offsets[$tableName]);
 			} else {
-				$tables[$tableName] = $admin_repository->fetchAllTable($tableName, $limit, $offset);
+				$tables[$tableName] = $admin_repository->fetchAllTable($tableName, $limit, $offsets[$tableName]);
 			}
+
 			if (!$admin_repository->tableCount($tableName)) {
 				$key = array_merge($key, array($tableName => 'no Table!'));
 			} else{
@@ -50,11 +55,11 @@ class AdminController extends Controller
 			'commands' => $this->commands,
 			'tables' => $tables,
 			'tbCounts' => $tbCounts,
-			'offset' => $offset,
+			'pages' => $pages,
+			'offsets' => $offsets,
+			'nextpages' => $nextpages,
+			'prevpages' => $prevpages,
 			'limit' => $limit,
-			'page' => $page,
-			'nextpage' => $nextpage,
-			'prevpage' => $prevpage,
 			'_token' => $this->generateCsrfToken('admin/post'),
 		));
 	}
