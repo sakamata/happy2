@@ -20,6 +20,7 @@ class AdminRepository extends DbRepository
 		$sql = "
 			SELECT usNo, usId, usName, usImg, nowPt, ip, host, regDate
 			FROM tbus
+			ORDER BY usNo DESC
 			LIMIT $limit
 			OFFSET $offset
 		";
@@ -37,6 +38,7 @@ class AdminRepository extends DbRepository
 		$sql = "
 			SELECT *
 			FROM $tableName
+			ORDER BY 1 DESC
 			LIMIT $limit
 			OFFSET $offset
 		";
@@ -349,6 +351,45 @@ class AdminRepository extends DbRepository
 			':seUs' => $seUs,
 			':getPt' => $getPt,
 			':dTm' => $dTm,
+		));
+	}
+
+	public function clkUsersRivisePts_TogetherInsert($queryArray)
+	{
+
+		$queryArray = array(
+			'seUs' => array('1','2','3'),
+			'getPt' => array('1.11','2.22','3.33' )
+		);
+
+		$value = "VALUE('0', :seUs, :getPt, now()),";
+
+		$sql="
+			INSERT INTO
+				tbset(usNo, seUs, getPt, dTm)
+				$value
+		";
+
+		$stmt = $this->execute($sql, array(
+			':seUs' => $seUs,
+			':getPt' => $getPt,
+		));
+	}
+
+
+
+	public function sendUsersGetPtsSum($lastCalcTime)
+	{
+		$sql = "
+			SELECT seUs, sum(getPt) AS getPt
+			FROM tbset
+			WHERE dTm between :lastCalcTime and now()
+			GROUP BY seUs
+			ORDER BY seUs
+		";
+
+		return $this->fetchall($sql, array(
+			':lastCalcTime' => $lastCalcTime,
 		));
 	}
 

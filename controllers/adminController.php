@@ -13,23 +13,26 @@ class AdminController extends Controller
 		$setting = $adsetting_repository->fetchSettingValue();
 		$limit = $setting['adminTablesViewLimit'];
 
-		// ToDo pager機能の分離
+		// ***ToDo*** pager機能の分離
 		$tables = [];
 		$tbCounts = [];
 		$key = [];
 		$pages = [];
 		$offsets = [];
 
+		$getpage = intval($this->request->getGet('page'));
+
 		foreach ($this->tableNames as $tableName) {
 
 			$tb = $this->request->getGet('table');
 			if ($tb == $tableName) {
-				$pages[$tableName] = $this->request->getGet('page');
+				$pages[$tableName] = $getpage;
 			}
 
 			if (empty($pages[$tableName])) {
 				$pages[$tableName] = 0;
 			}
+
 			$nextpages[$tableName] = $pages[$tableName] + 1;
 			$prevpages[$tableName] = $pages[$tableName] - 1;
 			$offsets[$tableName] = $limit * $pages[$tableName];
@@ -225,13 +228,13 @@ class AdminController extends Controller
 
 		// clkしたユーザーの合計クリック数とnowPt
 		$clkUsersStatus = $admin_repository->clkUsersClkSumAndPts($lastCalcTime);
-
 		// 集計1段階 クリックしたユーザーのポイントを分配
 
 		$N = 0;
 		// ClkをしたuserNのPtを全クリック数に従い分配,tbsetにinsert
 		foreach ($clkUsersStatus as $noUse) {
 			$userNo = $clkUsersStatus[$N]['usNo'];
+			$nowPts = $clkUsersStatus[$N]['nowPt'];
 			// ユーザーiがレコード毎にクリックした数を算出
 			$sendClksSumToUser = $admin_repository->sendClksSumToUser($lastCalcTime, $userNo);
 
@@ -254,10 +257,74 @@ class AdminController extends Controller
 
 
 		// 集計第二段階 nowPtのベーシックインカム的な補正計算
+
 		$adsetting_repository = $this->getAdminSetting();
 		$setting = $adsetting_repository->fetchSettingValue();
-		$minPt = $setting['userMinPt'];
-		$defaultPt = $setting['userDefaultPt'];
+		$minPt = intval($setting['userMinPt']);
+		$defaultPt = intval($setting['userDefaultPt']);
+
+		$userPts = [];
+		$sendUsersNo = [];	//対象のusNo
+		$differencePts = [];	//差分
+		$shortPts = [];	//不足分
+		$surplusPts = [];	//余剰分
+
+		$sendUsersGetPtsSum = $admin_repository->sendUsersGetPtsSum($lastCalcTime);
+
+		// ユーザー毎の最低値Ptからの差を求める
+		$u = 0;
+		foreach ($sendUsersGetPtsSum as $user[$u]) {
+			$userPts[$u] = floatval($user[$u]['getPt']);
+			$sendUsersNo[$u] = $user[$u]['seUs'];
+			//最低値からの差分を算出
+			$differencePts[$u] = $userPts[$u] - $minPt;
+			if ($userPts[$u] < $minPt) {
+				// Pt不足合計を求める
+				$shortPts[$u] = $minPt - $userPts[$u];
+			} else {
+				// Pt余剰分 最低値以上のPtを求める
+				$surplusPts[$u] = $userPts[$u];
+			}
+			$u++;
+		}
+
+		// ユーザー総計Ptの 全余剰&全不足 の合計を求める
+		$shortPtsSum = array_sum($shortPts);
+		$surplusPtsSum = array_sum($surplusPts);
+
+		// 各ユーザーの補正Ptを求る
+		$rivisePts = [];
+		for ($i=0; $i < $u ; $i++) {
+			if ($differencePts[$i] > 0) {
+				// (過) 負担する値  -(保持Pt / 全余剰Pt合計 * 全不足Pt合計)
+				$rivisePts[$i] = -($userPts[$i] / $surplusPtsSum * $shortPtsSum);
+			} else {
+				// (不足) 最低値との差分
+				$rivisePts[$i] = $minPt - $userPts[$i];
+			}
+		}
+
+		echo '$sendUsersNo Ptを送られたユーザーNo一覧<br>';
+		var_dump($sendUsersNo);
+		echo '<br>$userPts Ptを送られたユーザーの取得Pt<br>';
+		var_dump($userPts);
+		echo '<br>$differencePts 差分Pt<br>';
+		var_dump($differencePts);
+		echo '<br>$shortPts 不足Pt<br>';
+		var_dump($shortPts);
+		echo '<br>$surplusPts 余剰分Pt<br>';
+		var_dump($surplusPts);
+		echo '<br>$shortPtsSum 不足Pt合計<br>';
+		var_dump($shortPtsSum);
+		echo '<br>$surplusPtsSum 余剰Pt合計<br>';
+		var_dump($surplusPtsSum);
+		echo '<br>$sendUsersNo Ptを送られたユーザーNo一覧<br>';
+		var_dump($sendUsersNo);
+		echo '<br>$rivisePts Ptを送られたユーザーの補正Pt算出<br>';
+		var_dump($rivisePts);
+
+		$queryArray = array($sendUsersNo, $rivisePts);
+
 
 
 
