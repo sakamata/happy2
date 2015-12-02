@@ -4,7 +4,18 @@
 
 <?php
 echo $this->render('admin/header_menu', array());
+?>
+<?php
+echo	'<form action="' .$base_url. '/admin/calc" method="post" accept-charset="utf-8">';
+?>
+	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
+	<h3>
+		calcAction: <input type="submit" name="calc" value="集計する">
+	</h3>
+</form>
+<hr>
 
+<?php
 $tbNo = 0;
 foreach ($tables as $table){
 	$tableName = $this->escape($tableNames[$tbNo]);

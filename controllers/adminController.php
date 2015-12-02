@@ -7,6 +7,10 @@ class AdminController extends Controller
 	public function indexAction()
 	{
 		$session = $this->session->get('admin');
+		if (!$session) {
+			return $this->redirect('/');
+		}
+
 		$admin_repository = $this->db_manager->get('Admin');
 		$adsetting_repository = $this->getAdminSetting();
 
@@ -72,23 +76,48 @@ class AdminController extends Controller
 	{
 		$token = $this->request->getPost('_token');
 		if (!$this->checkCsrfToken('admin/post', $token)) {
-			return $this->redirect('/admin/index');
+			return $this->redirect('/');
 		}
 
 		$tableName = $this->request->getPost('tableName');
 		$command = $this->request->getPost('command');
+		$admin_repository = $this->db_manager->get('Admin');
 		$dummyNames = $this->RandomMaker();
-
 		// AdminRepossitoryのメソッド名を生成
 		$RepossitoryCommnd = $tableName.$command;
 		if (!method_exists('AdminRepository', $RepossitoryCommnd)) {
 			$this->forward404();
 		}
+		$admin_repository->$RepossitoryCommnd($dummyNames);
 
-		$this->db_manager->get('Admin')->$RepossitoryCommnd($dummyNames);
+		// 仕様上ダミーアカウント作成直後に必ず自分に1クリックをさせる
+		if ($RepossitoryCommnd == 'tbusDummyIn') {
+			$this->DummyInOneClick($dummyNames['usId']);
+		}
+		if ($RepossitoryCommnd == 'tbusDummysIn') {
+			$this->DummyInOneClick();
+		}
+
 		return $this->redirect('/admin/index#anchor_'.$tableName);
 	}
 
+	public function DummyInOneClick($userId = null)
+	{
+		if ($userId) {
+			$ID = [];
+			$ID[0] = $userId;
+		} else {
+			$ID = array('itinose', 'nikaidou', 'mitaka', 'yotuya', 'godai', 'roppngi', 'nanase', 'yagami', 'kujou', 'otonashi');
+		}
+
+		$admin_repository = $this->db_manager->get('Admin');
+		$a = 0;
+		while ($a < count($ID)) {
+			$res = $admin_repository->getDummyUserNo($ID[$a]);
+			$admin_repository->tbusDummyIn_SelfOneClick($res['usNo']);
+			$a++;
+		}
+	}
 
 	public function RandomMaker() {
 		$length = 8;
@@ -121,6 +150,10 @@ class AdminController extends Controller
 
 	public function getAdminSetting()
 	{
+		$session = $this->session->get('admin');
+		if (!$session) {
+			return $this->redirect('/');
+		}
 		$adsetting_repository = $this->db_manager->get('AdminSetting');
 		return $adsetting_repository;
 	}
@@ -221,7 +254,20 @@ class AdminController extends Controller
 
 	public function calcAction()
 	{
-		$session = $this->session->get('admin');
+		if (!$this->request->isPost()) {
+			$this->forward404();
+		}
+
+		// $session = $this->session->get('admin');
+		// if (!$session) {
+		// 	return $this->redirect('/');
+		// }
+
+		$token = $this->request->getPost('_token');
+		if (!$this->checkCsrfToken('admin/post', $token)) {
+			return $this->redirect('/');
+		}
+
 		$admin_repository = $this->db_manager->get('Admin');
 		$last = $admin_repository->lastCalcTime();
 		$lastCalcTime = $last['date'];
@@ -304,29 +350,52 @@ class AdminController extends Controller
 			}
 		}
 
-		echo '$sendUsersNo Ptを送られたユーザーNo一覧<br>';
-		var_dump($sendUsersNo);
-		echo '<br>$userPts Ptを送られたユーザーの取得Pt<br>';
-		var_dump($userPts);
-		echo '<br>$differencePts 差分Pt<br>';
-		var_dump($differencePts);
-		echo '<br>$shortPts 不足Pt<br>';
-		var_dump($shortPts);
-		echo '<br>$surplusPts 余剰分Pt<br>';
-		var_dump($surplusPts);
-		echo '<br>$shortPtsSum 不足Pt合計<br>';
-		var_dump($shortPtsSum);
-		echo '<br>$surplusPtsSum 余剰Pt合計<br>';
-		var_dump($surplusPtsSum);
-		echo '<br>$sendUsersNo Ptを送られたユーザーNo一覧<br>';
-		var_dump($sendUsersNo);
-		echo '<br>$rivisePts Ptを送られたユーザーの補正Pt算出<br>';
-		var_dump($rivisePts);
+		// echo '$sendUsersNo Ptを送られたユーザーNo一覧<br>';
+		// var_dump($sendUsersNo);
+		// echo '<br>$userPts Ptを送られたユーザーの取得Pt<br>';
+		// var_dump($userPts);
+		// echo '<br>$differencePts 差分Pt<br>';
+		// var_dump($differencePts);
+		// echo '<br>$shortPts 不足Pt<br>';
+		// var_dump($shortPts);
+		// echo '<br>$surplusPts 余剰分Pt<br>';
+		// var_dump($surplusPts);
+		// echo '<br>$shortPtsSum 不足Pt合計<br>';
+		// var_dump($shortPtsSum);
+		// echo '<br>$surplusPtsSum 余剰Pt合計<br>';
+		// var_dump($surplusPtsSum);
+		// echo '<br>$sendUsersNo Ptを送られたユーザーNo一覧<br>';
+		// var_dump($sendUsersNo);
+		// echo '<br>$rivisePts Ptを送られたユーザーの補正Pt算出<br>';
+		// var_dump($rivisePts);
 
-		$queryArray = array($sendUsersNo, $rivisePts);
+		// 補正PtのDB INSERT userNo=0 からのPtとして、マイナス値含めinsertする
+		$admin_repository->clkUsersRivisePts_TogetherInsert($sendUsersNo, $rivisePts);
 
+		// 集計結果を取得
+		$calcResultPts = $admin_repository->getCalcResultPts($lastCalcTime);
 
+		$userNo = [];
+		$nowPts = [];
+		$u = 0;
+		foreach ($calcResultPts as $noUse ) {
+			$userNo = $calcResultPts[$u]['seUs'];
+			$nowPts = $calcResultPts[$u]['userPts'];
+			//集計結果をtbusに更新反映
+			//***ToDo*** 1回のinsertクエリ処理で可能か調査、改修
+			$admin_repository->calcResultPts_tbusInsert($nowPts, $userNo);
+			$u++;
+		}
 
+		// 集計時間テーブルに現在時刻を登録
+		$admin_repository->tbcalctimeInsertNow();
+
+		// 全ユーザーに自分に1クリックさせる
+		$usersNo = $admin_repository->getAllUserNo();
+		// var_dump($usersNo);
+		$admin_repository->allUserSelfOneClick($usersNo);
+
+		$this->redirect('/admin/index');
 
 		return $this->render(array(
 			'body' => '',
@@ -334,6 +403,8 @@ class AdminController extends Controller
 			'clkUsersStatus' => $clkUsersStatus,
 			'_token' => $this->generateCsrfToken('admin/post'),
 		));
+
+		// $this->index();
 	}
 
 }
