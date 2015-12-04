@@ -50,6 +50,17 @@ class AdminRepository extends DbRepository
 		));
 	}
 
+	public function allUsersPtsSum()
+	{
+		$sql = "
+			SELECT sum(nowPt) AS nowPt
+			FROM tbus
+		";
+
+		return $this->fetch($sql, array(
+		));
+	}
+
 	public function tableCount($tableName)
 	{
 		$sql = "
@@ -416,6 +427,52 @@ class AdminRepository extends DbRepository
 		));
 	}
 
+	// 集計の最小Ptかつ最新ユーザー探す
+	public function getMaxPtOldUser()
+	{
+		$sql = "
+			SELECT usNo, nowPt
+			FROM tbus
+			WHERE nowPt = (
+				SELECT MAX(nowPt)
+				FROM tbus
+				)
+			ORDER BY usNo ASC
+		";
+
+		return $this->fetchall($sql, array(
+		));
+	}
+
+	// 集計の最大Ptかつ古参ユーザーを探す
+	public function getMinPtNewUser()
+	{
+		$sql = "
+			SELECT usNo, nowPt
+			FROM tbus
+			WHERE nowPt = (
+				SELECT MIN(nowPt)
+				FROM tbus
+				)
+			ORDER BY usNo DESC
+		";
+
+		return $this->fetchall($sql, array(
+		));
+	}
+
+	public function ToleranceInsert($sendUsersNo, $rivisePts)
+	{
+		$sql = "
+			INSERT INTO
+				tbset(usNo, seUs, getPt, dTm)
+				VALUES('0', $sendUsersNo, $rivisePts, now())
+		";
+
+		$stmt = $this->execute($sql, array(
+		));
+	}
+
 	public function getCalcResultPts($lastCalcTime)
 	{
 		$sql = "
@@ -426,6 +483,19 @@ class AdminRepository extends DbRepository
 		";
 
 		return $this->fetchall($sql, array(
+			':lastCalcTime' => $lastCalcTime,
+		));
+	}
+
+	public function getCalcResultSumPts($lastCalcTime)
+	{
+		$sql = "
+			SELECT sum(getPt) as userPts
+			FROM tbset
+			WHERE dTm between :lastCalcTime AND now()
+		";
+
+		return $this->fetch($sql, array(
 			':lastCalcTime' => $lastCalcTime,
 		));
 	}

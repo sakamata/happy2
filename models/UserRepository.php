@@ -25,6 +25,29 @@ class UserRepository extends DbRepository
 		));
 	}
 
+	public function getUserNo($usId)
+	{
+		$sql = "
+			SELECT usNo, usId
+			FROM tbus
+			WHERE usId = :usId
+		";
+
+		return $this->fetch($sql, array(
+			':usId' => $usId,
+		));
+	}
+
+	public function selfOneClick($usNo)
+	{
+		$sql = "
+			INSERT INTO tbgvn(usNo, seUs, seClk, dTm)
+			VALUES($usNo, $usNo, 1, now())
+		";
+
+		$stmt = $this->execute($sql, array(
+		));
+	}
 
 	public function hashPassword($usPs)
 	{

@@ -5,6 +5,10 @@
 <?php
 echo $this->render('admin/header_menu', array());
 ?>
+
+<?php echo "全ユーザーのPt合計:　<b>" .$allUsersPtsSum. " Pt</b><br>"; ?>
+<?php echo "ユーザー数(tbusCount):　<b>" .$tbCounts['tbus']. "</b>"; ?>
+
 <?php
 echo	'<form action="' .$base_url. '/admin/calc" method="post" accept-charset="utf-8">';
 ?>

@@ -1,6 +1,9 @@
 <?php
 class AdminController extends Controller
 {
+	// ログインが必要なActionを記述登録
+	protected $auth_actions = array('index', 'tableCommand', 'DummyInOneClick',  'RandomMaker', 'getAdminSetting', 'signout', 'calc');
+
 	public $tableNames = array('tbus', 'tbgvn', 'tbset', 'tbfollow', 'tbcalctime');
 	public $commands = array('Reset', 'DummyIn', 'DummysIn');
 
@@ -12,10 +15,12 @@ class AdminController extends Controller
 		}
 
 		$admin_repository = $this->db_manager->get('Admin');
-		$adsetting_repository = $this->getAdminSetting();
+		$adsetting_repository = $this->getAdminSettingAction();
 
 		$setting = $adsetting_repository->fetchSettingValue();
 		$limit = $setting['adminTablesViewLimit'];
+		$P = $admin_repository->allUsersPtsSum();
+		$allUsersPtsSum = $P['nowPt'];
 
 		// ***ToDo*** pager機能の分離
 		$tables = [];
@@ -58,6 +63,7 @@ class AdminController extends Controller
 
 		return $this->render(array(
 			'body' => '',
+			'allUsersPtsSum' => $allUsersPtsSum,
 			'tableNames' => $this->tableNames,
 			'commands' => $this->commands,
 			'tables' => $tables,
@@ -82,7 +88,7 @@ class AdminController extends Controller
 		$tableName = $this->request->getPost('tableName');
 		$command = $this->request->getPost('command');
 		$admin_repository = $this->db_manager->get('Admin');
-		$dummyNames = $this->RandomMaker();
+		$dummyNames = $this->RandomMakerAction();
 		// AdminRepossitoryのメソッド名を生成
 		$RepossitoryCommnd = $tableName.$command;
 		if (!method_exists('AdminRepository', $RepossitoryCommnd)) {
@@ -92,16 +98,16 @@ class AdminController extends Controller
 
 		// 仕様上ダミーアカウント作成直後に必ず自分に1クリックをさせる
 		if ($RepossitoryCommnd == 'tbusDummyIn') {
-			$this->DummyInOneClick($dummyNames['usId']);
+			$this->DummyInOneClickAction($dummyNames['usId']);
 		}
 		if ($RepossitoryCommnd == 'tbusDummysIn') {
-			$this->DummyInOneClick();
+			$this->DummyInOneClickAction();
 		}
 
 		return $this->redirect('/admin/index#anchor_'.$tableName);
 	}
 
-	public function DummyInOneClick($userId = null)
+	public function DummyInOneClickAction($userId = null)
 	{
 		if ($userId) {
 			$ID = [];
@@ -119,7 +125,7 @@ class AdminController extends Controller
 		}
 	}
 
-	public function RandomMaker() {
+	public function RandomMakerAction() {
 		$length = 8;
 
 		//Thanks!! http://qiita.com/TetsuTaka/items/bb020642e75458217b8a
@@ -148,7 +154,7 @@ class AdminController extends Controller
 		return $dummys;
 	}
 
-	public function getAdminSetting()
+	public function getAdminSettingAction()
 	{
 		$session = $this->session->get('admin');
 		if (!$session) {
@@ -157,7 +163,6 @@ class AdminController extends Controller
 		$adsetting_repository = $this->db_manager->get('AdminSetting');
 		return $adsetting_repository;
 	}
-
 
 	// ***ToDo***
 	public function pagerAction($table, $page, $offset)
@@ -177,7 +182,6 @@ class AdminController extends Controller
 		$pager = array($offset, $limit, $page);
 		return $pager;
 	}
-
 
 	public function signinAction()
 	{
@@ -251,17 +255,16 @@ class AdminController extends Controller
 		return $this->redirect('/admin/signin');
 	}
 
-
 	public function calcAction()
 	{
 		if (!$this->request->isPost()) {
 			$this->forward404();
 		}
 
-		// $session = $this->session->get('admin');
-		// if (!$session) {
-		// 	return $this->redirect('/');
-		// }
+		$session = $this->session->get('admin');
+		if (!$session) {
+			return $this->redirect('/');
+		}
 
 		$token = $this->request->getPost('_token');
 		if (!$this->checkCsrfToken('admin/post', $token)) {
@@ -304,10 +307,11 @@ class AdminController extends Controller
 
 		// 集計第二段階 nowPtのベーシックインカム的な補正計算
 
-		$adsetting_repository = $this->getAdminSetting();
+		$adsetting_repository = $this->getAdminSettingAction();
 		$setting = $adsetting_repository->fetchSettingValue();
 		$minPt = intval($setting['userMinPt']);
 		$defaultPt = intval($setting['userDefaultPt']);
+		$DefaultPt = intval($setting['userDefaultPt']);
 
 		$userPts = [];
 		$sendUsersNo = [];	//対象のusNo
@@ -350,6 +354,22 @@ class AdminController extends Controller
 			}
 		}
 
+		// 全ユーザーのPt合計誤差の補正値を求める
+		$tableCount = $admin_repository->tableCount('tbus');
+		$AlluserCount = intval($tableCount['tbus']);
+		$getPtsSum = $admin_repository->getCalcResultSumPts($lastCalcTime);
+		$PtsSum = floatval($getPtsSum['userPts']);
+		$AllPtsTolerance = round($AlluserCount * $DefaultPt - $PtsSum , 9);
+
+		echo '集計結果合計 getPtsSum<br>';
+		var_dump($PtsSum);
+		echo '最終的な補正値<br>';
+		var_dump($AllPtsTolerance);
+		echo '全ユーザー数<br>';
+		var_dump($AlluserCount);
+		echo '初期値<br>';
+		var_dump($DefaultPt);
+
 		// echo '$sendUsersNo Ptを送られたユーザーNo一覧<br>';
 		// var_dump($sendUsersNo);
 		// echo '<br>$userPts Ptを送られたユーザーの取得Pt<br>';
@@ -372,6 +392,20 @@ class AdminController extends Controller
 		// 補正PtのDB INSERT userNo=0 からのPtとして、マイナス値含めinsertする
 		$admin_repository->clkUsersRivisePts_TogetherInsert($sendUsersNo, $rivisePts);
 
+		// ***ToDo*** 1ユーザーにPt全合計誤差補正値を付与
+		if ($AllPtsTolerance !== 0) {
+			if ($AllPtsTolerance > 0) {
+				$min = $admin_repository->getMinPtNewUser();
+				$usNo = $min[0]['usNo'];
+			} else {
+				$max = $admin_repository->getMaxPtOldUser();
+				$usNo = $max[0]['usNo'];
+			}
+			var_dump($usNo);
+			$admin_repository->ToleranceInsert($usNo, $AllPtsTolerance);
+		}
+
+
 		// 集計結果を取得
 		$calcResultPts = $admin_repository->getCalcResultPts($lastCalcTime);
 
@@ -382,10 +416,11 @@ class AdminController extends Controller
 			$userNo = $calcResultPts[$u]['seUs'];
 			$nowPts = $calcResultPts[$u]['userPts'];
 			//集計結果をtbusに更新反映
-			//***ToDo*** 1回のinsertクエリ処理で可能か調査、改修
+			// ***ToDo*** 1回のinsertクエリ処理で可能か調査、改修
 			$admin_repository->calcResultPts_tbusInsert($nowPts, $userNo);
 			$u++;
 		}
+
 
 		// 集計時間テーブルに現在時刻を登録
 		$admin_repository->tbcalctimeInsertNow();
@@ -395,7 +430,7 @@ class AdminController extends Controller
 		// var_dump($usersNo);
 		$admin_repository->allUserSelfOneClick($usersNo);
 
-		$this->redirect('/admin/index');
+		// $this->redirect('/admin/index');
 
 		return $this->render(array(
 			'body' => '',
@@ -404,7 +439,6 @@ class AdminController extends Controller
 			'_token' => $this->generateCsrfToken('admin/post'),
 		));
 
-		// $this->index();
 	}
 
 }

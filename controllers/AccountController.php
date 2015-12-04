@@ -59,8 +59,12 @@ class AccountController extends Controller
 
 		if (count($errors) === 0) {
 			$this->db_manager->get('User')->insert($usId, $usPs, $usName);
-			$this->session->setAuthenticated(true);
+			// 自分に1クリックさせる
+			$n = $this->db_manager->get('User')->getUserNo($usId);
+			$usNo = $n['usNo'];
+			$this->db_manager->get('User')->selfOneClick($usNo);
 
+			$this->session->setAuthenticated(true);
 			$user = $this->db_manager->get('User')->fetchByUserName($usId);
 			$this->session->set('user', $user);
 
