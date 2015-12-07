@@ -9,14 +9,16 @@ echo $this->render('admin/header_menu', array());
 <?php echo "全ユーザーのPt合計:　<b>" .$allUsersPtsSum. " Pt</b><br>"; ?>
 <?php echo "ユーザー数(tbusCount):　<b>" .$tbCounts['tbus']. "</b>"; ?>
 
-<?php
-echo	'<form action="' .$base_url. '/admin/calc" method="post" accept-charset="utf-8">';
-?>
-	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 	<h3>
-		calcAction: <input type="submit" name="calc" value="集計する">
+		<form action="<?php echo $this->escape($base_url); ?>/admin/calc" method="post" accept-charset="utf-8">
+			<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
+				calcAction: <input type="submit" name="calc" value="集計する">
+		</form>
+		<form action="<?php echo $this->escape($base_url); ?>/admin/PtDefault" method="post" accept-charset="utf-8">
+			<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
+				PtDefaultAction: <input type="submit" name="PtDefault" value="Ptを初期値に">
+		</form>
 	</h3>
-</form>
 <hr>
 
 <?php
