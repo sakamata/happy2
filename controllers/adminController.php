@@ -2,7 +2,7 @@
 class AdminController extends Controller
 {
 	// ログインが必要なActionを記述登録
-	protected $auth_actions = array('index', 'tableCommand', 'DummyInOneClick',  'RandomMaker', 'getAdminSetting', 'signout', 'calc');
+	protected $auth_actions = array('index', 'tableCommand', 'DummyInOneClick',  'RandomMaker', 'getAdminSetting', 'signout', 'calc', 'PtDefault');
 
 	public $tableNames = array('tbus', 'tbgvn', 'tbset', 'tbfollow', 'tbcalctime');
 	public $commands = array('Reset', 'DummyIn', 'DummysIn');
@@ -253,6 +253,29 @@ class AdminController extends Controller
 		$this->session->setAuthenticated(false);
 
 		return $this->redirect('/admin/signin');
+	}
+
+	public function PtDefaultAction()
+	{
+		$session = $this->session->get('admin');
+		if (!$session) {
+			return $this->redirect('/');
+		}
+
+		$token = $this->request->getPost('_token');
+		if (!$this->checkCsrfToken('admin/post', $token)) {
+			return $this->redirect('/');
+		}
+
+		$adsetting_repository = $this->getAdminSettingAction();
+		$setting = $adsetting_repository->fetchSettingValue();
+		$DefaultPt = $setting['userDefaultPt'];
+
+		$admin_repository = $this->db_manager->get('Admin');
+		$admin_repository->PtDefault_tbus($DefaultPt);
+
+		$this->redirect('/admin/index');
+
 	}
 
 	public function calcAction()

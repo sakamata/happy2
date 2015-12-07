@@ -317,6 +317,20 @@ class AdminRepository extends DbRepository
 	}
 
 
+	// ***** PtDefaultAction *****
+
+	public function PtDefault_tbus($DefaultPt)
+	{
+		$sql = "
+			UPDATE tbus
+			SET nowPt = $DefaultPt
+		";
+
+		$stmt = $this->execute($sql, array(
+		));
+	}
+
+
 
 	// ***** calc *****
 
