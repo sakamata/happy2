@@ -2,7 +2,16 @@
 class AdminController extends Controller
 {
 	// ログインが必要なActionを記述登録
-	protected $auth_actions = array('index', 'tableCommand', 'DummyInOneClick',  'RandomMaker', 'getAdminSetting', 'signout', 'calc', 'PtDefault');
+	protected $auth_actions = array(
+		'index',
+		'tableCommand',
+		'DummyInOneClick',
+		'RandomMaker',
+		'getAdminSetting',
+		'signout',
+		'calc',
+		'PtDefault'
+	);
 
 	public $tableNames = array('tbus', 'tbgvn', 'tbset', 'tbfollow', 'tbcalctime');
 	public $commands = array('Reset', 'DummyIn', 'DummysIn');
@@ -21,6 +30,16 @@ class AdminController extends Controller
 		$limit = $setting['adminTablesViewLimit'];
 		$P = $admin_repository->allUsersPtsSum();
 		$allUsersPtsSum = $P['nowPt'];
+
+		$last = $admin_repository->lastCalcTime();
+		$lastCalcTime = $last['date'];
+
+		$time = $admin_repository->getCalcTimeBetweenAndLastTime();
+		$lastTime = $time[0]['calctime'];
+		isset($time[1]['calctime']) ? $lastButOne = $time[1]['calctime'] : $lastButOne = null;
+		$getPtsSum = $admin_repository->getSumPtsLastTime($lastTime, $lastButOne);
+
+		$allUsersPtsSum_tbset = floatval($getPtsSum['userPts']);
 
 		// ***ToDo*** pager機能の分離
 		$tables = [];
@@ -64,6 +83,7 @@ class AdminController extends Controller
 		return $this->render(array(
 			'body' => '',
 			'allUsersPtsSum' => $allUsersPtsSum,
+			'allUsersPtsSum_tbset' => $allUsersPtsSum_tbset,
 			'tableNames' => $this->tableNames,
 			'commands' => $this->commands,
 			'tables' => $tables,
@@ -145,11 +165,15 @@ class AdminController extends Controller
 			$usName .= mb_substr($jp_literals, mt_rand(0, mb_strlen($jp_literals, "UTF-8") - 1), 1, "utf-8");
 		}
 
+		$admin_repository = $this->db_manager->get('Admin');
+		$res = $admin_repository->tableCount('tbus');
+		$userCount = $res['tbus'];
 		$usId = $str;
 		$no1 = rand(1,10);
 		$no2 = rand(1,10);
+		$no3 = rand(1,$userCount);
 		$clk = rand(1,30);
-		$dummys = array('no1' => $no1, 'no2' => $no2, 'clk' => $clk, 'usId' =>$usId, 'usName' =>$usName);
+		$dummys = array('no1' => $no1, 'no2' => $no2, 'no3' => $no3, 'userCount' => $userCount, 'clk' => $clk, 'usId' =>$usId, 'usName' =>$usName);
 
 		return $dummys;
 	}
@@ -270,12 +294,9 @@ class AdminController extends Controller
 		$adsetting_repository = $this->getAdminSettingAction();
 		$setting = $adsetting_repository->fetchSettingValue();
 		$DefaultPt = $setting['userDefaultPt'];
-
 		$admin_repository = $this->db_manager->get('Admin');
 		$admin_repository->PtDefault_tbus($DefaultPt);
-
 		$this->redirect('/admin/index');
-
 	}
 
 	public function calcAction()
@@ -310,6 +331,7 @@ class AdminController extends Controller
 			// ユーザーiがレコード毎にクリックした数を算出
 			$sendClksSumToUser = $admin_repository->sendClksSumToUser($lastCalcTime, $userNo);
 
+			$admin_repository->startTransaction();
 			$i = 0;
 			foreach ($sendClksSumToUser as $noUse) {
 				$usNo = $sendClksSumToUser[$i]['usNo'];
@@ -324,6 +346,7 @@ class AdminController extends Controller
 				$admin_repository->clkUsersPts_tbsetInsert($usNo, $seUs, $getPt, $dTm);
 				$i++;
 			}
+			$admin_repository->TransactionCommit();
 			$N++;
 		}
 
@@ -335,47 +358,6 @@ class AdminController extends Controller
 		$minPt = intval($setting['userMinPt']);
 		$defaultPt = intval($setting['userDefaultPt']);
 		$DefaultPt = intval($setting['userDefaultPt']);
-
-		$userPts = [];
-		$sendUsersNo = [];	//対象のusNo
-		$differencePts = [];	//差分
-		$shortPts = [];	//不足分
-		$surplusPts = [];	//余剰分
-
-		$sendUsersGetPtsSum = $admin_repository->sendUsersGetPtsSum($lastCalcTime);
-
-		// ユーザー毎の最低値Ptからの差を求める
-		$u = 0;
-		foreach ($sendUsersGetPtsSum as $user[$u]) {
-			$userPts[$u] = floatval($user[$u]['getPt']);
-			$sendUsersNo[$u] = $user[$u]['seUs'];
-			//最低値からの差分を算出
-			$differencePts[$u] = $userPts[$u] - $minPt;
-			if ($userPts[$u] < $minPt) {
-				// Pt不足合計を求める
-				$shortPts[$u] = $minPt - $userPts[$u];
-			} else {
-				// Pt余剰分 最低値以上のPtを求める
-				$surplusPts[$u] = $userPts[$u];
-			}
-			$u++;
-		}
-
-		// ユーザー総計Ptの 全余剰&全不足 の合計を求める
-		$shortPtsSum = array_sum($shortPts);
-		$surplusPtsSum = array_sum($surplusPts);
-
-		// 各ユーザーの補正Ptを求る
-		$rivisePts = [];
-		for ($i=0; $i < $u ; $i++) {
-			if ($differencePts[$i] > 0) {
-				// (過) 負担する値  -(保持Pt / 全余剰Pt合計 * 全不足Pt合計)
-				$rivisePts[$i] = -($userPts[$i] / $surplusPtsSum * $shortPtsSum);
-			} else {
-				// (不足) 最低値との差分
-				$rivisePts[$i] = $minPt - $userPts[$i];
-			}
-		}
 
 		// 全ユーザーのPt合計誤差の補正値を求める
 		$tableCount = $admin_repository->tableCount('tbus');
@@ -392,6 +374,53 @@ class AdminController extends Controller
 		var_dump($AlluserCount);
 		echo '初期値<br>';
 		var_dump($DefaultPt);
+
+		$userPts = [];
+		$sendUsersNo = [];	//対象のusNo
+		$differencePts = [];	//差分
+		$shortPts = [];	//不足分
+		$surplusPts = [];	//余剰分
+
+		// 実質全ユーザー対象(登録時self1クリックしてる)
+		$sendUsersGetPtsSum = $admin_repository->sendUsersGetPtsSum($lastCalcTime);
+
+		// ユーザー毎の最低値Ptからの差を求める
+		$u = 0;
+		$plusUser = 0;
+		foreach ($sendUsersGetPtsSum as $user[$u]) {
+			$userPts[$u] = floatval($user[$u]['getPt']);
+			$sendUsersNo[$u] = $user[$u]['seUs'];
+			//最低値からの差分を算出
+			$differencePts[$u] = $userPts[$u] - $minPt;
+			if ($userPts[$u] < $minPt) {
+				// Pt不足合計を求める
+				$shortPts[$u] = $minPt - $userPts[$u];
+			} else {
+				// Pt余剰分 最低値以上のPtを求める
+				$surplusPts[$u] = $userPts[$u];
+				$plusUser++;
+			}
+			$u++;
+		}
+
+
+		// ユーザー総計Ptの 全余剰&全不足 の合計を求める
+		$shortPtsSum = array_sum($shortPts);
+		// 全余剰から総Ptの誤差の修正値をマイナス
+		$surplusPtsSum = array_sum($surplusPts) - $AllPtsTolerance;
+
+		// 各ユーザーの補正Ptを求る
+		$rivisePts = [];
+		for ($i=0; $i < $u ; $i++) {
+			if ($differencePts[$i] > 0) {
+				// (過) 負担する値  -(保持Pt / 全余剰Pt合計 * 全不足Pt合計)
+				// 保持Pt誤差修正   保持Pt+(誤差/余剰人数)
+				$rivisePts[$i] = -(($userPts[$i] + $AllPtsTolerance / $plusUser) / $surplusPtsSum * $shortPtsSum);
+			} else {
+				// (不足) 最低値との差分
+				$rivisePts[$i] = $minPt - $userPts[$i];
+			}
+		}
 
 		// echo '$sendUsersNo Ptを送られたユーザーNo一覧<br>';
 		// var_dump($sendUsersNo);
@@ -413,19 +442,21 @@ class AdminController extends Controller
 		// var_dump($rivisePts);
 
 		// 補正PtのDB INSERT userNo=0 からのPtとして、マイナス値含めinsertする
+		$admin_repository->startTransaction();
 		$admin_repository->clkUsersRivisePts_TogetherInsert($sendUsersNo, $rivisePts);
-
-		// ***ToDo*** 1ユーザーにPt全合計誤差補正値を付与
+		$admin_repository->TransactionCommit();
+		// 1ユーザーに補正値(Pt全ユーザー合計誤差)を付与
 		if ($AllPtsTolerance !== 0) {
 			if ($AllPtsTolerance > 0) {
-				$min = $admin_repository->getMinPtNewUser();
-				$usNo = $min[0]['usNo'];
+				$order = 'ASC';
 			} else {
-				$max = $admin_repository->getMaxPtOldUser();
-				$usNo = $max[0]['usNo'];
+				$order = 'DESC';
 			}
-			var_dump($usNo);
-			$admin_repository->ToleranceInsert($usNo, $AllPtsTolerance);
+				$user = $admin_repository->getAllToleranceUser($lastCalcTime, $order);
+				$usNo = $user[0]['seUs'];
+				echo '補正値付与ユーザーNo';
+				var_dump($usNo);
+				$admin_repository->ToleranceInsert($usNo, $AllPtsTolerance);
 		}
 
 
@@ -434,6 +465,7 @@ class AdminController extends Controller
 
 		$userNo = [];
 		$nowPts = [];
+		$admin_repository->startTransaction();
 		$u = 0;
 		foreach ($calcResultPts as $noUse ) {
 			$userNo = $calcResultPts[$u]['seUs'];
@@ -443,7 +475,7 @@ class AdminController extends Controller
 			$admin_repository->calcResultPts_tbusInsert($nowPts, $userNo);
 			$u++;
 		}
-
+		$admin_repository->TransactionCommit();
 
 		// 集計時間テーブルに現在時刻を登録
 		$admin_repository->tbcalctimeInsertNow();
@@ -451,7 +483,9 @@ class AdminController extends Controller
 		// 全ユーザーに自分に1クリックさせる
 		$usersNo = $admin_repository->getAllUserNo();
 		// var_dump($usersNo);
+		$admin_repository->startTransaction();
 		$admin_repository->allUserSelfOneClick($usersNo);
+		$admin_repository->TransactionCommit();
 
 		// $this->redirect('/admin/index');
 

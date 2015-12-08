@@ -61,6 +61,34 @@ class AdminRepository extends DbRepository
 		));
 	}
 
+	public function getCalcTimeBetweenAndLastTime()
+	{
+		$sql = "
+			SELECT calctime
+			FROM tbcalctime
+			ORDER BY calcNo DESC
+			LIMIT 2
+		";
+
+		return $this->fetchall($sql, array(
+		));
+	}
+
+
+	public function getSumPtsLastTime($lastTime, $lastButOne)
+	{
+		$sql = "
+			SELECT sum(getPt) as userPts
+			FROM tbset
+			WHERE dTm between :lastButOne AND :lastTime
+		";
+
+		return $this->fetch($sql, array(
+			':lastTime' => $lastTime,
+			':lastButOne' => $lastButOne,
+		));
+	}
+
 	public function tableCount($tableName)
 	{
 		$sql = "
@@ -87,7 +115,9 @@ class AdminRepository extends DbRepository
 				`host` VARCHAR(100) NULL,
 				`regDate` DATETIME NULL,
 				PRIMARY KEY (`usNo`),
-				UNIQUE INDEX `id_UNIQUE` (`usNo` ASC))
+				UNIQUE INDEX `id_UNIQUE` (`usNo` ASC),
+				UNIQUE INDEX `usId_UNIQUE` (`usId` ASC)
+			)
 			ENGINE = InnoDB
 		";
 
@@ -177,11 +207,28 @@ class AdminRepository extends DbRepository
 
 	public function tbgvnDummysIn($dummys)
 	{
-		//ToDo CSV 読み込み
+		$no3 = $dummys['no3'];
+		$userCount = $dummys['userCount'];
 		$sql = "
 			INSERT INTO
 				tbgvn(usNo,seUs,seClk,dTm)
-				VALUE(1,2,5,now());
+				VALUES
+		";
+		$a = 0;
+		while ($a < $userCount - 1) {
+			$no3 = rand(1,$userCount);
+			$no4 = rand(1,$userCount);
+			$clk = rand(1,99);
+			$sql .= "
+				($no3, $no4, $clk, now()),
+			";
+			$a++;
+		}
+		$no3 = rand(1,$userCount);
+		$no4 = rand(1,$userCount);
+		$clk = rand(1,99);
+		$sql .= "
+			($no3, $no4, $clk, now());
 		";
 
 		$stmt = $this->execute($sql, array(
@@ -386,12 +433,24 @@ class AdminRepository extends DbRepository
 		));
 	}
 
+	public function startTransaction()
+	{
+		$sql = "START TRANSACTION;";
+		$stmt = $this->execute($sql, array());
+	}
+
+	public function TransactionCommit()
+	{
+		$sql = "COMMIT;";
+		$stmt = $this->execute($sql, array());
+	}
+
 	public function clkUsersPts_tbsetInsert($usNo, $seUs, $getPt, $dTm)
 	{
 		$sql = "
 			INSERT INTO
 				tbset(usNo, seUs, getPt, dTm)
-				VALUE(:usNo, :seUs, :getPt, :dTm)
+				VALUE(:usNo, :seUs, :getPt, :dTm);
 		";
 
 		$stmt = $this->execute($sql, array(
@@ -434,7 +493,7 @@ class AdminRepository extends DbRepository
 		}
 
 		$sql .= "
-			('0', $sendUsersNo[$a], $rivisePts[$a], now())
+			('0', $sendUsersNo[$a], $rivisePts[$a], now());
 		";
 
 		$stmt = $this->execute($sql, array(
@@ -472,6 +531,22 @@ class AdminRepository extends DbRepository
 		";
 
 		return $this->fetchall($sql, array(
+		));
+	}
+
+	public function getAllToleranceUser($lastCalcTime, $order)
+	{
+		$sql = "
+			SELECT seUs, sum(getPt) AS sum
+			FROM tbset
+			WHERE dTm between :lastCalcTime AND now()
+			GROUP BY seUs
+			ORDER BY sum $order
+			limit 1
+		";
+
+		return $this->fetchall($sql, array(
+			':lastCalcTime' => $lastCalcTime,
 		));
 	}
 

@@ -6,7 +6,8 @@
 echo $this->render('admin/header_menu', array());
 ?>
 
-<?php echo "全ユーザーのPt合計:　<b>" .$allUsersPtsSum. " Pt</b><br>"; ?>
+<?php echo "全ユーザーのPt合計(tbus):　<b>" .$allUsersPtsSum. " Pt</b><br>"; ?>
+<?php echo "Pt合計(tbset):　<b>" .$allUsersPtsSum_tbset. " Pt</b><br>"; ?>
 <?php echo "ユーザー数(tbusCount):　<b>" .$tbCounts['tbus']. "</b>"; ?>
 
 	<h3>
