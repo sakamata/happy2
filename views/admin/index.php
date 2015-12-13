@@ -22,6 +22,12 @@ echo $this->render('admin/header_menu', array());
 	</h3>
 <hr>
 
+
+<form action="<?php echo $this->escape($base_url); ?>/admin/tbgvnPosts" method="post" accept-charset="utf-8">
+	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
+		tbgvnPosts: <input type="submit" name="PtDefault" value="値を指定してtbgvnにPOST">
+</form>
+
 <?php
 $tbNo = 0;
 foreach ($tables as $table){
