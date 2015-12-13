@@ -19,14 +19,9 @@ echo $this->render('admin/header_menu', array());
 			<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 				PtDefaultAction: <input type="submit" name="PtDefault" value="Ptを初期値に">
 		</form>
-	</h3>
+
+</h3>
 <hr>
-
-
-<form action="<?php echo $this->escape($base_url); ?>/admin/tbgvnPosts" method="post" accept-charset="utf-8">
-	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
-		tbgvnPosts: <input type="submit" name="PtDefault" value="値を指定してtbgvnにPOST">
-</form>
 
 <?php
 $tbNo = 0;
@@ -48,13 +43,17 @@ foreach ($tables as $table){
 	}
 ?>
 		</form>
+<?php
+		if ($tableName == 'tbgvn') {
+			echo $this->render('admin/tbgvnPosts', array('_token' => $_token));
+		}
+?>
 	</h3>
 
 	<div>
 		<table class='table table-striped table-bordered table-hover table-condensed'>
 			<thead>
 				<tr>
-
 <?php
 	$field_no = 0;
 	foreach ($table[0] as $noUseValue){

@@ -299,6 +299,29 @@ class AdminController extends Controller
 		$this->redirect('/admin/index');
 	}
 
+	public function tbgvnPostsAction()
+	{
+		if (!$this->request->isPost()) {
+			$this->forward404();
+		}
+		$session = $this->session->get('admin');
+		if (!$session) {
+			return $this->redirect('/');
+		}
+
+		$token = $this->request->getPost('_token');
+		if (!$this->checkCsrfToken('admin/post', $token)) {
+			return $this->redirect('/');
+		}
+
+		$dummys['no1'] = $this->request->getPost('no1');
+		$dummys['no2'] = $this->request->getPost('no2');
+		$dummys['clk'] = $this->request->getPost('clk');
+		$admin_repository = $this->db_manager->get('Admin');
+		$admin_repository->tbgvnDummyIn($dummys);
+		$this->redirect('/admin/index#anchor_tbgvn');
+	}
+
 	public function calcAction()
 	{
 		if (!$this->request->isPost()) {
