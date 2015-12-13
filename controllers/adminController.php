@@ -418,6 +418,9 @@ class AdminController extends Controller
 			if ($userPts[$u] < $minPt) {
 				// Pt不足合計を求める
 				$shortPts[$u] = $minPt - $userPts[$u];
+			} elseif ($userPts[$u] === floatval($minPt)){
+				// 最小値ちょうどの人は値を0に
+				$surplusPts[$u] = 0;
 			} else {
 				// Pt余剰分 最低値以上のPtを求める
 				$surplusPts[$u] = $userPts[$u];
@@ -425,7 +428,6 @@ class AdminController extends Controller
 			}
 			$u++;
 		}
-
 
 		// ユーザー総計Ptの 全余剰&全不足 の合計を求める
 		$shortPtsSum = array_sum($shortPts);
@@ -482,7 +484,6 @@ class AdminController extends Controller
 				$admin_repository->ToleranceInsert($usNo, $AllPtsTolerance);
 		}
 
-
 		// 集計結果を取得
 		$calcResultPts = $admin_repository->getCalcResultPts($lastCalcTime);
 
@@ -505,7 +506,6 @@ class AdminController extends Controller
 
 		// 全ユーザーに自分に1クリックさせる
 		$usersNo = $admin_repository->getAllUserNo();
-		// var_dump($usersNo);
 		$admin_repository->startTransaction();
 		$admin_repository->allUserSelfOneClick($usersNo);
 		$admin_repository->TransactionCommit();
