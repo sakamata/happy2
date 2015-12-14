@@ -381,6 +381,18 @@ class AdminRepository extends DbRepository
 
 	// ***** calc *****
 
+	public function tbcalctimeInsertPlus1sec()
+	{
+		$sql = "
+			INSERT INTO
+				tbcalctime(calcTime)
+				VALUE(now() + interval 1 second);
+		";
+
+		$stmt = $this->execute($sql, array(
+		));
+	}
+
 	public function lastCalcTime()
 	{
 		$sql = "
@@ -392,7 +404,7 @@ class AdminRepository extends DbRepository
 		));
 	}
 
-	public function clkUsersClkSumAndPts($lastCalcTime)
+	public function clkUsersClkSumAndPts($lastCalcTime, $now)
 	{
 		$sql = "
 			SELECT gvn.usNo, gvn.clk_sum, user.nowPt
@@ -401,7 +413,7 @@ class AdminRepository extends DbRepository
 			JOIN(
 				SELECT usNo, sum(seClk) AS clk_sum
 				FROM tbgvn
-				WHERE tbgvn.dTm BETWEEN :lastCalcTime AND now()
+				WHERE tbgvn.dTm BETWEEN :lastCalcTime AND :now
 				GROUp BY usNo
 			)
 			AS gvn
@@ -410,10 +422,11 @@ class AdminRepository extends DbRepository
 
 		return $stmt = $this->fetchall($sql, array(
 			':lastCalcTime' => $lastCalcTime,
+			':now' => $now,
 		));
 	}
 
-	public function sendClksSumToUser($lastCalcTime, $usNo)
+	public function sendClksSumToUser($lastCalcTime, $now, $usNo)
 	{
 		$sql = "
 			SELECT usNo, seUs, seClk, dTm
@@ -423,12 +436,13 @@ class AdminRepository extends DbRepository
 				AND
 					dTm BETWEEN :lastCalcTime
 				AND
-					now()
+					:now
 					ORDER BY gvnNo
 		";
 
 		return $this->fetchall($sql, array(
 			':lastCalcTime' => $lastCalcTime,
+			':now' => $now,
 			':usNo' => $usNo,
 		));
 	}
@@ -461,22 +475,23 @@ class AdminRepository extends DbRepository
 		));
 	}
 
-	public function sendUsersGetPtsSum($lastCalcTime)
+	public function sendUsersGetPtsSum($lastCalcTime, $now)
 	{
 		$sql = "
 			SELECT seUs, sum(getPt) AS getPt
 			FROM tbset
-			WHERE dTm between :lastCalcTime and now()
+			WHERE dTm between :lastCalcTime and :now
 			GROUP BY seUs
 			ORDER BY seUs
 		";
 
 		return $this->fetchall($sql, array(
 			':lastCalcTime' => $lastCalcTime,
+			':now' => $now,
 		));
 	}
 
-	public function clkUsersRivisePts_TogetherInsert($sendUsersNo, $rivisePts)
+	public function clkUsersRivisePts_TogetherInsert($sendUsersNo, $rivisePts, $now)
 	{
 		$sql = "
 			INSERT INTO
@@ -487,16 +502,17 @@ class AdminRepository extends DbRepository
 		$a = 0;
 		while ($a < count($sendUsersNo) - 1) {
 			$sql .= "
-				('0', $sendUsersNo[$a], $rivisePts[$a], now()),
+				('0', $sendUsersNo[$a], $rivisePts[$a], :now),
 			";
 			$a++;
 		}
 
 		$sql .= "
-			('0', $sendUsersNo[$a], $rivisePts[$a], now());
+			('0', $sendUsersNo[$a], $rivisePts[$a], :now);
 		";
 
 		$stmt = $this->execute($sql, array(
+			':now' => $now,
 		));
 	}
 
@@ -534,12 +550,12 @@ class AdminRepository extends DbRepository
 		));
 	}
 
-	public function getAllToleranceUser($lastCalcTime, $order)
+	public function getAllToleranceUser($lastCalcTime, $now, $order)
 	{
 		$sql = "
 			SELECT seUs, sum(getPt) AS sum
 			FROM tbset
-			WHERE dTm between :lastCalcTime AND now()
+			WHERE dTm between :lastCalcTime AND :now
 			GROUP BY seUs
 			ORDER BY sum $order
 			limit 1
@@ -547,45 +563,49 @@ class AdminRepository extends DbRepository
 
 		return $this->fetchall($sql, array(
 			':lastCalcTime' => $lastCalcTime,
+			':now' => $now,
 		));
 	}
 
-	public function ToleranceInsert($sendUsersNo, $rivisePts)
+	public function ToleranceInsert($sendUsersNo, $rivisePts, $now)
 	{
 		$sql = "
 			INSERT INTO
 				tbset(usNo, seUs, getPt, dTm)
-				VALUES('0', $sendUsersNo, $rivisePts, now())
+				VALUES('0', $sendUsersNo, $rivisePts, :now)
 		";
 
 		$stmt = $this->execute($sql, array(
+			':now' => $now,
 		));
 	}
 
-	public function getCalcResultPts($lastCalcTime)
+	public function getCalcResultPts($lastCalcTime, $now)
 	{
 		$sql = "
 			SELECT seUs, sum(getPt) as userPts
 			FROM tbset
-			WHERE dTm between :lastCalcTime AND now()
+			WHERE dTm between :lastCalcTime AND :now
 			GROUP BY seUs
 		";
 
 		return $this->fetchall($sql, array(
 			':lastCalcTime' => $lastCalcTime,
+			':now' => $now,
 		));
 	}
 
-	public function getCalcResultSumPts($lastCalcTime)
+	public function getCalcResultSumPts($lastCalcTime, $now)
 	{
 		$sql = "
 			SELECT sum(getPt) as userPts
 			FROM tbset
-			WHERE dTm between :lastCalcTime AND now()
+			WHERE dTm between :lastCalcTime AND :now
 		";
 
 		return $this->fetch($sql, array(
 			':lastCalcTime' => $lastCalcTime,
+			':now' => $now,
 		));
 	}
 
@@ -602,18 +622,6 @@ class AdminRepository extends DbRepository
 		));
 	}
 
-	public function tbcalctimeInsertNow()
-	{
-		$sql = "
-			INSERT INTO
-				tbcalctime(calcTime)
-				VALUE(now() + interval 1 second);
-		";
-
-		$stmt = $this->execute($sql, array(
-		));
-	}
-
 	public function getAllUserNo()
 	{
 		$sql = "
@@ -624,8 +632,7 @@ class AdminRepository extends DbRepository
 		));
 	}
 
-	// 前回集計期間と重複しない様 now()より最小で未来の値を挿入
-		public function allUserSelfOneClick($usersNo)
+		public function allUserSelfOneClick($usersNo, $startTime)
 	{
 		$sql = "
 			INSERT INTO tbgvn(usNo, seUs, seClk, dTm)
@@ -636,13 +643,14 @@ class AdminRepository extends DbRepository
 		$a = 0;
 		while ($a < count($usersNo) - 1) {
 			$usNo = intval($usersNo[$a]['usNo']);
-			$sql .=  "($usNo, $usNo, 1, now() + interval 1 second)" . ',';
+			$sql .=  "($usNo, $usNo, 1, :startTime)" . ',';
 			$a++;
 		}
 		$usNo = intval($usersNo[$a]['usNo']);
-		$sql .= "($usNo, $usNo, 1, now() + interval 1 second)";
+		$sql .= "($usNo, $usNo, 1, :startTime)";
 
 		$stmt = $this->execute($sql, array(
+			':startTime' => $startTime,
 		));
 	}
 

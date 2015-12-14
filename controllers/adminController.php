@@ -341,19 +341,22 @@ class AdminController extends Controller
 		$admin_repository = $this->db_manager->get('Admin');
 		$last = $admin_repository->lastCalcTime();
 		$lastCalcTime = $last['date'];
+		$date = new DateTime();
+		$now = $date->format('Y-m-d H:i:s');
+		// 集計期間の重複防止の為+1秒で登録
+		$admin_repository->tbcalctimeInsertPlus1sec();
+
+		// *** 集計1段階 クリックしたユーザーのポイントを分配***
 
 		// clkしたユーザーの合計クリック数とnowPt
-		$clkUsersStatus = $admin_repository->clkUsersClkSumAndPts($lastCalcTime);
-		// 集計1段階 クリックしたユーザーのポイントを分配
-
+		$clkUsersStatus = $admin_repository->clkUsersClkSumAndPts($lastCalcTime, $now);
 		$N = 0;
 		// ClkをしたuserNのPtを全クリック数に従い分配,tbsetにinsert
 		foreach ($clkUsersStatus as $noUse) {
 			$userNo = $clkUsersStatus[$N]['usNo'];
 			$nowPts = $clkUsersStatus[$N]['nowPt'];
 			// ユーザーiがレコード毎にクリックした数を算出
-			$sendClksSumToUser = $admin_repository->sendClksSumToUser($lastCalcTime, $userNo);
-
+			$sendClksSumToUser = $admin_repository->sendClksSumToUser($lastCalcTime, $now, $userNo);
 			$admin_repository->startTransaction();
 			$i = 0;
 			foreach ($sendClksSumToUser as $noUse) {
@@ -361,11 +364,9 @@ class AdminController extends Controller
 				$seUs = $sendClksSumToUser[$i]['seUs'];
 				$seClk = $sendClksSumToUser[$i]['seClk'];
 				$dTm = $sendClksSumToUser[$i]['dTm'];
-
 				// clkしたユーザーの1クリックあたりのPt計算
 				// ユーザーNへのクリック数 / 全ユーザーへのクリック数 ＊ 現在のポイント
 				$getPt = $seClk / $clkUsersStatus[$N]['clk_sum'] * $clkUsersStatus[$N]['nowPt'];
-
 				$admin_repository->clkUsersPts_tbsetInsert($usNo, $seUs, $getPt, $dTm);
 				$i++;
 			}
@@ -373,8 +374,7 @@ class AdminController extends Controller
 			$N++;
 		}
 
-
-		// 集計第二段階 nowPtのベーシックインカム的な補正計算
+		// ***集計第二段階 nowPtのベーシックインカム的な補正計算***
 
 		$adsetting_repository = $this->getAdminSettingAction();
 		$setting = $adsetting_repository->fetchSettingValue();
@@ -385,7 +385,7 @@ class AdminController extends Controller
 		// 全ユーザーのPt合計誤差の補正値を求める
 		$tableCount = $admin_repository->tableCount('tbus');
 		$AlluserCount = intval($tableCount['tbus']);
-		$getPtsSum = $admin_repository->getCalcResultSumPts($lastCalcTime);
+		$getPtsSum = $admin_repository->getCalcResultSumPts($lastCalcTime, $now);
 		$PtsSum = floatval($getPtsSum['userPts']);
 		$AllPtsTolerance = round($AlluserCount * $DefaultPt - $PtsSum , 9);
 
@@ -405,7 +405,7 @@ class AdminController extends Controller
 		$surplusPts = [];	//余剰分
 
 		// 実質全ユーザー対象(登録時self1クリックしてる)
-		$sendUsersGetPtsSum = $admin_repository->sendUsersGetPtsSum($lastCalcTime);
+		$sendUsersGetPtsSum = $admin_repository->sendUsersGetPtsSum($lastCalcTime, $now);
 
 		// ユーザー毎の最低値Ptからの差を求める
 		$u = 0;
@@ -447,45 +447,46 @@ class AdminController extends Controller
 			}
 		}
 
-		// echo '$sendUsersNo Ptを送られたユーザーNo一覧<br>';
-		// var_dump($sendUsersNo);
-		// echo '<br>$userPts Ptを送られたユーザーの取得Pt<br>';
-		// var_dump($userPts);
-		// echo '<br>$differencePts 差分Pt<br>';
-		// var_dump($differencePts);
-		// echo '<br>$shortPts 不足Pt<br>';
-		// var_dump($shortPts);
-		// echo '<br>$surplusPts 余剰分Pt<br>';
-		// var_dump($surplusPts);
-		// echo '<br>$shortPtsSum 不足Pt合計<br>';
-		// var_dump($shortPtsSum);
-		// echo '<br>$surplusPtsSum 余剰Pt合計<br>';
-		// var_dump($surplusPtsSum);
-		// echo '<br>$sendUsersNo Ptを送られたユーザーNo一覧<br>';
-		// var_dump($sendUsersNo);
-		// echo '<br>$rivisePts Ptを送られたユーザーの補正Pt算出<br>';
-		// var_dump($rivisePts);
+		echo '$sendUsersNo Ptを送られたユーザーNo一覧<br>';
+		var_dump($sendUsersNo);
+		echo '<br>$userPts Ptを送られたユーザーの取得Pt<br>';
+		var_dump($userPts);
+		echo '<br>$differencePts 差分Pt<br>';
+		var_dump($differencePts);
+		echo '<br>$shortPts 不足Pt<br>';
+		var_dump($shortPts);
+		echo '<br>$surplusPts 余剰分Pt<br>';
+		var_dump($surplusPts);
+		echo '<br>$shortPtsSum 不足Pt合計<br>';
+		var_dump($shortPtsSum);
+		echo '<br>$surplusPtsSum 余剰Pt合計<br>';
+		var_dump($surplusPtsSum);
+		echo '<br>$sendUsersNo Ptを送られたユーザーNo一覧<br>';
+		var_dump($sendUsersNo);
+		echo '<br>$rivisePts Ptを送られたユーザーの補正Pt算出<br>';
+		var_dump($rivisePts);
 
 		// 補正PtのDB INSERT userNo=0 からのPtとして、マイナス値含めinsertする
 		$admin_repository->startTransaction();
-		$admin_repository->clkUsersRivisePts_TogetherInsert($sendUsersNo, $rivisePts);
+		$admin_repository->clkUsersRivisePts_TogetherInsert($sendUsersNo, $rivisePts, $now);
 		$admin_repository->TransactionCommit();
 		// 1ユーザーに補正値(Pt全ユーザー合計誤差)を付与
+		// ***ToDo*** 誤差が大きい場合は他のユーザーにも付与,Ptの補正負荷分散を
 		if ($AllPtsTolerance !== 0) {
 			if ($AllPtsTolerance > 0) {
 				$order = 'ASC';
 			} else {
 				$order = 'DESC';
 			}
-				$user = $admin_repository->getAllToleranceUser($lastCalcTime, $order);
+				$user = $admin_repository->getAllToleranceUser($lastCalcTime, $now, $order);
 				$usNo = $user[0]['seUs'];
-				echo '補正値付与ユーザーNo';
-				var_dump($usNo);
-				$admin_repository->ToleranceInsert($usNo, $AllPtsTolerance);
+				// echo '補正値付与ユーザーNo';
+				// var_dump($usNo);
+				$admin_repository->ToleranceInsert($usNo, $AllPtsTolerance, $now);
 		}
 
 		// 集計結果を取得
-		$calcResultPts = $admin_repository->getCalcResultPts($lastCalcTime);
+		$calcResultPts = $admin_repository->getCalcResultPts($lastCalcTime, $now);
 
 		$userNo = [];
 		$nowPts = [];
@@ -494,20 +495,19 @@ class AdminController extends Controller
 		foreach ($calcResultPts as $noUse ) {
 			$userNo = $calcResultPts[$u]['seUs'];
 			$nowPts = $calcResultPts[$u]['userPts'];
-			//集計結果をtbusに更新反映
+			// 集計結果をtbusに更新反映
 			// ***ToDo*** 1回のinsertクエリ処理で可能か調査、改修
 			$admin_repository->calcResultPts_tbusInsert($nowPts, $userNo);
 			$u++;
 		}
 		$admin_repository->TransactionCommit();
 
-		// 集計時間テーブルに現在時刻を登録
-		$admin_repository->tbcalctimeInsertNow();
-
 		// 全ユーザーに自分に1クリックさせる
+		$startTime = $admin_repository->lastCalcTime();
+		$startTime = $startTime['date'];
 		$usersNo = $admin_repository->getAllUserNo();
 		$admin_repository->startTransaction();
-		$admin_repository->allUserSelfOneClick($usersNo);
+		$admin_repository->allUserSelfOneClick($usersNo, $startTime);
 		$admin_repository->TransactionCommit();
 
 		// $this->redirect('/admin/index');
@@ -518,7 +518,5 @@ class AdminController extends Controller
 			'clkUsersStatus' => $clkUsersStatus,
 			'_token' => $this->generateCsrfToken('admin/post'),
 		));
-
 	}
-
 }
