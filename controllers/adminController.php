@@ -375,6 +375,8 @@ class AdminController extends Controller
 		}
 
 		// ***集計第二段階 nowPtのベーシックインカム的な補正計算***
+		// ***ToDo 最低値以上付近のユーザーが課税で最低値を下回るロジックを修正***
+		// ***ToDo 集計第三段階で対処予定 ***
 
 		$adsetting_repository = $this->getAdminSettingAction();
 		$setting = $adsetting_repository->fetchSettingValue();
@@ -407,28 +409,29 @@ class AdminController extends Controller
 		// 実質全ユーザー対象(登録時self1クリックしてる)
 		$sendUsersGetPtsSum = $admin_repository->sendUsersGetPtsSum($lastCalcTime, $now);
 
-		// ユーザー毎の最低値Ptからの差を求める
+		// 最低値ちょうど以外のユーザーの最低値からの差と人数を求める
 		$u = 0;
 		$plusUser = 0;
 		foreach ($sendUsersGetPtsSum as $user[$u]) {
 			$userPts[$u] = floatval($user[$u]['getPt']);
-			$sendUsersNo[$u] = $user[$u]['seUs'];
-			//最低値からの差分を算出
-			$differencePts[$u] = $userPts[$u] - $minPt;
-			if ($userPts[$u] < $minPt) {
-				$shortPts[$u] = $minPt - $userPts[$u];
-			} elseif ($userPts[$u] === floatval($minPt)) {
-				continue;
-			} else {
-				$surplusPts[$u] = $userPts[$u];
-				$plusUser++;
+
+			if ($userPts[$u] !== floatval($minPt)) {
+				$sendUsersNo[$u] = $user[$u]['seUs'];
+				$differencePts[$u] = $userPts[$u] - $minPt;
+
+				if ($userPts[$u] < $minPt) {
+					$shortPts[$u] = $minPt - $userPts[$u];
+				} else {
+					$surplusPts[$u] = $userPts[$u];
+					$plusUser++;
+				}
+				$u++;
 			}
-			$u++;
 		}
 
 		// ユーザー総計Ptの 全余剰&全不足
 		$shortPtsSum = array_sum($shortPts);
-		// 誤差の修正値をマイナス
+		// 全体誤差の修正値をマイナス
 		$surplusPtsSum = array_sum($surplusPts) - $AllPtsTolerance;
 
 		// 各ユーザーの補正Ptを求る
@@ -436,7 +439,7 @@ class AdminController extends Controller
 		for ($i=0; $i < $u ; $i++) {
 			if ($differencePts[$i] > 0) {
 				// (過) 負担する値  -(保持Pt / 全余剰Pt合計 * 全不足Pt合計)
-				// 保持Pt誤差修正   保持Pt+(誤差/余剰人数)
+				// 保持Pt誤差修正   保持Pt + 誤差/余剰人数
 				$rivisePts[$i] = -(($userPts[$i] + $AllPtsTolerance / $plusUser) / $surplusPtsSum * $shortPtsSum);
 			} else {
 				// (不足) 最低値との差分
