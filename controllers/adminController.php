@@ -416,22 +416,19 @@ class AdminController extends Controller
 			//最低値からの差分を算出
 			$differencePts[$u] = $userPts[$u] - $minPt;
 			if ($userPts[$u] < $minPt) {
-				// Pt不足合計を求める
 				$shortPts[$u] = $minPt - $userPts[$u];
-			} elseif ($userPts[$u] === floatval($minPt)){
-				// 最小値ちょうどの人は値を0に
-				$surplusPts[$u] = 0;
+			} elseif ($userPts[$u] === floatval($minPt)) {
+				continue;
 			} else {
-				// Pt余剰分 最低値以上のPtを求める
 				$surplusPts[$u] = $userPts[$u];
 				$plusUser++;
 			}
 			$u++;
 		}
 
-		// ユーザー総計Ptの 全余剰&全不足 の合計を求める
+		// ユーザー総計Ptの 全余剰&全不足
 		$shortPtsSum = array_sum($shortPts);
-		// 全余剰から総Ptの誤差の修正値をマイナス
+		// 誤差の修正値をマイナス
 		$surplusPtsSum = array_sum($surplusPts) - $AllPtsTolerance;
 
 		// 各ユーザーの補正Ptを求る
@@ -466,13 +463,12 @@ class AdminController extends Controller
 		echo '<br>$rivisePts Ptを送られたユーザーの補正Pt算出<br>';
 		var_dump($rivisePts);
 
-		// 補正PtのDB INSERT userNo=0 からのPtとして、マイナス値含めinsertする
+		// 補正PtのDB INSERT userNo=0 からのPtとして1ユーザーに全誤差を付与
+		// ***ToDo*** 誤差が大きい場合は他のユーザーにもPtの補正負荷分散を
 		$admin_repository->startTransaction();
 		$admin_repository->clkUsersRivisePts_TogetherInsert($sendUsersNo, $rivisePts, $now);
 		$admin_repository->TransactionCommit();
-		// 1ユーザーに補正値(Pt全ユーザー合計誤差)を付与
-		// ***ToDo*** 誤差が大きい場合は他のユーザーにも付与,Ptの補正負荷分散を
-		if ($AllPtsTolerance !== 0) {
+		if (abs($AllPtsTolerance - 0) >= 0.000000001) {
 			if ($AllPtsTolerance > 0) {
 				$order = 'ASC';
 			} else {
@@ -480,8 +476,6 @@ class AdminController extends Controller
 			}
 				$user = $admin_repository->getAllToleranceUser($lastCalcTime, $now, $order);
 				$usNo = $user[0]['seUs'];
-				// echo '補正値付与ユーザーNo';
-				// var_dump($usNo);
 				$admin_repository->ToleranceInsert($usNo, $AllPtsTolerance, $now);
 		}
 
