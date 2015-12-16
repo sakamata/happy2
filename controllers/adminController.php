@@ -9,8 +9,9 @@ class AdminController extends Controller
 		'RandomMaker',
 		'getAdminSetting',
 		'signout',
-		'calc',
-		'PtDefault'
+		'PtDefault',
+		'tbgvnPosts',
+		'calc'
 	);
 
 	public $tableNames = array('tbus', 'tbgvn', 'tbset', 'tbfollow', 'tbcalctime');
@@ -375,8 +376,6 @@ class AdminController extends Controller
 		}
 
 		// ***集計第二段階 nowPtのベーシックインカム的な補正計算***
-		// ***ToDo 最低値以上付近のユーザーが課税で最低値を下回るロジックを修正***
-		// ***ToDo 集計第三段階で対処予定 ***
 
 		$adsetting_repository = $this->getAdminSettingAction();
 		$setting = $adsetting_repository->fetchSettingValue();
@@ -422,7 +421,7 @@ class AdminController extends Controller
 				if ($userPts[$u] < $minPt) {
 					$shortPts[$u] = $minPt - $userPts[$u];
 				} else {
-					$surplusPts[$u] = $userPts[$u];
+					$surplusPts[$u] = $userPts[$u] - $minPt;
 					$plusUser++;
 				}
 				$u++;
@@ -438,9 +437,10 @@ class AdminController extends Controller
 		$rivisePts = [];
 		for ($i=0; $i < $u ; $i++) {
 			if ($differencePts[$i] > 0) {
-				// (過) 負担する値  -(保持Pt / 全余剰Pt合計 * 全不足Pt合計)
-				// 保持Pt誤差修正   保持Pt + 誤差/余剰人数
-				$rivisePts[$i] = -(($userPts[$i] + $AllPtsTolerance / $plusUser) / $surplusPtsSum * $shortPtsSum);
+				// 保持Ptへの全体値誤差修正（Pt総数が逸脱した際の保険的処理）
+				$userPts[$i] = $userPts[$i] + $AllPtsTolerance / $plusUser;
+				// (過) 負担する値 = 保持Pt - (保持Pt + 余剰Pt * (全不足Pt合計 / 全余剰Pt合計))
+				$rivisePts[$i] = $userPts[$i] - ($userPts[$i] + $surplusPts[$i] * ($shortPtsSum / $surplusPtsSum));
 			} else {
 				// (不足) 最低値との差分
 				$rivisePts[$i] = $minPt - $userPts[$i];
