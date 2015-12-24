@@ -14,7 +14,7 @@ class AdminController extends Controller
 		'calc'
 	);
 
-	public $tableNames = array('tbus', 'tbgvn', 'tbset', 'tbfollow', 'tbcalctime');
+	public $tableNames = array('tbus', 'tbgvn', 'tbset', 'tbfollow', 'tbcalctime', 'tb_user_status');
 	public $commands = array('Reset', 'DummyIn', 'DummysIn');
 
 	public function indexAction()
@@ -117,9 +117,11 @@ class AdminController extends Controller
 		}
 		$admin_repository->$RepossitoryCommnd($dummyNames);
 
-		// 仕様上ダミーアカウント作成直後に必ず自分に1クリックをさせる
+		// 仕様上ダミーアカウント作成直後に行うアクション
+		// 必ず自分に1クリック・tb_user_statusに連携登録
 		if ($RepossitoryCommnd == 'tbusDummyIn') {
 			$this->DummyInOneClickAction($dummyNames['usId']);
+			$this->DummyIn_tb_user_statusInsert($dummyNames['usId']);
 		}
 		if ($RepossitoryCommnd == 'tbusDummysIn') {
 			$this->DummyInOneClickAction();
@@ -144,6 +146,18 @@ class AdminController extends Controller
 			$admin_repository->tbusDummyIn_SelfOneClick($res['usNo']);
 			$a++;
 		}
+	}
+
+	public function DummyIn_tb_user_statusInsert($userId)
+	{
+		$AdminRepository = $this->db_manager->get('Admin');
+
+		$res = $AdminRepository->getDummyUserNo($userId);
+		$usNo = $res['usNo'];
+		$user_repository = $this->db_manager->get('User');
+		$latitude = null;
+		$longitude = null;
+		$user_repository->tb_user_statusRegisterInsert($usNo, $latitude, $longitude);
 	}
 
 	public function RandomMakerAction() {

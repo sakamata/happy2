@@ -19,5 +19,5 @@
 		<input type="submit" value="ログイン">
 	</p>
 
-		<a href="admin/signin">admin_signin</a>
+		<a href="<?php echo $base_url; ?>/admin/signin">admin_signin</a>
 </form>

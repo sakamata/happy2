@@ -182,9 +182,29 @@ class AdminRepository extends DbRepository
 		$sql = "
 			DROP TABLE tbfollow;
 			CREATE TABLE IF NOT EXISTS `happy2`.`tbfollow` (
+				`followNo` INT NOT NULL AUTO_INCREMENT,
 				`usNo` INT(11) NULL,
-				`followingNo` INT(11) NULL
-			)
+				`followingNo` INT(11) NULL,
+				PRIMARY KEY (`followNo`))
+			ENGINE = InnoDB
+		";
+
+		$stmt = $this->execute($sql, array(
+		));
+	}
+
+	public function tb_user_statusReset()
+	{
+		$sql = "
+			DROP TABLE tb_user_status;
+			CREATE TABLE IF NOT EXISTS `happy2`.`tb_user_status` (
+				`No` INT NULL AUTO_INCREMENT,
+				`usNo` INT NOT NULL,
+				`lastActiveTime` DATETIME NULL DEFAULT now(),
+				`latitude` DECIMAL(14,7) NULL,
+				`longitude` DECIMAL(14,7) NULL,
+				UNIQUE INDEX `usNo_UNIQUE` (`usNo` ASC),
+				PRIMARY KEY (`No`))
 			ENGINE = InnoDB
 		";
 
@@ -308,7 +328,6 @@ class AdminRepository extends DbRepository
 
 	public function tbgvnDummyIn($dummys)
 	{
-		//ToDo CSV 読み込み
 		$sql = "
 		INSERT INTO
 			tbgvn(usNo,seUs,seClk,dTm)
@@ -324,7 +343,6 @@ class AdminRepository extends DbRepository
 
 	public function tbsetDummyIn($dummys)
 	{
-		//ToDo CSV 読み込み
 		$sql = "
 			INSERT INTO
 				tbset(usNo,seUs,getPt,dTm)

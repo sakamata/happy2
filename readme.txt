@@ -70,6 +70,19 @@ C:\xampp\apache\conf\extra\htppd-vhosts.conf
 
 ------------------------------------------------------
 
+PHP設定------------------------------------------------
+
+php.iniファイルのTimezoneをmysqlやサーバーの時刻基準と合わせる事
+	AdminController calcAction 内 $now 等に使用する為
+
+例:  php.ini
+	[Date]
+	; Defines the default timezone used by the date functions
+	; http://php.net/date.timezone
+	date.timezone=Asia/Tokyo
+
+-------------------------------------------------------
+
 websocket-server設定---------------------------------
 
 client/coffee/client.coffee
@@ -130,6 +143,9 @@ Viewファイル内 renderメソッドについて
 
 	<form action="<?php echo $base_url; ?>/admin/tableDummyInsert" method="post" accept-charset="utf-8">
 
+■Viewファイルで他のViewを読み込む際は、使用する変数を読み込み先に渡す必要がある
+例:
+echo $this->render('admin/tbgvnPosts', array('_token' => $_token));
 
 ■SQLインジェクション対策で $_token　をhiddenフォームで入れる
 

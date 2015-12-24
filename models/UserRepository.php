@@ -49,6 +49,20 @@ class UserRepository extends DbRepository
 		));
 	}
 
+	public function tb_user_statusRegisterInsert($usNo, $latitude, $longitude)
+	{
+		$sql = "
+			INSERT INTO tb_user_status(usNo, latitude, longitude)
+			VALUES(:usNo, :latitude, :longitude)
+		";
+
+		$stmt = $this->execute($sql, array(
+			':usNo' => $usNo,
+			':latitude' => $latitude,
+			':longitude' => $longitude,
+		));
+	}
+
 	public function hashPassword($usPs)
 	{
 		return sha1($usPs . 'zyx7532cba');

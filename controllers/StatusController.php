@@ -1,22 +1,80 @@
 <?php
 
-
-
 class StatusController extends Controller
 {
 
+	// ログインが必要なActionを記述
 	protected $auth_actions = array('index', 'post');
+	protected $lastCalcTime;	// 最終集計時間
+	protected $allUserCount;	// 全ユーザー数
+	protected $userViewLimit; // ユーザー表示数
+	protected $calcCount; // 集計回数
+	protected $myUser; // tbusステータス
 
 	public function indexAction()
 	{
+		$this->serviceStatus();
+		// $this->userPerson();
 		$user = $this->session->get('user');
-		$statuses = $this->db_manager->get('Status')->fetchUserStatus($user['usNo']);
+		// $statuses = $this->db_manager->get('Status')->fetchUserStatus($user['usNo']);
+
+		$limit = 10;
+		$offset = 2;
+
+		// ToDo ユーザー画面の並べ方を取得、該当表示件数を返す(POSTデフォならデフォ表示)
+
+
+		$statuses = $this->db_manager->get('Status')->testUsersArrayFollowUsers($user['usNo'], $this->lastCalcTime, $limit, $offset, $order);
+
+		var_dump($user);
+		var_dump($statuses[0]);
 
 		return $this->render(array(
 			'statuses' => $statuses,
 			'body' => '',
 			'_token' => $this->generateCsrfToken('status/post'),
 		));
+	}
+
+	// サービス全体で必要な情報を生成
+	public function serviceStatus()
+	{
+		$allUserCount = $this->db_manager->get('Admin')->tableCount('tbus');
+		$this->allUserCount = $allUserCount['tbus'];
+		$adsetting = $this->db_manager->get('AdminSetting')->fetchSettingValue();
+		$this->userViewLimit = $adsetting['userViewLimitClients'];
+		$calcStatus = $this->db_manager->get('Status')->calcStatus();
+		$this->calcCount = $calcStatus['calcCount'];
+		$this->lastCalcTime = $calcStatus['lastCalcTime'];
+	}
+
+	// 自分のアカウントを元に、自分に関する情報を生成
+	public function anyUserPerson()
+	{
+		// tbus情報
+		// 今回のこの人からのクリック数（グラフ）
+		// 今回のこの人が押したクリック数（グラフ）
+		// ログイン中か（簡易スタータス）
+		// フォロー関係（簡易スタータス）
+		// SimpleUsersPersons() 単数取得
+	}
+
+	// マウスオン時簡易ステータス
+	public function SimpleUsersPersons()
+	{
+		// DailyAvg
+		// Day
+		// NarcisRate
+		// Total
+
+	}
+
+	// 任意のユーザー1名の基本情報を生成
+	// 『メイン画面』や『履歴画面 他人』のヘッダー等に使用
+	public function userPerson($userNo)
+	{
+		// （仮）
+		$this->myUser = $this->session->get('user');
 	}
 
 	public function userAction($params)
@@ -58,43 +116,4 @@ class StatusController extends Controller
 
 	}
 
-	public function postAction()
-	{
-		if (!$this->request->isPost()) {
-			$this->forward404();
-		}
-
-		$token = $this->request->getPost('_token');
-		if (!$this->checkCsrfToken('status/post', $token)) {
-			return $this->redirect('/');
-		}
-
-		$body = $this->request->getPost('body');
-
-		$errors = array();
-
-		if (!strlen($body)) {
-			$errors[] = '一言を入力してください。';
-		} elseif (mb_strlen($body) > 200) {
-			$errors[] = '200文字以内で入力してください。';
-		}
-
-		if (count($errors) === 0) {
-			$user = $this->session->get('user');
-			$this->db_manager->get('Status')->insert($user['usNo'], $body);
-
-			return $this->redirect('/');
-		}
-
-		$user = $this->session->get('user');
-		$statuses = $this->db_manager->get('Status')->fetchAllPersonalArchivesByUserId($user['usNo']);
-
-		return $this->render(array(
-			'errors' => $errors,
-			'body' => $body,
-			'statuses' => $statuses,
-			'_token' => $this->generateCsrfToken('status/post'),
-		),'index');
-
-	}
 }

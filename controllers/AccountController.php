@@ -18,7 +18,6 @@ class AccountController extends Controller
 		));
 	}
 
-	//Done
 	// ユーザーアカウント登録とチェック
 	public function registerAction()
 	{
@@ -63,6 +62,12 @@ class AccountController extends Controller
 			$n = $this->db_manager->get('User')->getUserNo($usId);
 			$usNo = $n['usNo'];
 			$this->db_manager->get('User')->selfOneClick($usNo);
+
+			// tb_user_statusに位置と現在日時を登録
+			// ***ToDo***user側で緯度経度取得の実装
+			$latitude = $this->request->getPost('latitude');
+			$longitude = $this->request->getPost('longitude');
+			$this->db_manager->get('User')->tb_user_statusRegisterInsert($usNo, $latitude, $longitude);
 
 			$this->session->setAuthenticated(true);
 			$user = $this->db_manager->get('User')->fetchByUserName($usId);
