@@ -15,15 +15,6 @@ class StatusRepository extends DbRepository
 	}
 
 	// ***ToDo*** メイン画面でのUserの基本情報を呼び出す
-	// ***ToDo*** 引数追加, $order, $limit 等
-	public function fetchUserStatus($usNo)
-	{
-		$sql ="
-			SELECT usNo, usId, usName, usImg, nowPt FROM tbus
-			ORDER BY usNo = :usNo DESC, usNo ASC
-		";
-		return $this->fetchAll($sql, array(':usNo' => $usNo));
-	}
 
 	// 引数 $usId : str 単数配列で来る。 $user['usNo']
 	public function fetchAllPersonalArchivesByUserId($usId)
@@ -71,7 +62,127 @@ class StatusRepository extends DbRepository
 		));
 	}
 
+	public function fetchHeaderUserPerson($viewUser, $usNo, $lastCalcTime)
+	{
+		$sql = "
+			SELECT
+				master.usNo,
+				master.usId,
+				master.usName,
+				master.usImg,
+				master.nowPt,
+				IFNULL(gvnTable.thisUserAllClkSum, 0) AS thisUserAllClkSum,
+				IFNULL(gvnTable2.thisUserToMeClkSum, 0) AS thisUserToMeClkSum
+
+				FROM tbus
+				AS master
+			LEFT JOIN(
+				SELECT
+					usNo,
+					SUM(seClk) AS thisUserAllClkSum
+					FROM tbgvn
+					WHERE
+						usNo = :viewUser
+					AND dTm between :lastCalcTime
+					AND now()
+			)
+			AS gvnTable
+			ON master.usNo = gvnTable.usNo
+
+			LEFT JOIN(
+				SELECT usNo,
+					SUM(seClk) AS thisUserToMeClkSum
+					FROM tbgvn
+					WHERE
+						usNo = :viewUser
+					AND
+						seUs = :usNo
+					AND dTm between :lastCalcTime
+					AND now()
+			)
+			AS gvnTable2
+			ON master.usNo = gvnTable2.usNo
+
+			WHERE
+				master.usNo = :viewUser
+		";
+
+		return $this->fetch($sql, array(
+			':usNo' => $usNo,
+			':viewUser' => $viewUser,
+			':lastCalcTime' => $lastCalcTime,
+		));
+	}
+
+	public function CountFollowingDesc($usNo)
+	{
+		$sql = "
+			SELECT count(followingNo) AS userCount
+				FROM tbfollow
+				WHERE usNo = :usNo
+		";
+
+		return $this->fetch($sql, array(
+			':usNo' => $usNo,
+		));
+
+	}
+
+	public function UsersArrayNewUser($usNo, $lastCalcTime, $limit, $offset, $order = 'desc')
+	{
+		$sql= "
+			SELECT
+				master.usNo,
+				master.usId,
+				master.usName,
+				master.usImg,
+				master.nowPt,
+				IFNULL(gvnTable.allClkSum, 0) AS allClkSum,
+				IFNULL(gvnTable2.toMeClkSum, 0) AS toMeClkSum
+				FROM tbus
+				AS master
+
+			LEFT JOIN(
+				SELECT
+					usNo,
+					sum(seClk) AS allClkSum
+					FROM tbgvn
+					WHERE
+						dTm between :lastCalcTime
+						AND now()
+					GROUP BY usNo
+			)
+			AS gvnTable
+			ON master.usNo = gvnTable.usNo
+
+			LEFT JOIN(
+				SELECT usNo, SUM(seClk) AS toMeClkSum, dTm
+					FROM tbgvn
+					WHERE seUs = :usNo
+						AND dTm between :lastCalcTime
+						AND now()
+						GROUP BY usNo
+			)
+			AS gvnTable2
+			ON master.usNo = gvnTable2.usNo
+
+			WHERE
+				master.usNo != :usNo
+			ORDER BY master.usNo $order
+			LIMIT $limit
+			OFFSET $offset
+		";
+
+		return $this->fetchall($sql, array(
+			':usNo' => $usNo,
+			':lastCalcTime' => $lastCalcTime,
+
+		));
+
+	}
+
 	public function testUsersArrayFollowUsers($usNo, $lastCalcTime)
+	// $limit, $offset
 	{
 		$sql = "
 			SELECT

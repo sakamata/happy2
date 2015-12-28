@@ -11,49 +11,65 @@ class StatusController extends Controller
 	protected $calcCount; // 集計回数
 	protected $myUser; // tbusステータス
 
-	public function indexAction()
-	{
-		$this->serviceStatus();
-		// $this->userPerson();
-		$user = $this->session->get('user');
-		// $statuses = $this->db_manager->get('Status')->fetchUserStatus($user['usNo']);
-
-		$limit = 10;
-		$offset = 2;
-
-		// ToDo ユーザー画面の並べ方を取得、該当表示件数を返す(POSTデフォならデフォ表示)
-
-
-		$statuses = $this->db_manager->get('Status')->testUsersArrayFollowUsers($user['usNo'], $this->lastCalcTime, $limit, $offset, $order);
-
-		var_dump($user);
-		var_dump($statuses[0]);
-
-		return $this->render(array(
-			'statuses' => $statuses,
-			'body' => '',
-			'_token' => $this->generateCsrfToken('status/post'),
-		));
-	}
-
 	// サービス全体で必要な情報を生成
 	public function serviceStatus()
 	{
 		$allUserCount = $this->db_manager->get('Admin')->tableCount('tbus');
 		$this->allUserCount = $allUserCount['tbus'];
 		$adsetting = $this->db_manager->get('AdminSetting')->fetchSettingValue();
-		$this->userViewLimit = $adsetting['userViewLimitClients'];
+		$res = $adsetting['userViewLimitClients'];
+		$this->userViewLimit = intval($res);
 		$calcStatus = $this->db_manager->get('Status')->calcStatus();
 		$this->calcCount = $calcStatus['calcCount'];
 		$this->lastCalcTime = $calcStatus['lastCalcTime'];
 	}
 
+	public function indexAction()
+	{
+		$this->serviceStatus();
+		$user = $this->session->get('user');
+
+		$usNo = $user['usNo'];
+		$viewUser = $user['usNo'];
+		$headerUser = $this->headerUserPerson($viewUser, $usNo, $this->lastCalcTime);
+
+		$usersArray = $this->request->getPost('usersArray');
+		if ($usersArray == null) {
+			$usersArray = 'newUser_desc';
+		}
+		var_dump($usersArray);
+
+		// ユーザー画面の並べ方を取得、該当表示件数を返す
+		list($userCount, $selected) = $this->usersArrayInfo($usersArray, $usNo);
+		var_dump($userCount);
+
+		$page = intval($this->request->getGet('page'));
+		if (empty($page)) {
+			$page = 0;
+		}
+
+		$offset = $this->pager($page, $userCount);
+		$order = 'ASC';
+
+		$statuses = $this->switchUsersArray($usersArray, $usNo, $offset, $order);
+
+		return $this->render(array(
+			'body' => '',
+			'_token' => $this->generateCsrfToken('status/post'),
+			'headerUser' => $headerUser,
+			'userCount' => $userCount,
+			'selected' => $selected,
+			'statuses' => $statuses,
+		));
+	}
+
 	// 自分のアカウントを元に、自分に関する情報を生成
 	public function anyUserPerson()
 	{
-		// tbus情報
 		// 今回のこの人からのクリック数（グラフ）
 		// 今回のこの人が押したクリック数（グラフ）
+		// 今回この人からもらったクリック数（グラフ）
+		// 今回この人の全クリック数(グラフ)
 		// ログイン中か（簡易スタータス）
 		// フォロー関係（簡易スタータス）
 		// SimpleUsersPersons() 単数取得
@@ -71,11 +87,79 @@ class StatusController extends Controller
 
 	// 任意のユーザー1名の基本情報を生成
 	// 『メイン画面』や『履歴画面 他人』のヘッダー等に使用
-	public function userPerson($userNo)
+	public function headerUserPerson($viewUser, $usNo, $lastCalcTime)
 	{
-		// （仮）
-		$this->myUser = $this->session->get('user');
+		$res = $this->db_manager->get('Status')->fetchHeaderUserPerson($viewUser, $usNo, $lastCalcTime);
+		return $res;
 	}
+
+	public function usersArrayInfo($usersArray, $usNo)
+	{
+		$selected = array(
+			'newUser_desc' => null,
+			'following_desc' => null,
+			'followers' => null,
+		);
+
+		switch ($usersArray) {
+			case 'following_desc':
+				$userCount = $this->db_manager->get('Status')->CountFollowingDesc($usNo);
+				$userCount = $userCount['userCount'];
+
+				$selected['following_desc'] = 'selected';
+				return array($userCount, $selected);
+				break;
+
+			case 'followers':
+				# code...
+
+				break;
+
+			default:
+				// newUser_desc 新規ユーザー順 user数を返す
+				$tableName = 'tbus';
+				$userCount = $this->db_manager->get('Admin')->tableCount($tableName);
+				$userCount = $userCount['tbus'];
+				$selected['newUser_desc'] = 'selected';
+				return array($userCount, $selected);
+
+				break;
+		}
+	}
+
+	public function switchUsersArray($usersArray, $usNo, $offset, $order)
+	{
+		$lastCalcTime = $this->lastCalcTime;
+		$limit = $this->userViewLimit;
+
+		switch ($usersArray) {
+			case 'following_desc':
+				$statuses = $this->db_manager->get('Status')->testUsersArrayFollowUsers($usNo, $lastCalcTime, $limit, $offset, $order);
+				return $statuses;
+
+				break;
+
+			case 'followers_desc':
+				// code...
+
+				break;
+
+			default:
+				$statuses = $this->db_manager->get('Status')->UsersArrayNewUser($usNo, $lastCalcTime, $limit, $offset, $order);
+				return $statuses;
+
+				break;
+		}
+	}
+
+	public function pager($page, $userCount)
+	{
+		$limit = $this->userViewLimit;
+		$offset = $page * $limit;
+		return $offset;
+	}
+
+
 
 	public function userAction($params)
 	{

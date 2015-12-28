@@ -8,6 +8,9 @@ class Session
 	{
 		if (!self::$sessionStarted) {
 			session_start();
+			header('Expires:-1');
+			header('Cache-Control:');
+			header('Pragma:');
 
 			self::$sessionStarted = true;
 		}

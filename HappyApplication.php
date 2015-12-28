@@ -31,18 +31,17 @@ class HappyApplication extends Application
 				=> array('controller' => 'admin'),
 			'/admin/calc'
 				=> array('controller' => 'admin', 'action' => 'calc'),
-			'/test'
-				=> array('controller' => 'test', 'action' => 'test'),
 		);
 	}
 
-	// ***ToDo*** Hide!!!
 	protected function configure()
 	{
+		require 'C:xampp/htdocs/hidden/info.php';
+
 		$this->db_manager->connect('master', array(
-			'dsn' => 'mysql:dbname=happy2;host=localhost',
-			'user' => 'root',
-			'password' => 'penpen',
+			'dsn' => $dsn,
+			'user' => $user,
+			'password' => $pass,
 		));
 	}
 }

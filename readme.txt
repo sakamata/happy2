@@ -125,6 +125,17 @@ server/lib/WebSocket/Socket.php
 フレームワークの使い方
 ------------------------------------------------------
 
+MySQLの接続設定
+HappyApplication.php 内　configre()　内で定義
+以下のpathと変数を環境によって変更する事
+例:
+require 'C:xampp/htdocs/hidden/info.php';
+
+$dsn = 'mysql:dbname=happy2;host=localhost';
+$user = 'admin';
+$pass = 'hoge';
+
+
 HogeController内 generateCsrfTokenについて
 	generateCsrfToken( controller名 / action名 )
 

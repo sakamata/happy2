@@ -34,6 +34,10 @@ a {
 	margin: 0 30px;
 }
 
+#main_user {
+	background-color: #eee;
+}
+
 .status {
 	padding: 10px;
 	border-bottom: 2px solid #CCCCCC;
