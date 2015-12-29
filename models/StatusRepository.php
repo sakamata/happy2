@@ -181,8 +181,7 @@ class StatusRepository extends DbRepository
 
 	}
 
-	public function testUsersArrayFollowUsers($usNo, $lastCalcTime)
-	// $limit, $offset
+	public function testUsersArrayFollowUsers($usNo, $lastCalcTime, $limit, $offset, $order)
 	{
 		$sql = "
 			SELECT
@@ -240,11 +239,11 @@ class StatusRepository extends DbRepository
 			AND master.usNo != :usNo
 			GROUP BY followTable.followingNo
 			ORDER BY
-				master.usNo= :usNo DESC,
-				followTable.followNo ASC
+				-- master.usNo= :usNo $order,
+				followTable.followNo $order
+			LIMIT $limit
+			OFFSET $offset
 		";
-		// LIMIT :limit
-		// OFFSET :offset
 
 		// ':limit' => $limit,
 		// ':offset' => $offset,

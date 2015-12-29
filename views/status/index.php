@@ -8,6 +8,10 @@
 <div id="res"></div>
 
 <hr>
+<div id="main_user">
+	<?php echo $this->render('status/main_user', array('headerUser' => $headerUser,)); ?>
+</div>
+<hr>
 
 <form class="form-inline" action="<?php echo $this->escape($base_url); ?>"  method="post">
 	<div class="form-group">
@@ -23,22 +27,35 @@
 			<option value="newUser_desc" <?php echo $selected['newUser_desc']; ?>>新規ユーザー順</option>
 			<option value="following_desc" <?php echo $selected['following_desc']; ?>>フォロー中</option>
 			<option value="followers" <?php echo $selected['followers']; ?>>フォローされている</option>
+			<option value="test" <?php echo $selected['test']; ?>>テスト</option>
 		</select>
 	</div>
 </form>
 
+<?php
+	if ($order !== null) :
+		echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray));
+	endif;
+?>
 
 <form action="<?php echo $base_url; ?>/status/post" method="post" accept-charset="utf-8">
 	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 </form>
 
-<div id="main_user">
-	<?php echo $this->render('status/main_user', array('headerUser' => $headerUser,)); ?>
-</div>
-<hr>
+<?php
+	if (count($statuses) !== 0) :
+		echo $usersArrayMessage.'<b>'. count($statuses) . '</b>件を表示しています。';
+	endif;
+?>
 
 <div id="statuses">
-	<?php foreach ($statuses as $status): ?>
-	<?php echo $this->render('status/status', array('status' => $status)); ?>
-	<?php endforeach; ?>
+<?php
+	if(!$statuses){
+		echo $this->render('status/users_null', array('usersNullMessage' => $usersNullMessage));
+	} else {
+		foreach ($statuses as $status):
+			echo $this->render('status/users', array('status' => $status,));
+		endforeach;
+	}
+?>
 </div>

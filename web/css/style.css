@@ -44,6 +44,18 @@ a {
 	margin-bottom: 10px;
 }
 
+.status_null {
+	height: 10em;
+	background-color: #fcc;
+	padding: 10px;
+	border-bottom: 2px solid #CCCCCC;
+	margin-bottom: 10px;
+}
+
+.order_changer form{
+	font-size: 3em;
+}
+
 ul.error_list {
 	border: 1px solid #FF0000;
 	background-color: #FFCCCC;

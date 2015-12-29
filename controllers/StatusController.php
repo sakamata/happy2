@@ -28,38 +28,51 @@ class StatusController extends Controller
 	{
 		$this->serviceStatus();
 		$user = $this->session->get('user');
-
 		$usNo = $user['usNo'];
 		$viewUser = $user['usNo'];
 		$headerUser = $this->headerUserPerson($viewUser, $usNo, $this->lastCalcTime);
+		$usersArray = strval($this->request->getPost('usersArray'));
 
-		$usersArray = $this->request->getPost('usersArray');
+		// View側、初期表示の際の処理
 		if ($usersArray == null) {
 			$usersArray = 'newUser_desc';
 		}
 		var_dump($usersArray);
-
-		// ユーザー画面の並べ方を取得、該当表示件数を返す
-		list($userCount, $selected) = $this->usersArrayInfo($usersArray, $usNo);
-		var_dump($userCount);
-
-		$page = intval($this->request->getGet('page'));
-		if (empty($page)) {
-			$page = 0;
+		$order = strval($this->request->getPost('order'));
+		if ($order == null || $order != 'ASC') {
+			$order = 'DESC';
 		}
 
-		$offset = $this->pager($page, $userCount);
-		$order = 'ASC';
+		// ユーザー画面の並べ方に基づき 該当表示件数、optionタグ内selected、null時文言を返す
+		list($userCount, $selected, $usersNullMessage, $usersArrayMessage) = $this->usersArrayInfo($usersArray, $usNo);
+		var_dump($userCount);
 
-		$statuses = $this->switchUsersArray($usersArray, $usNo, $offset, $order);
+		if ($userCount == 0) {
+			$page = null;
+			$order = null;
+			$statuses = null;
+		} else {
+			$page = intval($this->request->getGet('page'));
+			if (empty($page)) {
+				$page = 0;
+			}
+			$offset = $this->pager($page, $userCount);
+			$statuses = $this->switchUsersArray($usersArray, $usNo, $offset, $order);
+		}
 
 		return $this->render(array(
 			'body' => '',
 			'_token' => $this->generateCsrfToken('status/post'),
 			'headerUser' => $headerUser,
-			'userCount' => $userCount,
-			'selected' => $selected,
+			'usersArray' => $usersArray,
 			'statuses' => $statuses,
+			'userCount' => $userCount,
+			'page' => $page,
+			'limit' => $this->userViewLimit,
+			'order' => $order,
+			'selected' => $selected,
+			'usersNullMessage' => $usersNullMessage,
+			'usersArrayMessage' => $usersArrayMessage,
 		));
 	}
 
@@ -99,6 +112,7 @@ class StatusController extends Controller
 			'newUser_desc' => null,
 			'following_desc' => null,
 			'followers' => null,
+			'test' => null,
 		);
 
 		switch ($usersArray) {
@@ -107,11 +121,22 @@ class StatusController extends Controller
 				$userCount = $userCount['userCount'];
 
 				$selected['following_desc'] = 'selected';
-				return array($userCount, $selected);
+				$usersNullMessage = "フォロー中のユーザーはまだいません。";
+				$usersArrayMessage = "フォローをしているユーザー";
+				return array($userCount, $selected, $usersNullMessage, $usersArrayMessage);
 				break;
 
 			case 'followers':
 				# code...
+
+				break;
+
+			case 'test':
+				$selected['test'] = 'selected';
+				$userCount = 0;
+				$usersNullMessage = "testメッセージ　ユーザーはまだいません。";
+				$usersArrayMessage = "testをしているユーザー";
+				return array($userCount, $selected, $usersNullMessage, $usersArrayMessage);
 
 				break;
 
@@ -121,7 +146,9 @@ class StatusController extends Controller
 				$userCount = $this->db_manager->get('Admin')->tableCount($tableName);
 				$userCount = $userCount['tbus'];
 				$selected['newUser_desc'] = 'selected';
-				return array($userCount, $selected);
+				$usersNullMessage = "他のユーザーはまだいません。";
+				$usersArrayMessage = "新規登録ユーザー";
+				return array($userCount, $selected, $usersNullMessage, $usersArrayMessage);
 
 				break;
 		}
@@ -197,7 +224,6 @@ class StatusController extends Controller
 		}
 
 		return $this->render(array('status' => $status));
-
 	}
 
 }
