@@ -31,16 +31,18 @@ class StatusController extends Controller
 		$usNo = $user['usNo'];
 		$viewUser = $user['usNo'];
 		$headerUser = $this->headerUserPerson($viewUser, $usNo, $this->lastCalcTime);
-		$usersArray = strval($this->request->getPost('usersArray'));
 
-		// View側、初期表示の際の処理
-		if ($usersArray == null) {
-			$usersArray = 'newUser_desc';
+		$usersArray = strval($this->request->getPost('usersArray'));
+		if (empty($usersArray)) {
+			$usersArray = 'newUsers';
 		}
-		var_dump($usersArray);
 		$order = strval($this->request->getPost('order'));
-		if ($order == null || $order != 'ASC') {
+		if (empty($order)) {
 			$order = 'DESC';
+		}
+		$page = intval($this->request->getPost('pager'));
+		if (empty($page)) {
+			$page = 0;
 		}
 
 		// ユーザー画面の並べ方に基づき 該当表示件数、optionタグ内selected、null時文言を返す
@@ -52,13 +54,10 @@ class StatusController extends Controller
 			$order = null;
 			$statuses = null;
 		} else {
-			$page = intval($this->request->getGet('page'));
-			if (empty($page)) {
-				$page = 0;
-			}
 			$offset = $this->pager($page, $userCount);
 			$statuses = $this->switchUsersArray($usersArray, $usNo, $offset, $order);
 		}
+		var_dump($order);
 
 		return $this->render(array(
 			'body' => '',
@@ -109,18 +108,18 @@ class StatusController extends Controller
 	public function usersArrayInfo($usersArray, $usNo)
 	{
 		$selected = array(
-			'newUser_desc' => null,
-			'following_desc' => null,
+			'newUsers' => null,
+			'following' => null,
 			'followers' => null,
 			'test' => null,
 		);
 
 		switch ($usersArray) {
-			case 'following_desc':
-				$userCount = $this->db_manager->get('Status')->CountFollowingDesc($usNo);
+			case 'following':
+				$userCount = $this->db_manager->get('Status')->countFollowing($usNo);
 				$userCount = $userCount['userCount'];
 
-				$selected['following_desc'] = 'selected';
+				$selected['following'] = 'selected';
 				$usersNullMessage = "フォロー中のユーザーはまだいません。";
 				$usersArrayMessage = "フォローをしているユーザー";
 				return array($userCount, $selected, $usersNullMessage, $usersArrayMessage);
@@ -141,11 +140,11 @@ class StatusController extends Controller
 				break;
 
 			default:
-				// newUser_desc 新規ユーザー順 user数を返す
+				// newUsers 新規ユーザー順 user数を返す
 				$tableName = 'tbus';
 				$userCount = $this->db_manager->get('Admin')->tableCount($tableName);
 				$userCount = $userCount['tbus'];
-				$selected['newUser_desc'] = 'selected';
+				$selected['newUsers'] = 'selected';
 				$usersNullMessage = "他のユーザーはまだいません。";
 				$usersArrayMessage = "新規登録ユーザー";
 				return array($userCount, $selected, $usersNullMessage, $usersArrayMessage);
@@ -160,19 +159,20 @@ class StatusController extends Controller
 		$limit = $this->userViewLimit;
 
 		switch ($usersArray) {
-			case 'following_desc':
-				$statuses = $this->db_manager->get('Status')->testUsersArrayFollowUsers($usNo, $lastCalcTime, $limit, $offset, $order);
+			case 'following':
+				$statuses = $this->db_manager->get('Status')->usersArrayFollowUsers($usNo, $lastCalcTime, $limit, $offset, $order);
 				return $statuses;
 
 				break;
 
-			case 'followers_desc':
+			case 'followers':
 				// code...
 
 				break;
 
 			default:
-				$statuses = $this->db_manager->get('Status')->UsersArrayNewUser($usNo, $lastCalcTime, $limit, $offset, $order);
+				// newUsers
+				$statuses = $this->db_manager->get('Status')->UsersArrayNewUsers($usNo, $lastCalcTime, $limit, $offset, $order);
 				return $statuses;
 
 				break;

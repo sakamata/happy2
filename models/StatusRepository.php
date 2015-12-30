@@ -14,8 +14,6 @@ class StatusRepository extends DbRepository
 		return $this->fetch($sql, array());
 	}
 
-	// ***ToDo*** メイン画面でのUserの基本情報を呼び出す
-
 	// 引数 $usId : str 単数配列で来る。 $user['usNo']
 	public function fetchAllPersonalArchivesByUserId($usId)
 	{
@@ -43,7 +41,6 @@ class StatusRepository extends DbRepository
 		";
 
 		return $this->fetchAll($sql, array(':usId' => $usId));
-
 	}
 
 	public function fetchByIdAndUserName($id, $usName)
@@ -114,7 +111,7 @@ class StatusRepository extends DbRepository
 		));
 	}
 
-	public function CountFollowingDesc($usNo)
+	public function countFollowing($usNo)
 	{
 		$sql = "
 			SELECT count(followingNo) AS userCount
@@ -125,10 +122,9 @@ class StatusRepository extends DbRepository
 		return $this->fetch($sql, array(
 			':usNo' => $usNo,
 		));
-
 	}
 
-	public function UsersArrayNewUser($usNo, $lastCalcTime, $limit, $offset, $order = 'desc')
+	public function UsersArrayNewUsers($usNo, $lastCalcTime, $limit, $offset, $order = 'desc')
 	{
 		$sql= "
 			SELECT
@@ -176,12 +172,10 @@ class StatusRepository extends DbRepository
 		return $this->fetchall($sql, array(
 			':usNo' => $usNo,
 			':lastCalcTime' => $lastCalcTime,
-
 		));
-
 	}
 
-	public function testUsersArrayFollowUsers($usNo, $lastCalcTime, $limit, $offset, $order)
+	public function usersArrayFollowUsers($usNo, $lastCalcTime, $limit, $offset, $order)
 	{
 		$sql = "
 			SELECT
@@ -245,14 +239,10 @@ class StatusRepository extends DbRepository
 			OFFSET $offset
 		";
 
-		// ':limit' => $limit,
-		// ':offset' => $offset,
-
 		return $this->fetchall($sql, array(
 			':usNo' => $usNo,
 			':lastCalcTime' => $lastCalcTime,
 		));
 	}
-
 
 }
