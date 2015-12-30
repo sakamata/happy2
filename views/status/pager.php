@@ -8,11 +8,13 @@
 	</form>
 <?php endif; ?>
 <?php
-echo $page + 1 .' / ';
-if(ceil($userCount / $limit) > 99) {
-	echo '99+';
-} else {
-	echo ceil($userCount / $limit);
+if ($userCount !== 0) {
+	echo $page + 1 .' / ';
+	if(ceil($userCount / $limit) > 99) {
+		echo '99+';
+	} else {
+		echo ceil($userCount / $limit);
+	}
 }
 ?>
 <?php if ($page * $limit + $limit < $userCount ): ?>

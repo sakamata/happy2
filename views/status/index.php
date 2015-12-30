@@ -57,7 +57,7 @@
 		echo $this->render('status/users_null', array('usersNullMessage' => $usersNullMessage));
 	} else {
 		foreach ($statuses as $status):
-			echo $this->render('status/users', array('status' => $status,));
+			echo $this->render('status/users', array('status' => $status,  'thisUserAllClkSum' => $headerUser['thisUserAllClkSum']));
 		endforeach;
 	}
 ?>

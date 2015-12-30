@@ -124,7 +124,7 @@ class StatusRepository extends DbRepository
 		));
 	}
 
-	public function UsersArrayNewUsers($usNo, $lastCalcTime, $limit, $offset, $order = 'desc')
+	public function UsersArrayNewUsers($usNo, $lastCalcTime, $limit, $offset, $order = 'DESC')
 	{
 		$sql= "
 			SELECT
@@ -134,9 +134,10 @@ class StatusRepository extends DbRepository
 				master.usImg,
 				master.nowPt,
 				IFNULL(gvnTable.allClkSum, 0) AS allClkSum,
-				IFNULL(gvnTable2.toMeClkSum, 0) AS toMeClkSum
-				FROM tbus
-				AS master
+				IFNULL(gvnTable2.toMeClkSum, 0) AS toMeClkSum,
+				IFNULL(gvnTable3.MySendClkSum, 0) AS MySendClkSum
+			FROM tbus
+			AS master
 
 			LEFT JOIN(
 				SELECT
@@ -157,10 +158,21 @@ class StatusRepository extends DbRepository
 					WHERE seUs = :usNo
 						AND dTm between :lastCalcTime
 						AND now()
-						GROUP BY usNo
+					GROUP BY usNo
 			)
 			AS gvnTable2
 			ON master.usNo = gvnTable2.usNo
+
+			LEFT JOIN(
+				SELECT usNo, seUs,SUM(seClk) AS MySendClkSum
+					FROM tbgvn
+					WHERE usNo = :usNo
+						AND dTm between :lastCalcTime
+						AND now()
+					GROUP BY seUs
+			)
+			AS gvnTable3
+			ON master.usNo = gvnTable3.seUs
 
 			WHERE
 				master.usNo != :usNo
@@ -185,7 +197,8 @@ class StatusRepository extends DbRepository
 				master.usImg,
 				master.nowPt,
 				gvnTable.allClkSum,
-				IFNULL(gvnTable2.toMeClkSum, 0) AS toMeClkSum
+				IFNULL(gvnTable2.toMeClkSum, 0) AS toMeClkSum,
+				IFNULL(gvnTable3.MySendClkSum, 0) AS MySendClkSum
 				FROM tbus
 				AS master
 			LEFT JOIN(
@@ -222,6 +235,19 @@ class StatusRepository extends DbRepository
 			)
 			AS followTable
 			ON master.usNo = followTable.followingNo
+
+			-- 自分のクリック数
+			LEFT JOIN(
+				SELECT usNo, seUs,SUM(seClk) AS MySendClkSum
+					FROM tbgvn
+					WHERE usNo = :usNo
+						AND dTm between :lastCalcTime
+						AND now()
+						GROUP BY seUs
+			)
+			AS gvnTable3
+			ON master.usNo = gvnTable3.seUs
+
 			WHERE
 				master.usNo
 				IN(

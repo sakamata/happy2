@@ -47,7 +47,6 @@ class StatusController extends Controller
 
 		// ユーザー画面の並べ方に基づき 該当表示件数、optionタグ内selected、null時文言を返す
 		list($userCount, $selected, $usersNullMessage, $usersArrayMessage) = $this->usersArrayInfo($usersArray, $usNo);
-		var_dump($userCount);
 
 		if ($userCount == 0) {
 			$page = null;
@@ -57,7 +56,6 @@ class StatusController extends Controller
 			$offset = $this->pager($page, $userCount);
 			$statuses = $this->switchUsersArray($usersArray, $usNo, $offset, $order);
 		}
-		var_dump($order);
 
 		return $this->render(array(
 			'body' => '',
@@ -185,8 +183,6 @@ class StatusController extends Controller
 		$offset = $page * $limit;
 		return $offset;
 	}
-
-
 
 	public function userAction($params)
 	{
