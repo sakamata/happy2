@@ -124,8 +124,13 @@ class StatusController extends Controller
 				break;
 
 			case 'followers':
-				# code...
+				$userCount = $this->db_manager->get('Status')->countFollowers($usNo);
+				$userCount = $userCount['userCount'];
 
+				$selected['followers'] = 'selected';
+				$usersNullMessage = "フォローされているユーザーはまだいません。";
+				$usersArrayMessage = "フォローされているユーザー";
+				return array($userCount, $selected, $usersNullMessage, $usersArrayMessage);
 				break;
 
 			case 'test':
@@ -158,19 +163,20 @@ class StatusController extends Controller
 
 		switch ($usersArray) {
 			case 'following':
-				$statuses = $this->db_manager->get('Status')->usersArrayFollowUsers($usNo, $lastCalcTime, $limit, $offset, $order);
+				$statuses = $this->db_manager->get('Status')->usersArrayFollowingUsers($usNo, $lastCalcTime, $limit, $offset, $order);
 				return $statuses;
 
 				break;
 
 			case 'followers':
-				// code...
+				$statuses = $this->db_manager->get('Status')->usersArrayFollowersUsers($usNo, $lastCalcTime, $limit, $offset, $order);
+				return $statuses;
 
 				break;
 
 			default:
 				// newUsers
-				$statuses = $this->db_manager->get('Status')->UsersArrayNewUsers($usNo, $lastCalcTime, $limit, $offset, $order);
+				$statuses = $this->db_manager->get('Status')->usersArrayNewUsers($usNo, $lastCalcTime, $limit, $offset, $order);
 				return $statuses;
 
 				break;

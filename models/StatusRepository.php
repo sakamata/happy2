@@ -124,7 +124,20 @@ class StatusRepository extends DbRepository
 		));
 	}
 
-	public function UsersArrayNewUsers($usNo, $lastCalcTime, $limit, $offset, $order = 'DESC')
+	public function countFollowers($usNo)
+	{
+		$sql = "
+			SELECT count(usNo) AS userCount
+				FROM tbfollow
+				WHERE followingNo = :usNo
+		";
+
+		return $this->fetch($sql, array(
+			':usNo' => $usNo,
+		));
+	}
+
+	public function usersArrayNewUsers($usNo, $lastCalcTime, $limit, $offset, $order = 'DESC')
 	{
 		$sql= "
 			SELECT
@@ -187,7 +200,7 @@ class StatusRepository extends DbRepository
 		));
 	}
 
-	public function usersArrayFollowUsers($usNo, $lastCalcTime, $limit, $offset, $order)
+	public function usersArrayFollowingUsers($usNo, $lastCalcTime, $limit, $offset, $order)
 	{
 		$sql = "
 			SELECT
@@ -259,7 +272,88 @@ class StatusRepository extends DbRepository
 			AND master.usNo != :usNo
 			GROUP BY followTable.followingNo
 			ORDER BY
-				-- master.usNo= :usNo $order,
+				followTable.followNo $order
+			LIMIT $limit
+			OFFSET $offset
+		";
+
+		return $this->fetchall($sql, array(
+			':usNo' => $usNo,
+			':lastCalcTime' => $lastCalcTime,
+		));
+	}
+
+	public function usersArrayFollowersUsers($usNo, $lastCalcTime, $limit, $offset, $order)
+	{
+		$sql = "
+			SELECT
+				master.usNo,
+				master.usId,
+				master.usName,
+				master.usImg,
+				master.nowPt,
+				gvnTable.allClkSum,
+				IFNULL(gvnTable2.toMeClkSum, 0) AS toMeClkSum,
+				IFNULL(gvnTable3.MySendClkSum, 0) AS MySendClkSum
+				FROM tbus
+				AS master
+			LEFT JOIN(
+				SELECT
+					usNo,
+					sum(seClk) AS allClkSum
+					FROM tbgvn
+					WHERE
+						tbgvn.usNo
+						IN(
+							SELECT
+								usNo
+								FROM tbfollow
+								WHERE followingNo = :usNo
+						)
+					GROUP BY usNo
+			)
+			AS gvnTable
+			ON master.usNo = gvnTable.usNo
+			LEFT JOIN(
+				SELECT usNo, SUM(seClk) AS toMeClkSum
+					FROM tbgvn
+					WHERE seUs = :usNo
+						AND dTm between :lastCalcTime
+						AND now()
+						GROUP BY usNo
+			)
+			AS gvnTable2
+			ON master.usNo = gvnTable2.usNo
+			LEFT JOIN(
+				SELECT followNo, usNo, followingNo
+					FROM tbfollow
+					WHERE followingNo = :usNo
+			)
+			AS followTable
+			ON master.usNo = followTable.usNo
+
+			LEFT JOIN(
+				SELECT usNo, seUs,SUM(seClk) AS MySendClkSum
+					FROM tbgvn
+					WHERE usNo = :usNo
+						AND dTm between :lastCalcTime
+						AND now()
+						GROUP BY seUs
+			)
+			AS gvnTable3
+			ON master.usNo = gvnTable3.seUs
+
+			WHERE
+				master.usNo
+				IN(
+					SELECT
+						usNo
+						FROM tbfollow
+						WHERE followingNo = :usNo
+				)
+			AND master.usNo != :usNo
+			GROUP BY followTable.usNo
+			ORDER BY
 				followTable.followNo $order
 			LIMIT $limit
 			OFFSET $offset
