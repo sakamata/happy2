@@ -37,7 +37,7 @@ class StatusController extends Controller
 			$usersArray = 'newUsers';
 		}
 		$order = strval($this->request->getPost('order'));
-		if (empty($order)) {
+		if (empty($order) || $usersArray =='newUsers') { // 古参ユーザーの露出を避ける為の措置
 			$order = 'DESC';
 		}
 		$page = intval($this->request->getPost('pager'));

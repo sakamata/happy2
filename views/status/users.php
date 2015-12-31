@@ -1,7 +1,8 @@
 	<div class="status">
 		<a href="#">?</a><br>
 		<span>ON/OFF</span><br>
-		<span>Follow</span><br>
+		<span>Following: <?php echo $this->escape($status['ifFollowing']); ?></span><br>
+		<span>Follower: <?php echo $this->escape($status['ifFollower']); ?></span><br>
 		img:<?php echo $this->escape($status['usImg']); ?><br>
 		<b>
 		Pt: <?php echo $this->escape($status['nowPt']); ?><br>

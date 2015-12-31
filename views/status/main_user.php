@@ -1,7 +1,9 @@
 <!-- ***ToDo*** 自分画面と他人画面での表示物の切り替え -->
 	<a href="#">?</a><br>
 	<span>ON/OFF</span><br>
-	<span>Follow</span><br>
+	<!-- ifFollowing Follower 自分画面では不要 -->
+	<span>Following: <?php echo $this->escape($headerUser['ifFollowing']); ?></span><br>
+	<span>Follower: <?php echo $this->escape($headerUser['ifFollower']); ?></span><br>
 	img:<?php echo $this->escape($headerUser['usImg']); ?><br>
 	<b>
 	Pt: <?php echo $this->escape($headerUser['nowPt']); ?><br>

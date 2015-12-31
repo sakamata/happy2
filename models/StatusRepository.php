@@ -69,7 +69,9 @@ class StatusRepository extends DbRepository
 				master.usImg,
 				master.nowPt,
 				IFNULL(gvnTable.thisUserAllClkSum, 0) AS thisUserAllClkSum,
-				IFNULL(gvnTable2.thisUserToMeClkSum, 0) AS thisUserToMeClkSum
+				IFNULL(gvnTable2.thisUserToMeClkSum, 0) AS thisUserToMeClkSum,
+				IF(ifFollowing.followingNo > 0, 1, 0) AS ifFollowing,
+				IF(ifFollower.usNo > 0, 1, 0) AS ifFollower
 
 				FROM tbus
 				AS master
@@ -99,6 +101,22 @@ class StatusRepository extends DbRepository
 			)
 			AS gvnTable2
 			ON master.usNo = gvnTable2.usNo
+
+			LEFT JOIN(
+				SELECT usNo, followingNo
+					FROM tbfollow
+					WHERE usNo = :viewUser
+			)
+			AS ifFollowing
+			ON master.usNo = ifFollowing.followingNo
+
+			LEFT JOIN(
+				SELECT usNo, followingNo
+					FROM tbfollow
+					WHERE followingNo = :viewUser
+			)
+			AS ifFollower
+			ON master.usNo = ifFollower.usNo
 
 			WHERE
 				master.usNo = :viewUser
@@ -148,7 +166,9 @@ class StatusRepository extends DbRepository
 				master.nowPt,
 				IFNULL(gvnTable.allClkSum, 0) AS allClkSum,
 				IFNULL(gvnTable2.toMeClkSum, 0) AS toMeClkSum,
-				IFNULL(gvnTable3.MySendClkSum, 0) AS MySendClkSum
+				IFNULL(gvnTable3.MySendClkSum, 0) AS MySendClkSum,
+				IF(ifFollowing.followingNo > 0, 1, 0) AS ifFollowing,
+				IF(ifFollower.usNo > 0, 1, 0) AS ifFollower
 			FROM tbus
 			AS master
 
@@ -187,6 +207,22 @@ class StatusRepository extends DbRepository
 			AS gvnTable3
 			ON master.usNo = gvnTable3.seUs
 
+			LEFT JOIN(
+				SELECT usNo, followingNo
+					FROM tbfollow
+					WHERE usNo = :usNo
+			)
+			AS ifFollowing
+			ON master.usNo = ifFollowing.followingNo
+
+			LEFT JOIN(
+				SELECT usNo, followingNo
+					FROM tbfollow
+					WHERE followingNo = 10
+			)
+			AS ifFollower
+			ON master.usNo = ifFollower.usNo
+
 			WHERE
 				master.usNo != :usNo
 			ORDER BY master.usNo $order
@@ -211,8 +247,10 @@ class StatusRepository extends DbRepository
 				master.nowPt,
 				gvnTable.allClkSum,
 				IFNULL(gvnTable2.toMeClkSum, 0) AS toMeClkSum,
-				IFNULL(gvnTable3.MySendClkSum, 0) AS MySendClkSum
-				FROM tbus
+				IFNULL(gvnTable3.MySendClkSum, 0) AS MySendClkSum,
+				IF(ifFollowing.followingNo > 0, 1, 0) AS ifFollowing,
+				IF(ifFollower.usNo > 0, 1, 0) AS ifFollower
+			FROM tbus
 				AS master
 			LEFT JOIN(
 				SELECT
@@ -249,7 +287,6 @@ class StatusRepository extends DbRepository
 			AS followTable
 			ON master.usNo = followTable.followingNo
 
-			-- 自分のクリック数
 			LEFT JOIN(
 				SELECT usNo, seUs,SUM(seClk) AS MySendClkSum
 					FROM tbgvn
@@ -260,6 +297,22 @@ class StatusRepository extends DbRepository
 			)
 			AS gvnTable3
 			ON master.usNo = gvnTable3.seUs
+
+			LEFT JOIN(
+				SELECT usNo, followingNo
+					FROM tbfollow
+					WHERE usNo = :usNo
+			)
+			AS ifFollowing
+			ON master.usNo = ifFollowing.followingNo
+
+			LEFT JOIN(
+				SELECT usNo, followingNo
+					FROM tbfollow
+					WHERE followingNo = 10
+			)
+			AS ifFollower
+			ON master.usNo = ifFollower.usNo
 
 			WHERE
 				master.usNo
@@ -294,8 +347,10 @@ class StatusRepository extends DbRepository
 				master.nowPt,
 				gvnTable.allClkSum,
 				IFNULL(gvnTable2.toMeClkSum, 0) AS toMeClkSum,
-				IFNULL(gvnTable3.MySendClkSum, 0) AS MySendClkSum
-				FROM tbus
+				IFNULL(gvnTable3.MySendClkSum, 0) AS MySendClkSum,
+				IF(ifFollowing.followingNo > 0, 1, 0) AS ifFollowing,
+				IF(ifFollower.usNo > 0, 1, 0) AS ifFollower
+			FROM tbus
 				AS master
 			LEFT JOIN(
 				SELECT
@@ -342,6 +397,22 @@ class StatusRepository extends DbRepository
 			)
 			AS gvnTable3
 			ON master.usNo = gvnTable3.seUs
+
+			LEFT JOIN(
+				SELECT usNo, followingNo
+					FROM tbfollow
+					WHERE usNo = :usNo
+			)
+			AS ifFollowing
+			ON master.usNo = ifFollowing.followingNo
+
+			LEFT JOIN(
+				SELECT usNo, followingNo
+					FROM tbfollow
+					WHERE followingNo = 10
+			)
+			AS ifFollower
+			ON master.usNo = ifFollower.usNo
 
 			WHERE
 				master.usNo
