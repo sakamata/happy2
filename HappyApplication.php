@@ -31,6 +31,10 @@ class HappyApplication extends Application
 				=> array('controller' => 'admin'),
 			'/admin/calc'
 				=> array('controller' => 'admin', 'action' => 'calc'),
+			'/follow'
+				=> array('controller' => 'follow', 'action' => 'index'),
+			'/follow/:action'
+				=> array('controller' => 'follow'),
 		);
 	}
 

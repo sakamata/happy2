@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+
+		<style type="text/css">
+
+		.users_meter{
+			width: 30%;
+			background-color: #eee;
+
+		}
+
+		.thermometer-outer {
+		  margin: 20px auto;
+		  background: #c4f0ff;
+		  border: 1px solid #c4f0ff;
+		  border-radius: 3px;
+		}
+		.thermometer-outer-h {
+		  height: 10px;
+		  width: 80%;
+		}
+		.thermometer-outer-v {
+		  height: 200px;
+		  width: 20px;
+		}
+		.thermometer-inner {
+		  background: #ff3;
+		}
+		.thermometer-inner-h {
+		  height: 10px;
+		}
+		.thermometer-inner-v {
+		  width: 20px;
+		}
+		</style>
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+		<link type="text/css" rel="stylesheet"
+		  href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
+		<script type="text/javascript"
+		  src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+
+		<script type="text/javascript" src="js/jquery.thermometer.js"></script>
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+		<script type="text/javascript">
+
+		var all = [40,50,60];
+		var click = [10,55,20];
+		var n = 0;
+		google.load('visualization', '1.0', {'packages':['corechart']});
+		google.setOnLoadCallback(drawStacked);
+
+
+		function drawStacked() {
+			// データを用意
+			var data = new google.visualization.arrayToDataTable([
+				['taro', 'My', 'all'],
+				['taro', click[n], all[n]]
+			]);
+			// グラフオプション設定
+			var options = {
+				isStacked : true,
+				'width': 500,
+				'height': 200,
+				'backgroundColor': '#888888',
+			};
+
+			// 描画
+			var chartN = 'chart' + [n];
+			console.log(chartN);
+			var chartN = new google.visualization.BarChart(document.getElementById(chartN));
+			chartN.draw(data, options);
+		}
+
+		// $(document).ready(function() {
+		// 	$('.thermometer').thermometer();
+		// });
+
+		$(document).ready(function() {
+			$('.thermometer').thermometer({
+			  percent: 75,
+			  speed: 'slow'
+			});
+		});
+
+		function doAction(){
+			$("#msg").text("クリックしました！");
+		}
+
+
+		</script>
+
+	</head>
+	<body>
+
+	<div id="chart0"></div>
+	<div id="chart1"></div>
+	<div id="chart2"></div>
+
+	<div class="hoge">
+<h1>Thermometerのデモでーす。</h1>
+</div>
+	<div class="users_meter">
+	</div>
+	<div class="thermometer" data-percent="100" data-speed="400"></div>
+
+	<h1 id="title">サンプル</h1>
+	<p id="msg">ボタンをクリックしてください。</p>
+	<br /><br />
+	<input type="button" onclick="doAction()" value="クリック" />
+
+	</body>
+
+
+
+</html>

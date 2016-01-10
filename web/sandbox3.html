@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Canvas Study</title>
+	</head>
+	<body>
+		<h1>Canvas Study</h1>
+		<canvas id="mycanvas" width="800" height="400">
+			Canvasに対応したブラウザが必要です。
+		</canvas>
+		<script type="text/javascript">
+
+	window.onload = function () {
+		draw();
+	}
+
+	function draw() {
+		var canvas = document.getElementById('mycanvas');
+		if (!canvas || !canvas.getContext) return false;
+		var ctx = canvas.getContext('2d');
+
+		// 四角線の描画 strokeRect(x,y,w,h)
+		ctx.strokeRect(10,10,50,50);
+		// 四角　塗りつぶし fillRect(x,y,w,h)
+		ctx.fillRect(50,50,50,50);
+		// 四角　範囲を消す clearRect
+		ctx.clearRect(25,25,50,50);
+
+		ctx.strokeStyle = "#ff8800"; // cssと同様の設定が可能
+		ctx.lineWidth = 5; // 線幅px単位
+		ctx.lineJoin = "round"; // 交点の形状指定　丸
+		ctx.strokeRect(10,150,50,50);
+
+		ctx.fillStyle = "#0088ff"; // cssと同様の設定が可能
+		ctx.fillRect(100,150,50,50);
+
+		// 線の描画
+		ctx.beginPath();// 線の開始
+		ctx.moveTo(20,20); //始点
+		ctx.lineTo(120,20); // 線の点指定
+		ctx.lineTo(120,120); // 線の点指定
+		ctx.closePath();// 線を始点に返す
+		ctx.fill(); // 塗りつぶし
+		ctx.stroke(); // 線の終了
+
+		// 曲線の描画
+		ctx.beginPath();
+		// 曲線 角度の開始は3時方向から時計回り
+		// arc(x, y, radius, startAngle, endAngle [, anticlockwise ] )
+		ctx.arc(500, 150, 100, 0/180*Math.PI, 90/180*Math.PI);
+		ctx.lineWidth = 15;
+		ctx.lineCap = "round"; // 線端部の形状
+		ctx.fill();
+		ctx.stroke();
+
+
+		// // アニメーション
+		// ctx.fillStyle = "red";
+		// var y = 0;
+		// // 即時関数で定義するのも良い
+		// (function loop() {
+		// 	ctx.clearRect(0, 0, canvas.width, canvas.height);
+		// 	if (y > canvas.height) y = -50;
+		// 	y++;
+		// 	ctx.fillRect(0,y,50,50);
+		// 	setTimeout(loop, 10);
+		// })();
+
+
+		// createLinearGradient(x0, y0, x1, y1) グラテーション範囲の指定(始点/終点)
+		var g = ctx.createLinearGradient(200,50,300,150);
+
+		// createRadialGradient(x0, y0, r0, x1, y1, r1) グラテーション円の範囲指定
+		// var g = ctx.createRadialGradient(250,100,0,250,100,70);
+		g.addColorStop(0.0, "red");
+		g.addColorStop(0.5, "yellow");
+		g.addColorStop(1.0, "blue");
+		ctx.fillStyle = g;
+		ctx.fillRect(200,50,100,100);
+
+
+		// 変形させる
+		// ctx.scale(0.8,0.8);
+		// 回転させる
+		ctx.rotate(10/180*Math.PI);
+		ctx.translate(-10,-150);
+		ctx.fillRect(250,250,100,100);
+
+
+	}
+
+		</script>
+	</body>
+</html>

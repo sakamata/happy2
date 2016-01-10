@@ -1,10 +1,47 @@
+<?php
+$jsonStatuses = json_encode($statuses);
+?>
+
+<script type="text/javascript">
+	var viewNo = 0;
+	var follow_token = '<?php echo $this->escape($follow_token); ?>';
+	var statuses = JSON.parse('<?php echo $jsonStatuses; ?>');
+	console.log(statuses);
+	// window.onload = followPost;
+	function followPost(usNo, followingNo, follow_token, followAction) {
+		// NGGGG!!! ajaxで呼ぶんじゃなくて POSTする
+		$.ajax({
+			type: "POST",
+			url: "<?php echo $this->escape($base_url); ?>/follow/follow",
+			data: {
+				usNo: usNo,
+				followingNo: followingNo,
+				follow_token: follow_token,
+				followAction: followAction
+			}
+		}).done(function () {
+			// body...
+		});
+
+		var formId = 'follow_form_' + usNo;
+		var elem = document.getElementById('formId');
+		if (followAction === 'follow') {
+			elem.innerHTML += '<img src="/../img/unfollow_icon.png">';
+		} else if (followAction === 'unfollow') {
+			elem.innerHTML += '<img src="/../img/follow_plus_icon.png">';
+
+		};
+
+	}
+</script>
+
 <?php $this->setLayoutVar('title', 'ホーム') ?>
 
 <h2>ホーム</h2>
 
 <div id="wsStatus"></div>
-<input type="text" id="mes" placeholder="WebSocket Test">
-<input type="button" id="wsButton" value="send">
+	<input type="text" id="mes" placeholder="WebSocket Test">
+	<input type="button" id="wsButton" value="send">
 <div id="res"></div>
 
 <hr>
@@ -57,7 +94,7 @@
 		echo $this->render('status/users_null', array('usersNullMessage' => $usersNullMessage));
 	} else {
 		foreach ($statuses as $status):
-			echo $this->render('status/users', array('status' => $status,  'thisUserAllClkSum' => $headerUser['thisUserAllClkSum']));
+			echo $this->render('status/users', array('base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'thisUserAllClkSum' => $headerUser['thisUserAllClkSum']));
 		endforeach;
 	}
 ?>

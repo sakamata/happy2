@@ -37,7 +37,7 @@ class StatusController extends Controller
 			$usersArray = 'newUsers';
 		}
 		$order = strval($this->request->getPost('order'));
-		if (empty($order) || $usersArray =='newUsers') { // 古参ユーザーの露出を避ける為の措置
+		if (empty($order)) {
 			$order = 'DESC';
 		}
 		$page = intval($this->request->getPost('pager'));
@@ -60,6 +60,7 @@ class StatusController extends Controller
 		return $this->render(array(
 			'body' => '',
 			'_token' => $this->generateCsrfToken('status/post'),
+			'follow_token' => $this->generateCsrfToken('follow/follow'),
 			'headerUser' => $headerUser,
 			'usersArray' => $usersArray,
 			'statuses' => $statuses,

@@ -34,32 +34,10 @@ a {
 	margin: 0 30px;
 }
 
-#main_user {
-	background-color: #eee;
-}
-
-.follow_button, .unfollow_button{
-	whdth: 92px;
-	height: 35px;
-	border-radius: 5px;
-}
-
 .status {
 	padding: 10px;
 	border-bottom: 2px solid #CCCCCC;
 	margin-bottom: 10px;
-}
-
-.status_null {
-	height: 10em;
-	background-color: #fcc;
-	padding: 10px;
-	border-bottom: 2px solid #CCCCCC;
-	margin-bottom: 10px;
-}
-
-.order_changer form{
-	font-size: 3em;
 }
 
 ul.error_list {
@@ -71,8 +49,4 @@ ul.error_list {
 
 ul.error_list li {
 	color: #FF0000;
-}
-
-#bar{
-	width: 200px;
 }

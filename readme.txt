@@ -137,11 +137,24 @@ $pass = 'hoge';
 
 
 HogeController内 generateCsrfTokenについて
+
 	generateCsrfToken( controller名 / action名 )
+	一画面（ render() 単位）に controller名 / action名　が異なる
+	フォームが複数ある場合は
+	render() の際、個別に token を複数発行する
+
+		例：
+		$this->render(array(
+			'A_token' => $this->generateCsrfToken('hoge/hogeAAA'),
+			'B_token' => $this->generateCsrfToken('fuga/fugaBBB'),
+		));
 
 
 Viewファイル内 renderメソッドについて
+view中にif,foreach等でさらに別ファイルでrender処理を行う際は、
+送り先に必要な変数を array で渡してやること
 
+	例:
 	$this->render(' viewフォルダpath 拡張子不要 ' , array(' key ' => $var , ' key2 ' => $var2 ...));
 
 	例：
