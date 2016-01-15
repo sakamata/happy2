@@ -33,6 +33,33 @@ $jsonStatuses = json_encode($statuses);
 		};
 
 	}
+
+	function send_contact_form(followingNo, followAction, follow_token) {
+		// フォームに入力された内容を取得するにはjQueryの記述でCSSのセレクタを使ってフォームの要素を指定して内容を取得する。
+		var contact_form_contents = {
+			followingNo : followingNo,
+			followAction : followAction,
+			follow_token : follow_token
+		};
+
+		// AjaxでPHPを呼び出す
+		$.ajax({
+			type: 'POST',
+			url: 'C:/xampp/htdocs/happy2/jsPost/followCheck.php',
+			data: contact_form_contents,
+			success: function(res) {
+				var res = JSON.parse( res );
+				console.log(res);
+
+			},
+			error: function() {
+				console.log('ERROR!');
+			}
+		});
+	}
+
+//	'../../jsPost/followCheck.php'
+// '<?php echo $this->escape($base_url); ?>/follow/follow', // 実行するPHPの相対パス
 </script>
 
 <?php $this->setLayoutVar('title', 'ホーム') ?>

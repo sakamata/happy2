@@ -7,7 +7,7 @@ abstract class Application
 	protected $response;
 	protected $session;
 	protected $db_manager;
-	protected $router;	// 自己判断で追加 initialize()で定義されるべきプロパティ
+	// protected $router;	// 自己判断で追加 initialize()で定義されるべきプロパティ
 	protected $login_action = array();
 
 	public function __construct($debug = false)
@@ -39,7 +39,7 @@ abstract class Application
 		$this->router = new Router($this->registerRoutes());
 	}
 
-
+	// ここにrouter　params === false の際はrouter無しでのオブジェクト生成的な処理を行わせることができないか？
 	public function run()
 	{
 		try {

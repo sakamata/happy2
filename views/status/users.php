@@ -1,7 +1,6 @@
 	<script type="text/javascript">
 		// 変数定義
 		var usNo = statuses[viewNo].usNo;
-		console.log(usNo);
 	</script>
 
 	<div class="status">
