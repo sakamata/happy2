@@ -52,8 +52,8 @@ class UserRepository extends DbRepository
 	public function tb_user_statusRegisterInsert($usNo, $latitude, $longitude)
 	{
 		$sql = "
-			INSERT INTO tb_user_status(usNo, latitude, longitude)
-			VALUES(:usNo, :latitude, :longitude)
+			INSERT INTO tb_user_status(usNo, lastActiveTime, latitude, longitude)
+			VALUES(:usNo, now(), :latitude, :longitude)
 		";
 
 		$stmt = $this->execute($sql, array(
