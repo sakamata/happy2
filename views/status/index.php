@@ -45,7 +45,7 @@ $jsonStatuses = json_encode($statuses);
 		// AjaxでPHPを呼び出す
 		$.ajax({
 			type: 'POST',
-			url: 'C:/xampp/htdocs/happy2/jsPost/followCheck.php',
+			url: '<?php echo $base_url; ?>/follow/follow',
 			data: contact_form_contents,
 			success: function(res) {
 				var res = JSON.parse( res );
