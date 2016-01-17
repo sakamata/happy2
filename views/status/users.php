@@ -8,6 +8,7 @@
 		<span>ON/OFF</span><br>
 		<span>Following: <?php echo $this->escape($status['ifFollowing']); ?></span>
 <?php
+		echo $this->render('status/follow_status', array('base_url' => $base_url, 'status' => $status,));
 		echo $this->render('status/follow_button', array('base_url' => $base_url, 'status' => $status, 'follow_token'=> $follow_token,));
 ?>
 		<br>

@@ -6,7 +6,7 @@ $jsonStatuses = json_encode($statuses);
 	var viewNo = 0;
 	var statuses = JSON.parse('<?php echo $jsonStatuses; ?>');
 
-	function send_contact_form(followingNo, followAction, f_token) {
+	function followPost(followingNo, followAction, ifFollowing, f_token) {
 		var f_token = '<?php echo $follow_token; ?>';
 		if (followAction === 1) {
 			var followAction = 'unFollow';

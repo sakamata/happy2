@@ -38,10 +38,17 @@ a {
 	background-color: #eee;
 }
 
-.follow_button, .unfollow_button{
+.follow_status img{
 	whdth: 92px;
 	height: 35px;
 	border-radius: 5px;
+}
+
+.follow_button, .unfollow_button {
+	whdth: 92px;
+	height: 35px;
+	border-radius: 5px;
+	border: 1px solid #aaa;
 }
 
 .status {
@@ -58,7 +65,7 @@ a {
 	margin-bottom: 10px;
 }
 
-.order_changer form{
+.order_changer form {
 	font-size: 3em;
 }
 
@@ -73,6 +80,6 @@ ul.error_list li {
 	color: #FF0000;
 }
 
-#bar{
+#bar {
 	width: 200px;
 }
