@@ -4,53 +4,34 @@ $jsonStatuses = json_encode($statuses);
 
 <script type="text/javascript">
 	var viewNo = 0;
-	var follow_token = '<?php echo $this->escape($follow_token); ?>';
 	var statuses = JSON.parse('<?php echo $jsonStatuses; ?>');
-	console.log(statuses);
-	// window.onload = followPost;
-	function followPost(usNo, followingNo, follow_token, followAction) {
-		// NGGGG!!! ajaxで呼ぶんじゃなくて POSTする
-		$.ajax({
-			type: "POST",
-			url: "<?php echo $this->escape($base_url); ?>/follow/follow",
-			data: {
-				usNo: usNo,
-				followingNo: followingNo,
-				follow_token: follow_token,
-				followAction: followAction
-			}
-		}).done(function () {
-			// body...
-		});
 
-		var formId = 'follow_form_' + usNo;
-		var elem = document.getElementById('formId');
-		if (followAction === 'follow') {
-			elem.innerHTML += '<img src="/../img/unfollow_icon.png">';
-		} else if (followAction === 'unfollow') {
-			elem.innerHTML += '<img src="/../img/follow_plus_icon.png">';
-
-		};
-
-	}
-
-	function send_contact_form(followingNo, followAction, follow_token) {
-		// フォームに入力された内容を取得するにはjQueryの記述でCSSのセレクタを使ってフォームの要素を指定して内容を取得する。
+	function send_contact_form(followingNo, followAction, f_token) {
+		var f_token = '<?php echo $follow_token; ?>';
+		if (followAction === 1) {
+			var followAction = 'unFollow';
+		} else if (followAction === 0) {
+			var followAction = 'doFollow';
+		}	else {
+			return;
+		}
 		var contact_form_contents = {
 			followingNo : followingNo,
 			followAction : followAction,
-			follow_token : follow_token
+			f_token : f_token
 		};
-
-		// AjaxでPHPを呼び出す
 		$.ajax({
 			type: 'POST',
 			url: '<?php echo $base_url; ?>/follow/follow',
 			data: contact_form_contents,
 			success: function(res) {
-				var res = JSON.parse( res );
-				console.log(res);
-
+				var formId = 'follow_form_' + followingNo;
+				var elem = document.getElementById(formId);
+				if (followAction === 'unFollow') {
+					elem.innerHTML = '<input type="hidden" name="followAction" value="follow"><input type="image" class="follow_button" src="<?php echo $base_url; ?>/../img/unfollowed_icon.png" alt="unfollow_button" value="follow">';
+				} else if (followAction === 'doFollow') {
+					elem.innerHTML = '<input type="hidden" name="followAction" value="follow"><input type="image" class="follow_button" src="<?php echo $base_url; ?>/../img/followed_icon.png" alt="unfollow_button" value="follow">';
+				};
 			},
 			error: function() {
 				console.log('ERROR!');
@@ -58,8 +39,6 @@ $jsonStatuses = json_encode($statuses);
 		});
 	}
 
-//	'../../jsPost/followCheck.php'
-// '<?php echo $this->escape($base_url); ?>/follow/follow', // 実行するPHPの相対パス
 </script>
 
 <?php $this->setLayoutVar('title', 'ホーム') ?>
