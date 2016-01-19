@@ -13,6 +13,32 @@
 				console.log(position.coords.longitude);
 			}
 		);
+
+
+		var date = new Date();
+
+		document.write(date.getFullYear()  + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds() + "<br />\r\n");
+
+		var date;
+		date = new Date();
+		date = date.getUTCFullYear() + '-' +
+		    ('00' + (date.getUTCMonth()+1)).slice(-2) + '-' +
+		    ('00' + date.getUTCDate()).slice(-2) + ' ' +
+		    ('00' + date.getUTCHours()).slice(-2) + ':' +
+		    ('00' + date.getUTCMinutes()).slice(-2) + ':' +
+		    ('00' + date.getUTCSeconds()).slice(-2);
+		// console.log(date);
+
+		$.get("/happy2/web/index_dev.php/ajaxPost/postTimeAdjustment", function(data, status, jqXHR) {
+			console.log(data);
+
+		    var clientTime = new Date();
+		    var serverTime = new Date(Date.parse(jqXHR.getResponseHeader("Date")));
+		    var diff = clientTime - serverTime;
+		    var accurateTime = serverTime + diff;
+		    console.log(new Date(accurateTime));
+		});
+
 		</script>
 
 

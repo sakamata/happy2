@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script type="text/javascript"
+		src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="<?php echo $base_url; ?>/../js/bootstrap.min.js"></script>
 	<title>Happy<?php if (isset($title)):echo "-" . $this->escape($title) ; endif; ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta charset="utf-8">
@@ -12,6 +16,7 @@
 
 </head>
 <body>
+	<div id="wsMessage"><p></p></div>
 
 	<div id="header">
 		<h1><a href="<?php echo $base_url; ?>/">Happy ver2</a></h1>
@@ -33,11 +38,6 @@
 	</div>
 
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	<script type="text/javascript"
-		src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="<?php echo $base_url; ?>/../js/bootstrap.min.js"></script>
-
 	<script>
 	jQuery(function($) {
 		var socket;
@@ -52,10 +52,26 @@
 		socket.onopen = function(msg){
 			$('#wsStatus').text('online');
 		};
+
+		// socket.onmessage = function(msg){
+		// 	$('#res').text( $('#res').text() + msg.data );
+		// };
+
+
+		// 受信したメッセージの加工とバルーン表示
 		socket.onmessage = function(msg){
-			$('#res').text( $('#res').text() + msg.data );
-			// $('#res').text( msg.data );
+			var msg = msg.data;
+			var msg = JSON.parse(msg);
+			console.log(msg);
+			console.log(msg.usNo);
+
+			$('#wsMessage').html( $('#wsMessage')
+				.html() +  msg.sendUserName + 'から' + msg.usName + 'へクリックされました<br>')
+				.css({
+					'visibility' :'visible'
+				});
 		};
+
 		socket.onclose = function(msg){
 			$('#wsStatus').text('offline');
 		};

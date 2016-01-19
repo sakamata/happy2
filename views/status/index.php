@@ -3,6 +3,10 @@ $jsonStatuses = json_encode($statuses);
 ?>
 
 <script type="text/javascript">
+	var socket;
+	socket = new WebSocket('ws://127.0.0.1:80/happy2');
+
+
 	var viewNo = 0;
 	var statuses = JSON.parse('<?php echo $jsonStatuses; ?>');
 
@@ -22,7 +26,7 @@ $jsonStatuses = json_encode($statuses);
 		};
 		$.ajax({
 			type: 'POST',
-			url: '<?php echo $base_url; ?>/follow/follow',
+			url: '<?php echo $base_url; ?>/ajaxPost/follow',
 			data: contact_form_contents,
 			success: function(res) {
 				var formId = 'follow_form_' + followingNo;
@@ -38,6 +42,66 @@ $jsonStatuses = json_encode($statuses);
 			}
 		});
 	}
+
+
+	function clickAction(usNo, usId, usName) {
+		var ore ='hoge';
+		var msg = {
+			usNo : usNo,
+			usId : usId,
+			usName : usName,
+			sendUserNo : '<?php echo $this->escape($headerUser['usNo']); ?>',
+			sendUserId : '<?php echo $this->escape($headerUser['usId']); ?>',
+			sendUserName : '<?php echo $this->escape($headerUser['usName']); ?>',
+			sendUserImage : '<?php echo $this->escape($headerUser['usImg']); ?>'
+		};
+		var msg = JSON.stringify(msg);
+
+		// WebSocketで値を共有
+		ID = '#clickAction_' + usNo;
+		$(document).on('click', ID, function(){
+			socket.send(msg);
+		});
+
+	}
+
+	function ClickPool(sendUser, clickCount) {
+		// click情報をオブジェクトにして収納　JSON化
+		// DBへのPOSTが確認できた値はクリア
+
+		var date = new Date();
+		// dateTime =
+
+		var posts = {
+			sendUser : sendUser,
+			clickCount : clickCount,
+			dateTime : dateTime
+		};
+	}
+
+	// POSTされる際は値の最後に sendUser=0 clickCount=0 をPostTimeのトリガーとして送る?
+
+	$.get("<?php echo $base_url; ?>/ajaxPost/postTimeAdjustment", function(data, status, jqXHR) {
+			var clientTime = new Date();
+			var serverTime = new Date(Date.parse(jqXHR.getResponseHeader("Date")));
+			var diff = clientTime - serverTime;
+			var accurateTime = serverTime + diff;
+			var time = new Date(accurateTime);
+			time = dateFomater(time);
+			console.log(time);
+	});
+
+	function dateFomater(date) {
+		// var date;
+		date = date.getFullYear() + '-' +
+				('00' + (date.getMonth()+1)).slice(-2) + '-' +
+				('00' + date.getDate()).slice(-2) + ' ' +
+				('00' + date.getHours()).slice(-2) + ':' +
+				('00' + date.getMinutes()).slice(-2) + ':' +
+				('00' + date.getSeconds()).slice(-2);
+				return date;
+	}
+
 
 </script>
 

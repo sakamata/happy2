@@ -186,3 +186,11 @@ echo $this->render('admin/tbgvnPosts', array('_token' => $_token));
 	例;	$PostValue = $this->request->getPost('hoge');
 
 ------------------------------------------------------
+
+
+Thanks!
+サーバーとクライアントの時刻をシンクロさせる方法
+http://taka.hatenadiary.com/entry/2015/02/23/%E3%82%B5%E3%83%BC%E3%83%90%E3%83%BC%E3%81%A8%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%81%AE%E6%99%82%E5%88%BB%E3%82%92%E3%82%B7%E3%83%B3%E3%82%AF%E3%83%AD%E3%81%95%E3%81%9B%E3%82%8B
+
+Convert JS date time to MySQL datetime
+http://stackoverflow.com/questions/5129624/convert-js-date-time-to-mysql-datetime

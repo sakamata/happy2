@@ -60,7 +60,7 @@ class StatusController extends Controller
 		return $this->render(array(
 			'body' => '',
 			'_token' => $this->generateCsrfToken('status/post'),
-			'follow_token' => $this->generateCsrfToken('follow/follow'),
+			'follow_token' => $this->generateCsrfToken('ajaxPost/follow'),
 			'headerUser' => $headerUser,
 			'usersArray' => $usersArray,
 			'statuses' => $statuses,
