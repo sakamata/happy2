@@ -51,16 +51,14 @@ a {
 	visibility :hidden;
 }
 
-.follow_status img{
-	whdth: 92px;
-	height: 35px;
-	border-radius: 5px;
+.follow_status img {
+	width: 100px;
+	border-radius: 10px;
 }
 
 .follow_button, .unfollow_button {
-	whdth: 92px;
-	height: 35px;
-	border-radius: 5px;
+	width: 100px;
+	border-radius: 10px;
 	border: 1px solid #aaa;
 }
 
