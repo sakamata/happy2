@@ -40,15 +40,10 @@ a {
 
 #wsMessage{
 	position: fixed;
-	width: 40%;
-	height: 5%;
 	left: 30%;
 	top: 50px;
 	text-align: center;
-	background-color: #ee9999;
-	border-radius: 10px;
-	border: 3px solid #ffdddd;
-	visibility :hidden;
+	/*visibility :hidden;*/
 }
 
 .follow_status img {

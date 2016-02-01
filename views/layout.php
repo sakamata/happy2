@@ -16,7 +16,10 @@
 
 </head>
 <body>
-	<div id="wsMessage"><p></p></div>
+	<div id="wsMessage">
+		<ul id="msg">
+		</ul>
+	</div>
 
 	<div id="header">
 		<h1><a href="<?php echo $base_url; ?>/">Happy ver2</a></h1>
@@ -46,8 +49,8 @@
 		// }else{
 		// 	socket = new WebSocket('ws://127.0.0.1:80/echo');
 		// }
-			socket = new WebSocket('ws://127.0.0.1:80/happy2');
-			// socket = new WebSocket('ws://192.168.11.5/echo');
+		socket = new WebSocket('ws://127.0.0.1:80/happy2');
+		// socket = new WebSocket('ws://192.168.11.5/echo');
 
 		socket.onopen = function(msg){
 			$('#wsStatus').text('online');
@@ -57,19 +60,14 @@
 		// 	$('#res').text( $('#res').text() + msg.data );
 		// };
 
-
 		// 受信したメッセージの加工とバルーン表示
 		socket.onmessage = function(msg){
 			var msg = msg.data;
 			var msg = JSON.parse(msg);
-			console.log(msg);
-			console.log(msg.usNo);
+			// console.log(msg);
 
-			$('#wsMessage').html( $('#wsMessage')
-				.html() +  msg.sendUserName + 'から' + msg.usName + 'へクリックされました<br>')
-				.css({
-					'visibility' :'visible'
-				});
+			newsPop(msg);
+
 		};
 
 		socket.onclose = function(msg){
@@ -79,6 +77,62 @@
 			socket.send($('#mes').val());
 		});
 	});
+
+
+	// クリックされたメッセージを表示
+	function newsPop(mess){
+		var li = '<li>' + mess.sendUserName + 'から' + mess.usName + 'へクリックされました</li>';
+
+		var jqdiv = $('<div>')
+		.appendTo($('#msg'))
+		.html(li)
+		.css({
+			'position': 'fixed',
+			'z-index' : '100',
+			'margin-right': 'auto',
+			'margin-left': 'auto',
+			'top': '50px',
+			'background':'-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffec64), color-stop(1, #ffab23))',
+			'background':'linear-gradient(top, #ffec64 5%, #ffab23 100%)',
+			'background':'-webkit-linear-gradient(top, #ffec64 5%, #ffab23 100%)',
+			'background-color':'#ffec64',
+			'border-radius':'12px',
+			'border':'1px solid #ffaa22',
+			'cursor':'pointer',
+			'color':'#333',
+			'padding':'15px',
+			'text-decoration':'none',
+			'list-style-type': 'none'
+		})
+		.fadeIn(500)
+		.bind('click' , function(){
+			$(this).stop(true,false)
+			.fadeOut(500,function(){
+				jqdiv.remove();
+				// next();
+			});
+		});
+
+		$('<div>').queue(function(next){
+			jqdiv
+			.animate({top: '200px'},1500)
+			.delay(1000)
+			.fadeOut(500,function(){
+				jqdiv.remove();
+				next();
+			})
+			.bind('click' , function(){
+				$(this).stop(true,false)
+				.fadeOut(500,function(){
+					jqdiv.remove();
+					next();
+				});
+			});
+		});
+		(new Audio(window.newsPopSound)).play();
+	}
+
+
 	</script>
 
 </body>
