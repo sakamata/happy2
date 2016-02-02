@@ -45,6 +45,7 @@ function followPost(followingNo, followAction, ifFollowing, f_token) {
 
 function clickAction(usNo, usId, usName) {
 	// WebSocketで値を共有
+	// ToDo 自分の変数をPHPから引っ張る
 	var ore ='hoge';
 	var msg = {
 		usNo : usNo,
@@ -86,22 +87,38 @@ function clickObjct(usNo) {
 };
 
 
+// ToDo タイマー処理後に値のクリア処理を追加する
 // Postの値を溜める
 function clickPool(post) {
 	var count = 0;
 	var posts = {};
 	return function(post){
-		// ToDo タイマー処理後に値のクリア処理を追加する
-		// ToDo  POST Obj click連打時はObjをまとめる処理
-		// 相手が同じ and n秒以内なら連打判定最初のクリック時間に集約
 		key = 'no_' + count;
-		posts[key] = post;
-		count++;
-		return posts;
+		if (count == 0) {
+			posts[key] = post;
+			count++;
+			var test = 'count_zero';
+		} else {
+			var decmentCount = count -1;
+			var decmentKey = 'no_' + decmentCount;
+			decmentTime = posts[decmentKey].dateTime;
+			decmentSeUs = posts[decmentKey].seUs;
+			thisTime = post.dateTime;
+			thisSeUs = post.seUs;
+			// 同ユーザーへの時間内連続クリックなら前回のclk値に追加し、ひとまとめに
+			if (thisTime - decmentTime <= 5000 && thisSeUs == decmentSeUs) {
+				posts[decmentKey].clkCount++;
+				var test = posts[decmentKey].clkCount;
+			} else {
+				var test = '連打ではない';
+				posts[key] = post;
+				count++;
+			}
+		}
+		return {p:posts, test:test};
 	}
 };
 clickPool = clickPool();
-
 
 // -------------------------------------------------------------
 
