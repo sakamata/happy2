@@ -56,4 +56,11 @@ class AjaxPostController extends Controller
 		}
 	}
 
+	// *** ToDo ***
+	public function clickPostAction()
+	{
+		$user = $this->session->get('user');
+
+	}
+
 }

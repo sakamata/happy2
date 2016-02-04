@@ -43,10 +43,101 @@ function followPost(followingNo, followAction, ifFollowing, f_token) {
 }
 
 
-function clickAction(usNo, usId, usName) {
-	// WebSocketで値を共有
-	// ToDo 自分の変数をPHPから引っ張る
-	var ore ='hoge';
+function clickObjct(usNo) {
+		var clickCount = 1;
+		var date = new Date();
+		var post = {
+			seUs : usNo,
+			clkCount : clickCount,
+			dateTime : date
+		};
+		return post;
+};
+
+// Postの値を溜める
+clickPool = function (post) {
+	var count = 0;
+	var posts = {};
+	return function(post){
+		if (post === 'reset') {
+			posts = {};
+			count = 0;
+			console.log('posts,count, reset!')
+			return;
+		}
+		key = 'no_' + count;
+		if (count == 0) {
+			posts[key] = post;
+			count++;
+			var click = 'count_zero';
+		} else {
+			var decmentCount = count -1;
+			var decmentKey = 'no_' + decmentCount;
+			decmentTime = posts[decmentKey].dateTime;
+			decmentSeUs = posts[decmentKey].seUs;
+			thisTime = post.dateTime;
+			thisSeUs = post.seUs;
+			// 同ユーザーへの時間内連続クリックなら前回のclk値に追加し、ひとまとめに
+			if (thisTime - decmentTime <= 2000 && thisSeUs == decmentSeUs) {
+				posts[decmentKey].clkCount++;
+				var click = posts[decmentKey].clkCount;
+			} else {
+				var click = '連打ではない';
+				posts[key] = post;
+				count++;
+			}
+		}
+		return posts;
+	}
+};
+var clickPool = clickPool();
+
+
+function clickPost(posts) {
+	if (!posts || posts == 'reset' || typeof(posts) == "function") {
+		return;
+	}
+	$.ajax({
+		type: 'POST',
+		url: '<?php echo $base_url; ?>/ajaxPost/clickPost',
+		data: posts,
+		success: function(res) {
+			console.log('clickPost success!');
+			clickPool('reset');
+		},
+		error: function() {
+			console.log('clickPost ERROR!');
+		}
+	})
+};
+// var clickPost = clickPost();
+
+
+
+function postChecker(posts) {
+	// ***ToDo*** postsをPOSTするか判定チェック
+	if (!posts || posts == 'reset' || typeof(posts) == "function") {
+		return;
+	}
+	var postsCount = Object.keys(posts).length;
+
+	if (postsCount >= 10) {
+		clickPost(posts);
+		// ToDo タイマーcountリセット処理
+	} else {
+		// ckickPool の値をクロージャに内包
+		return function (posts) {
+			return posts;
+		}
+	}
+};
+// postChecker = postChecker();
+
+setInterval("clickPost(postChecker)" , 10*1000);
+
+
+var clickAction = function(usNo, usId, usName) {
+	// WebSocketで共有する値
 	var msg = {
 		usNo : usNo,
 		usId : usId,
@@ -64,61 +155,15 @@ function clickAction(usNo, usId, usName) {
 	});
 
 	// POST用のオブジェクトを生成
-	post = clickObjct(usNo);
-
-
-	posts = clickPool(post);
+	var post = clickObjct(usNo);
+	var posts = clickPool(post);
 	console.log(posts);
-
-	// ToDo click情報をオブジェクトにして収納　JSON化
-	// ToDo DBへのPOSTが確認できた値はクリア
+	// ***ToDo*** 返り値postsをPOST判定functionに送る
+	// ***クリック時に undefind になる*******************************
+	postChecker(posts);
+		// return posts;
 };
 
-
-function clickObjct(usNo) {
-		var clickCount = 1;
-		var date = new Date();
-		var post = {
-			seUs : usNo,
-			clkCount : clickCount,
-			dateTime : date
-		};
-		return post;
-};
-
-
-// ToDo タイマー処理後に値のクリア処理を追加する
-// Postの値を溜める
-function clickPool(post) {
-	var count = 0;
-	var posts = {};
-	return function(post){
-		key = 'no_' + count;
-		if (count == 0) {
-			posts[key] = post;
-			count++;
-			var test = 'count_zero';
-		} else {
-			var decmentCount = count -1;
-			var decmentKey = 'no_' + decmentCount;
-			decmentTime = posts[decmentKey].dateTime;
-			decmentSeUs = posts[decmentKey].seUs;
-			thisTime = post.dateTime;
-			thisSeUs = post.seUs;
-			// 同ユーザーへの時間内連続クリックなら前回のclk値に追加し、ひとまとめに
-			if (thisTime - decmentTime <= 5000 && thisSeUs == decmentSeUs) {
-				posts[decmentKey].clkCount++;
-				var test = posts[decmentKey].clkCount;
-			} else {
-				var test = '連打ではない';
-				posts[key] = post;
-				count++;
-			}
-		}
-		return {p:posts, test:test};
-	}
-};
-clickPool = clickPool();
 
 // -------------------------------------------------------------
 
