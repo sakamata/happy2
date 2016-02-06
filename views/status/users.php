@@ -24,7 +24,7 @@
 		TodayClick  ForYou / All: <?php echo $this->escape($status['toMeClkSum']); ?> / <?php echo $this->escape($status['allClkSum']); ?><br>
 		MySendClkSum: <?php echo $this->escape($status['MySendClkSum']); ?> / <?php echo $this->escape($thisUserAllClkSum); ?>
 		</b>
-		<button type="submit" id="clickAction_<?php echo $status['usNo']; ?>" class="btn btn-warning btn-lg" class="clickAction"  onclick="clickAction('<?php echo $status['usNo']; ?>', '<?php echo $status['usId']; ?>', '<?php echo $status['usName']; ?>' )">Happy!</button>
+		<button type="submit" id="clickAction_<?php echo $status['usNo']; ?>" class="btn btn-warning btn-lg" class="clickAction" onclick="clickAction('post', '<?php echo $status['usNo']; ?>', '<?php echo $status['usId']; ?>', '<?php echo $status['usName']; ?>' )">Happy!</button>
 
 	</div>
 

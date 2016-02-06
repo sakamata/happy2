@@ -65,26 +65,28 @@ clickPool = function (post) {
 			console.log('posts,count, reset!')
 			return;
 		}
-		key = 'no_' + count;
-		if (count == 0) {
-			posts[key] = post;
-			count++;
-			var click = 'count_zero';
-		} else {
-			var decmentCount = count -1;
-			var decmentKey = 'no_' + decmentCount;
-			decmentTime = posts[decmentKey].dateTime;
-			decmentSeUs = posts[decmentKey].seUs;
-			thisTime = post.dateTime;
-			thisSeUs = post.seUs;
-			// 同ユーザーへの時間内連続クリックなら前回のclk値に追加し、ひとまとめに
-			if (thisTime - decmentTime <= 2000 && thisSeUs == decmentSeUs) {
-				posts[decmentKey].clkCount++;
-				var click = posts[decmentKey].clkCount;
-			} else {
-				var click = '連打ではない';
+		if (post) { // postがnullなら　クロージャー内のpostsを返す
+			key = 'no_' + count;
+			if (count == 0) {
 				posts[key] = post;
 				count++;
+				var click = 'count_zero';
+			} else {
+				// 同ユーザーへの時間内連続クリックなら前回のclk値に追加し、ひとまとめに
+				var decmentCount = count -1;
+				var decmentKey = 'no_' + decmentCount;
+				decmentTime = posts[decmentKey].dateTime;
+				decmentSeUs = posts[decmentKey].seUs;
+				thisTime = post.dateTime;
+				thisSeUs = post.seUs;
+				// 連打判定時間の設定
+				if (thisTime - decmentTime <= 2000 && thisSeUs == decmentSeUs) {
+					posts[decmentKey].clkCount++;
+				} else {
+					// オブジェクトの追加
+					posts[key] = post;
+					count++;
+				}
 			}
 		}
 		return posts;
@@ -110,33 +112,23 @@ function clickPost(posts) {
 		}
 	})
 };
-// var clickPost = clickPost();
 
 
-
-function postChecker(posts) {
-	// ***ToDo*** postsをPOSTするか判定チェック
-	if (!posts || posts == 'reset' || typeof(posts) == "function") {
+var clickAction = function(action, usNo, usId, usName, token) {
+	if (action == "intervalPost") {
+		var posts = clickPool();
+		var postsCount = Object.keys(posts).length;
+		if (postsCount > 0) {
+			clickPost(posts);
+			console.log('intervalPost POST end!');
+		}
+		console.log('intervalPost Check end!');
 		return;
 	}
-	var postsCount = Object.keys(posts).length;
 
-	if (postsCount >= 10) {
-		clickPost(posts);
-		// ToDo タイマーcountリセット処理
-	} else {
-		// ckickPool の値をクロージャに内包
-		return function (posts) {
-			return posts;
-		}
-	}
-};
-// postChecker = postChecker();
-
-setInterval("clickPost(postChecker)" , 10*1000);
+	// ***ToDo*** token処理追加
 
 
-var clickAction = function(usNo, usId, usName) {
 	// WebSocketで共有する値
 	var msg = {
 		usNo : usNo,
@@ -148,21 +140,27 @@ var clickAction = function(usNo, usId, usName) {
 		sendUserImage : '<?php echo $this->escape($headerUser['usImg']); ?>'
 	};
 	var msg = JSON.stringify(msg);
-	// WebSocketの値を表示
+	// WebSocket送信
 	ID = '#clickAction_' + usNo;
 	$(document).on('click', ID, function(){
 		socket.send(msg);
 	});
 
 	// POST用のオブジェクトを生成
-	var post = clickObjct(usNo);
-	var posts = clickPool(post);
-	console.log(posts);
-	// ***ToDo*** 返り値postsをPOST判定functionに送る
-	// ***クリック時に undefind になる*******************************
-	postChecker(posts);
-		// return posts;
+	if (action == 'post') {
+		var post = clickObjct(usNo);
+		var posts = clickPool(post);
+	}
+
+	var postsCount = Object.keys(posts).length;
+	// Object数が指定以上で強制POSTさせる
+	if (postsCount >= 10) {
+		clickPost(posts);
+		console.log('postsCount over POST end!');
+	}
 };
+
+setInterval("clickAction('intervalPost')" , 60*1000 );
 
 
 // -------------------------------------------------------------
@@ -187,7 +185,7 @@ function dateFomater(date) {
 			('00' + date.getMinutes()).slice(-2) + ':' +
 			('00' + date.getSeconds()).slice(-2);
 			return date;
-}
+};
 
 
 </script>
