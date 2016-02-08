@@ -9,6 +9,16 @@ socket = new WebSocket('ws://127.0.0.1:80/happy2');
 var viewNo = 0;
 var statuses = JSON.parse('<?php echo $jsonStatuses; ?>');
 
+function dateFomater(date) {
+	date = date.getFullYear() + '-' +
+		('00' + (date.getMonth()+1)).slice(-2) + '-' +
+		('00' + date.getDate()).slice(-2) + ' ' +
+		('00' + date.getHours()).slice(-2) + ':' +
+		('00' + date.getMinutes()).slice(-2) + ':' +
+		('00' + date.getSeconds()).slice(-2);
+	return date;
+};
+
 function followPost(followingNo, followAction, ifFollowing, f_token) {
 	var f_token = '<?php echo $follow_token; ?>';
 	if (followAction === 1) {
@@ -42,14 +52,16 @@ function followPost(followingNo, followAction, ifFollowing, f_token) {
 	});
 }
 
-
 function clickObjct(usNo) {
 		var clickCount = 1;
-		var date = new Date();
+		var now = new Date();
+		var date = now;
+		var sqlDate = dateFomater(now);
 		var post = {
-			seUs : usNo,
-			clkCount : clickCount,
-			dateTime : date
+			sendUser : usNo,
+			clickCount : clickCount,
+			timestamp : sqlDate,
+			date : now
 		};
 		return post;
 };
@@ -62,10 +74,10 @@ clickPool = function (post) {
 		if (post === 'reset') {
 			posts = {};
 			count = 0;
-			console.log('posts,count, reset!')
+			console.log('posts reset!')
 			return;
 		}
-		if (post) { // postがnullなら　クロージャー内のpostsを返す
+		if (post) { // postがnullなら クロージャー内のpostsを返す
 			key = 'no_' + count;
 			if (count == 0) {
 				posts[key] = post;
@@ -75,13 +87,13 @@ clickPool = function (post) {
 				// 同ユーザーへの時間内連続クリックなら前回のclk値に追加し、ひとまとめに
 				var decmentCount = count -1;
 				var decmentKey = 'no_' + decmentCount;
-				decmentTime = posts[decmentKey].dateTime;
-				decmentSeUs = posts[decmentKey].seUs;
-				thisTime = post.dateTime;
-				thisSeUs = post.seUs;
+				decmentTime = posts[decmentKey].date;
+				decmentSeUs = posts[decmentKey].sendUser;
+				thisTime = post.date;
+				thisSeUs = post.sendUser;
 				// 連打判定時間の設定
-				if (thisTime - decmentTime <= 2000 && thisSeUs == decmentSeUs) {
-					posts[decmentKey].clkCount++;
+				if (thisTime - decmentTime <= 5000 && thisSeUs == decmentSeUs) {
+					posts[decmentKey].clickCount++;
 				} else {
 					// オブジェクトの追加
 					posts[key] = post;
@@ -94,15 +106,23 @@ clickPool = function (post) {
 };
 var clickPool = clickPool();
 
-
 function clickPost(posts) {
 	if (!posts || posts == 'reset' || typeof(posts) == "function") {
 		return;
 	}
+	var data = {};
+	data["clicks"] = posts;
+
+	token = '<?php echo $click_token; ?>';
+	data["click_token"] = token;
+
+	var now = new Date();
+	var DateTime = dateFomater(now);
+	data["postDateTime"] = DateTime;
 	$.ajax({
 		type: 'POST',
 		url: '<?php echo $base_url; ?>/ajaxPost/clickPost',
-		data: posts,
+		data: data,
 		success: function(res) {
 			console.log('clickPost success!');
 			clickPool('reset');
@@ -113,8 +133,7 @@ function clickPost(posts) {
 	})
 };
 
-
-var clickAction = function(action, usNo, usId, usName, token) {
+var clickAction = function(action, usNo, usId, usName) {
 	if (action == "intervalPost") {
 		var posts = clickPool();
 		var postsCount = Object.keys(posts).length;
@@ -125,9 +144,6 @@ var clickAction = function(action, usNo, usId, usName, token) {
 		console.log('intervalPost Check end!');
 		return;
 	}
-
-	// ***ToDo*** token処理追加
-
 
 	// WebSocketで共有する値
 	var msg = {
@@ -160,33 +176,7 @@ var clickAction = function(action, usNo, usId, usName, token) {
 	}
 };
 
-setInterval("clickAction('intervalPost')" , 60*1000 );
-
-
-// -------------------------------------------------------------
-
-
-$.get("<?php echo $base_url; ?>/ajaxPost/postTimeAdjustment", function(data, status, jqXHR) {
-		var clientTime = new Date();
-		var serverTime = new Date(Date.parse(jqXHR.getResponseHeader("Date")));
-		var diff = clientTime - serverTime;
-		var accurateTime = serverTime + diff;
-		var time = new Date(accurateTime);
-		time = dateFomater(time);
-		// console.log(time);
-});
-
-function dateFomater(date) {
-	// var date;
-	date = date.getFullYear() + '-' +
-			('00' + (date.getMonth()+1)).slice(-2) + '-' +
-			('00' + date.getDate()).slice(-2) + ' ' +
-			('00' + date.getHours()).slice(-2) + ':' +
-			('00' + date.getMinutes()).slice(-2) + ':' +
-			('00' + date.getSeconds()).slice(-2);
-			return date;
-};
-
+setInterval( "clickAction('intervalPost')" , 10*1000 );
 
 </script>
 
@@ -249,7 +239,7 @@ function dateFomater(date) {
 		echo $this->render('status/users_null', array('usersNullMessage' => $usersNullMessage));
 	} else {
 		foreach ($statuses as $status):
-			echo $this->render('status/users', array('base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'thisUserAllClkSum' => $headerUser['thisUserAllClkSum']));
+			echo $this->render('status/users', array('base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'thisUserAllClkSum' => $headerUser['thisUserAllClkSum']));
 		endforeach;
 	}
 ?>

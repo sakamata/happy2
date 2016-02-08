@@ -40,7 +40,6 @@
 		<?php echo $_content; ?>
 	</div>
 
-
 	<script>
 	jQuery(function($) {
 		var socket;
@@ -65,9 +64,7 @@
 			var msg = msg.data;
 			var msg = JSON.parse(msg);
 			// console.log(msg);
-
 			newsPop(msg);
-
 		};
 
 		socket.onclose = function(msg){
@@ -132,8 +129,6 @@
 		(new Audio(window.newsPopSound)).play();
 	}
 
-
 	</script>
-
 </body>
 </html>

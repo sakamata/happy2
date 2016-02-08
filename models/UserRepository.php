@@ -49,6 +49,43 @@ class UserRepository extends DbRepository
 		));
 	}
 
+	public function clickPost($usNo, $clicks)
+	{
+		$sql = "
+			INSERT INTO
+				tbgvn(usNo, seUs, seClk, dTm)
+				VALUES
+		";
+
+		$count = count($clicks);
+		$a = 0;
+		if (count($clicks) >= 2) {
+			while ($a < count($clicks) - 1) {
+				$no = 'no_' . $a;
+				$seUs = $clicks[$no]['sendUser'];
+				$seClk = $clicks[$no]['clickCount'];
+				$dTm = $clicks[$no]['timestamp'];
+				// ***ToDo*** POST時間の修正
+				$sql .= "($usNo, $seUs, $seClk, '$dTm'),";
+				$a++;
+			}
+		}
+
+		$no = 'no_' . $a;
+		$seUs = $clicks[$no]['sendUser'];
+		$seClk = $clicks[$no]['clickCount'];
+		$dTm = $clicks[$no]['timestamp'];
+		// ***ToDo*** POST時間の修正
+		$sql .= "($usNo, $seUs, $seClk, '$dTm');";
+
+		$stmt = $this->execute($sql, array(
+			':usNo' => $usNo,
+			':seUs' => $seUs,
+			':seClk' => $seClk,
+			':dTm' => $dTm,
+		));
+	}
+
 	public function tb_user_statusRegisterInsert($usNo, $latitude, $longitude)
 	{
 		$sql = "

@@ -119,4 +119,18 @@ abstract class Controller
 
 		return false;
 	}
+
+	protected function checkCsrfTokenLasting($form_name, $token)
+	{
+		$key = 'csrf_tokens/' . $form_name;
+		$tokens = $this->session->get($key, array());
+
+		if (false !== ($pos = array_search($token, $tokens, true))) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 }
