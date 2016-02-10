@@ -20,26 +20,59 @@ class AjaxPostController extends Controller
 		$usNo = intval($user['usNo']);
 		$postDateTime = strval($this->request->getPost('postDateTime'));
 		$clicks = $this->request->getPost('clicks');
-		// error_log('エラーログ！！！');
-		// error_log(print_r($clicks,true),0);
 
+		$clicks = $this->postTimeAdjustment($clicks, $postDateTime);
 		$this->db_manager->get('User')->clickPost($usNo, $clicks);
 	}
 
 	// POST時間の修正
-	// POSTされるobjに "postDateTime" が投稿時間として送られてくる
 	// ユーザー側のTime stamp をサーバー側の時間軸基準に修正
-	// 受けた最後のTime stamp を現在時間として受け取り,それを基準に差分で時間調整
-	// POSTのintavalより大きな値（過去や未来）の時間があった場合も、inteaval内の時間に変換してDB収納
-	public function postTimeAdjustmentAction()
+	// POSTのintavalより大きな値（過去や未来）の時間があった場合は、現在時刻とする
+	// *** ToDo *** POST期間が最終集計時間と重複した場合は、該当のPOST時間を最終集計時間以降に変更してPOST
+	public function postTimeAdjustment($clicks, $postDateTime)
 	{
-		$data = 'This is server time!! get XHR.getResponseHeader("Date") ';
-		echo $data;
-	}
+		$date = new DateTime();
+		$nowTimeStamp = $date->format('Y-m-d H:i:s');
+		$adsetting = $this->db_manager->get('AdminSetting')->fetchSettingValue();
+		$interval = $adsetting['userClickPostIntervalSecond'];
+		$postInterval = intval($interval);
 
-	public function setTime()
-	{
-		# code...
+		// ユーザー側時刻との誤差（秒単位）
+		$postTremSecond = strtotime($postDateTime) - strtotime($nowTimeStamp);
+		$systemLastPostTime = date('Y-m-d H:i:s', strtotime("$nowTimeStamp - $postInterval second"));
+		$admin_repository = $this->db_manager->get('Admin');
+		$last = $admin_repository->lastCalcTime();
+		$lastCalcTime = $last['date'];
+
+		// ユーザー側のTime stamp をサーバー側の時間軸基準に修正
+		// クライアントの日時誤差の補正
+		$a = 0;
+		while ($a < count($clicks)) {
+			$no = 'no_' . $a;
+			$userTimestamp = $clicks[$no]['timestamp'];
+
+			if (strtotime($postDateTime) > strtotime($nowTimeStamp)) { // 未来なら
+				$numeric = '-';
+				$trem = $postTremSecond;
+			} elseif (strtotime($postDateTime) <= strtotime($nowTimeStamp)) { // 過去なら
+				$numeric = '+';
+				$trem = -($postTremSecond);
+			}
+			$revisionTimestamp = date('Y-m-d H:i:s', strtotime("$userTimestamp $numeric $trem second"));
+
+			// クリック時間の異常・不正対策
+			// 投稿時差補正しても前回POST期間外の日時は現在時刻に置換
+			if (strtotime($revisionTimestamp) < strtotime($systemLastPostTime) || strtotime($revisionTimestamp) > strtotime($nowTimeStamp)) {
+				$clicks[$no]['timestamp'] = $nowTimeStamp;
+			} else {
+				// 正常なら補正時間に置換
+				$clicks[$no]['timestamp'] = $revisionTimestamp;
+			}
+			// error_log(print_r('$revisionTimestamp',true),0);
+			// error_log(print_r($revisionTimestamp,true),0);
+			$a++;
+		}
+		return $clicks;
 	}
 
 	public function followAction()

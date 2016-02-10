@@ -8,6 +8,7 @@ class StatusController extends Controller
 	protected $lastCalcTime;	// 最終集計時間
 	protected $allUserCount;	// 全ユーザー数
 	protected $userViewLimit; // ユーザー表示数
+	protected $postSecond; // クリック情報の定期POST秒
 	protected $calcCount; // 集計回数
 	protected $myUser; // tbusステータス
 
@@ -17,8 +18,11 @@ class StatusController extends Controller
 		$allUserCount = $this->db_manager->get('Admin')->tableCount('tbus');
 		$this->allUserCount = $allUserCount['tbus'];
 		$adsetting = $this->db_manager->get('AdminSetting')->fetchSettingValue();
-		$res = $adsetting['userViewLimitClients'];
-		$this->userViewLimit = intval($res);
+		$limit = $adsetting['userViewLimitClients'];
+		$this->userViewLimit = intval($limit);
+		$postSecond = $adsetting['userClickPostIntervalSecond'];
+		$this->postSecond = intval($postSecond);
+
 		$calcStatus = $this->db_manager->get('Status')->calcStatus();
 		$this->calcCount = $calcStatus['calcCount'];
 		$this->lastCalcTime = $calcStatus['lastCalcTime'];
@@ -68,6 +72,7 @@ class StatusController extends Controller
 			'userCount' => $userCount,
 			'page' => $page,
 			'limit' => $this->userViewLimit,
+			'postSecond' => $this->postSecond,
 			'order' => $order,
 			'selected' => $selected,
 			'usersNullMessage' => $usersNullMessage,

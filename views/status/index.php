@@ -76,4 +76,4 @@ var statuses = JSON.parse('<?php echo $jsonStatuses; ?>');
 </div>
 
 <?php
-	echo $this->render('status/js/index_js', array('base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'headerUser' => $headerUser));
+	echo $this->render('status/js/index_js', array('base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'postSecond'=> $postSecond, 'headerUser' => $headerUser));

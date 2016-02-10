@@ -48,6 +48,9 @@ function followPost(followingNo, followAction, ifFollowing, f_token) {
 function clickObjct(usNo) {
 		var clickCount = 1;
 		var now = new Date();
+		now.setSeconds(now.getSeconds());
+		console.log(now);
+
 		var date = now;
 		var sqlDate = dateFomater(now);
 		var post = {
@@ -110,6 +113,7 @@ function clickPost(posts) {
 	token = '<?php echo $click_token; ?>';
 	data["click_token"] = token;
 	var now = new Date();
+	now.setSeconds(now.getSeconds());
 	var DateTime = dateFomater(now);
 	data["postDateTime"] = DateTime;
 	$.ajax({
@@ -118,6 +122,7 @@ function clickPost(posts) {
 		data: data,
 		success: function(res) {
 			console.log('clickPost success!');
+			console.log(data);
 			clickPool('reset');
 		},
 		error: function() {
@@ -144,7 +149,7 @@ var clickAction = function(action, usNo, usId, usName) {
 		usNo : usNo,
 		usId : usId,
 		usName : usName,
-		sendUserNo : '<?php echo $this->escape($headerUser['usNo']); ?>',
+		sendUserNo : <?php echo $this->escape($headerUser['usNo']); ?>,
 		sendUserId : '<?php echo $this->escape($headerUser['usId']); ?>',
 		sendUserName : '<?php echo $this->escape($headerUser['usName']); ?>',
 		sendUserImage : '<?php echo $this->escape($headerUser['usImg']); ?>'
@@ -170,6 +175,6 @@ var clickAction = function(action, usNo, usId, usName) {
 	}
 };
 
-setInterval( "clickAction('intervalPost')" , 10*1000 );
+setInterval( "clickAction('intervalPost')" , <?php echo $postSecond; ?> *1000 );
 
 </script>

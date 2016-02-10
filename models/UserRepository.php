@@ -57,7 +57,6 @@ class UserRepository extends DbRepository
 				VALUES
 		";
 
-		$count = count($clicks);
 		$a = 0;
 		if (count($clicks) >= 2) {
 			while ($a < count($clicks) - 1) {
