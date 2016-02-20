@@ -20,6 +20,8 @@ var statuses = JSON.parse('<?php echo $jsonStatuses; ?>');
 <div id="res"></div>
 
 <hr>
+<canvas id="hoge" width="500" height="500"></canvas>
+
 <div id="main_user">
 	<?php echo $this->render('status/main_user', array('headerUser' => $headerUser,)); ?>
 </div>

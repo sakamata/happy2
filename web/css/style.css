@@ -71,6 +71,12 @@ a {
 	margin-bottom: 10px;
 }
 
+.myCikCanvas {
+	width: 30%;
+	height: 50px;
+	background-color: #ddd;
+}
+
 .order_changer form {
 	font-size: 3em;
 }

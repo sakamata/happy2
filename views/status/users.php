@@ -25,8 +25,14 @@
 		MySendClkSum: <?php echo $this->escape($status['MySendClkSum']); ?> / <?php echo $this->escape($thisUserAllClkSum); ?>
 		</b>
 		<button type="submit" id="clickAction_<?php echo $status['usNo']; ?>" class="btn btn-warning btn-lg" class="clickAction" onclick="clickAction('post', '<?php echo $status['usNo']; ?>', '<?php echo $status['usId']; ?>', '<?php echo $status['usName']; ?>' )">Happy!</button>
+		<div>
+			<canvas id="myCikCanvas_<?php echo $status['usNo']; ?>" class="myCikCanvas" >
+			Canvasに対応したブラウザが必要です。</canvas>
+		</div>
 
 	</div>
+
+	<hr>
 
 	<script type="text/javascript">
 		viewNo++;

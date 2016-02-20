@@ -51,21 +51,23 @@ class AjaxPostController extends Controller
 			$no = 'no_' . $a;
 			$userTimestamp = $clicks[$no]['timestamp'];
 
-			if (strtotime($postDateTime) > strtotime($nowTimeStamp)) { // 未来なら
+			if ( strtotime($postDateTime) > strtotime($nowTimeStamp) ) { // 未来なら
 				$numeric = '-';
 				$trem = $postTremSecond;
-			} elseif (strtotime($postDateTime) <= strtotime($nowTimeStamp)) { // 過去なら
+			} elseif ( strtotime($postDateTime) <= strtotime($nowTimeStamp) ) { // 過去なら
 				$numeric = '+';
 				$trem = -($postTremSecond);
 			}
 			$revisionTimestamp = date('Y-m-d H:i:s', strtotime("$userTimestamp $numeric $trem second"));
 
 			// クリック時間の異常・不正対策
-			// 投稿時差補正しても前回POST期間外の日時は現在時刻に置換
-			if (strtotime($revisionTimestamp) < strtotime($systemLastPostTime) || strtotime($revisionTimestamp) > strtotime($nowTimeStamp)) {
+			// 投稿時差補正しても前回POST～現在以外の日時を置換
+			if ( strtotime($revisionTimestamp) > strtotime($nowTimeStamp) ) { // 未来なら
 				$clicks[$no]['timestamp'] = $nowTimeStamp;
-			} else {
-				// 正常なら補正時間に置換
+			} elseif ( strtotime($revisionTimestamp) < strtotime($systemLastPostTime) ) { // 過去なら
+				$adjustLastPostTime = date('Y-m-d H:i:s', strtotime("$systemLastPostTime + 1 second"));
+				$clicks[$no]['timestamp'] = $adjustLastPostTime;
+			} else { // 正常なら補正時間に置換
 				$clicks[$no]['timestamp'] = $revisionTimestamp;
 			}
 			// error_log(print_r('$revisionTimestamp',true),0);

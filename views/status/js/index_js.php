@@ -10,6 +10,137 @@ function dateFomater(date) {
 	return date;
 };
 
+// クリック率グラフの描画アニメーション
+/*
+id main_user_CikCanvas
+*/
+
+window.onload = function () {
+	clickGraph();
+};
+
+function clickGraph () {
+	var canvas = document.getElementById('main_user_CikCanvas');
+	if (!canvas || !canvas.getContext) return false;
+	var back = canvas.getContext('2d');
+	var bar =  canvas.getContext('2d');
+	var bt = 50;
+
+	// var ctx =  canvas.getContext('2d');
+	// ctx.rect(20, 20, 100, 100);
+	// ctx.stroke();
+
+	back.fillStyle = "#55bbff"; // cssと同様の設定が可能
+	back.strokeStyle = "#ff8800"; // cssと同様の設定が可能
+	back.lineWidth = 5; // 線幅px単位
+	back.lineJoin = "round"; // 交点の形状指定　丸
+	// 四角　塗りつぶし fillRect(x,y,w,h)
+	back.fillRect(50,50,200,60);
+
+	bar.fillStyle = "#0088ff"; // cssと同様の設定が可能
+	bar.fillRect(50,60,bt,40);
+
+};
+
+var clickEvent = document.getElementById("main_user_CikCanvas");
+clickEvent.addEventListener("down", clickGraph,false);
+
+
+// ------------------------------
+/*
+var canvas = document.getElementById('hoge');
+var ctx = canvas.getContext('2d');
+
+window.onload = function () {
+	init();
+};
+
+var toggle = true;
+
+function init() {
+	button(400,400,50,50);
+	var i = 0;
+	var j = 0;
+	setInterval(function () {
+		if (toggle) {
+			i++;
+			j++;
+		} else {
+			i--;
+			j--;
+		}
+		clear();
+		draw(i, j);
+	}, 1000/33);
+}
+
+function draw(x, y) {
+	ctx.strokeRect(x, y, 50, 50);
+}
+
+function clear() {
+	ctx.clearRect(0, 0, 400,400);
+}
+
+function button(x, y, width, height) {
+	ctx.rect(x, y, width, height);
+	ctx.stroke();
+	hoge.addEventListener('click',function (e) {
+		var button = e.target.getBoundingClientRect();
+		mouseX = e.clientX - button.left;
+		mouseY = e.clientY - button.top;
+		if (x < mouseX && mouseX < x + width) {
+			if (y < mouseY && mouseY < y + height) {
+				if (toggle) {
+					draw();
+					toggle = false;
+				} else {
+					clear();
+					toggle = true;
+				}
+			}
+		}
+	}, false);
+}
+
+*/
+// -----------------------------
+// マウスクリックによるbar増加アニメーション
+
+function test() {
+
+	var canvas = document.getElementById('hoge');
+	var ctx = canvas.getContext('2d');
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+	ctx.font = '16pt Arial';
+	ctx.textAlign = 'center';
+	ctx.textBaseline = 'middle';
+	ctx.fillText('down',50,132);
+
+	setInterval( loop, 1000/50 );
+
+	var count = 0;
+	function loop() {
+		ctx.fillStyle = '#ffffff';
+		ctx.fillRect(100,0,400,400);
+		ctx.fillStyle = '#000000';
+
+		if (count >= 30) count = 0;
+		ctx.strokeRect(100, 122, 10*count, 20);
+	}
+
+	document.addEventListener('mousedown', documentMouseDownHandler);
+
+	function documentMouseDownHandler() {
+		count++;
+	}
+}
+
+test();
+
+// -----------------------------
+
 
 function followPost(followingNo, followAction, ifFollowing, f_token) {
 	var f_token = '<?php echo $follow_token; ?>';
@@ -48,9 +179,6 @@ function followPost(followingNo, followAction, ifFollowing, f_token) {
 function clickObjct(usNo) {
 		var clickCount = 1;
 		var now = new Date();
-		now.setSeconds(now.getSeconds());
-		console.log(now);
-
 		var date = now;
 		var sqlDate = dateFomater(now);
 		var post = {
@@ -113,7 +241,6 @@ function clickPost(posts) {
 	token = '<?php echo $click_token; ?>';
 	data["click_token"] = token;
 	var now = new Date();
-	now.setSeconds(now.getSeconds());
 	var DateTime = dateFomater(now);
 	data["postDateTime"] = DateTime;
 	$.ajax({
@@ -165,6 +292,7 @@ var clickAction = function(action, usNo, usId, usName) {
 	if (action == 'post') {
 		var post = clickObjct(usNo);
 		var posts = clickPool(post);
+		outer();
 	}
 
 	var postsCount = Object.keys(posts).length;
