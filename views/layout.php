@@ -65,6 +65,10 @@
 			var msg = JSON.parse(msg);
 			// console.log(msg);
 			newsPop(msg);
+
+			// ***ToDo*** 取得した値をグラフに反映?
+			// test(msg);
+
 		};
 
 		socket.onclose = function(msg){

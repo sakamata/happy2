@@ -107,8 +107,7 @@ function button(x, y, width, height) {
 // -----------------------------
 // マウスクリックによるbar増加アニメーション
 
-function test() {
-
+function test(statuses) {
 	var canvas = document.getElementById('hoge');
 	var ctx = canvas.getContext('2d');
 	canvas.width = window.innerWidth;
@@ -121,23 +120,44 @@ function test() {
 	setInterval( loop, 1000/50 );
 
 	var count = 0;
+
 	function loop() {
 		ctx.fillStyle = '#ffffff';
 		ctx.fillRect(100,0,400,400);
 		ctx.fillStyle = '#000000';
-
 		if (count >= 30) count = 0;
-		ctx.strokeRect(100, 122, 10*count, 20);
+		ctx.strokeRect(100, 122, 10*count , 20);
 	}
 
-	document.addEventListener('mousedown', documentMouseDownHandler);
+	// ボタンクリックをきっかけにグラフ処理発火
+
+	var myBtn = document.getElementById("clickAction_<?php echo $headerUser['usNo']; ?>");
+	myBtn.addEventListener('mousedown', documentMouseDownHandler);
+
+	for (var i = 0; i < Object.keys(statuses).length; i++) {
+		var ID = 'clickAction_' + statuses[i].usNo;
+		var btn = document.getElementById(ID);
+		btn.addEventListener('mousedown', documentMouseDownHandler);
+	}
 
 	function documentMouseDownHandler() {
+		// グラフ変更処理はここに書く
+		// 初回　statusesにこの人へ今回自分がクリックした数を追加する　その値を反映
+
+		// 今回の自分の全クリック数をstatusesに追加、もしくはPHPの値で出力
+		var allClkSum = statuses[0].allClkSum;
+		var MySendClkSum = statuses[0].MySendClkSum;
+		// console.log(allClkSum);
+
+		// 2回目以降はその値にクリック分を加算
+		// クリックした際に（誰に、幾つ）貯めた値を元にグラフ処理
 		count++;
 	}
 }
 
-test();
+test(statuses);
+
+console.log(statuses);
 
 // -----------------------------
 
@@ -292,7 +312,7 @@ var clickAction = function(action, usNo, usId, usName) {
 	if (action == 'post') {
 		var post = clickObjct(usNo);
 		var posts = clickPool(post);
-		outer();
+		// outer();
 	}
 
 	var postsCount = Object.keys(posts).length;

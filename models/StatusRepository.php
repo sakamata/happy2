@@ -14,6 +14,24 @@ class StatusRepository extends DbRepository
 		return $this->fetch($sql, array());
 	}
 
+	public function fetchClickStatus($usNo, $lastCalcTime)
+	{
+		$sql = "
+			SELECT sum(seClk) AS allUsersClkSum
+			FROM tbgvn
+			WHERE
+				usNo = :usNo
+			AND
+				dTm between :lastCalcTime
+			AND now()
+		";
+
+		return $this->fetchAll($sql, array(
+			':usNo' => $usNo,
+			':lastCalcTime' => $lastCalcTime
+		));
+	}
+
 	// 引数 $usId : str 単数配列で来る。 $user['usNo']
 	public function fetchAllPersonalArchivesByUserId($usId)
 	{
@@ -41,22 +59,6 @@ class StatusRepository extends DbRepository
 		";
 
 		return $this->fetchAll($sql, array(':usId' => $usId));
-	}
-
-	public function fetchByIdAndUserName($id, $usName)
-	{
-		$sql = "
-			SELECT a.*, u.usName
-			FROM status a
-				LEFT JOIN user u ON u.id = a.usId
-			WHERE a.id = :id
-				AND u.usName = :usName
-		";
-
-		return $this->fetch($sql, array(
-			':id' => $id,
-			':usName' => $usName,
-		));
 	}
 
 	public function fetchHeaderUserPerson($viewUser, $usNo, $lastCalcTime)

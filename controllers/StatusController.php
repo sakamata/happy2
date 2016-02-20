@@ -224,15 +224,4 @@ class StatusController extends Controller
 
 	}
 
-	public function showAction($params)
-	{
-		$status = $this->db_manager->get('Status')->fetchByIDAndUserName($params['usNo'], $params['usName']);
-
-		if (!$status) {
-			$this->forward404();
-		}
-
-		return $this->render(array('status' => $status));
-	}
-
 }
