@@ -35,6 +35,8 @@ class HappyApplication extends Application
 				=> array('controller' => 'ajaxPost', 'action' => 'index'),
 			'/ajaxPost/:action'
 				=> array('controller' => 'ajaxPost'),
+			'/account/profile'
+				=> array('controller' => 'account', 'action' => 'profile'),
 		);
 	}
 

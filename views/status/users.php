@@ -1,6 +1,6 @@
 	<script type="text/javascript">
 		// 変数定義
-		var usNo = statuses[viewNo].usNo;
+		// var usNo = statuses[viewNo].usNo;
 	</script>
 
 	<div class="status">
@@ -14,7 +14,7 @@
 		<br>
 		<span>Follower: <?php echo $this->escape($status['ifFollower']); ?></span><br>
 		img:<?php echo $this->escape($status['usImg']); ?><br>
-		<img src="<?php echo $base_url .'/../img/'. $status['usImg']; ?>" alt="user_photo">
+		<img src="<?php echo $base_url .'/../user/img/'. $status['usImg']; ?>" alt="user_photo">
 
 		<b>
 		Pt: <?php echo $this->escape($status['nowPt']); ?><br>
@@ -22,11 +22,20 @@
 		Id: <?php echo $this->escape($status['usId']); ?><br>
 		Name: <?php echo $this->escape($status['usName']); ?><br>
 		TodayClick  ForYou / All: <?php echo $this->escape($status['toMeClkSum']); ?> / <?php echo $this->escape($status['allClkSum']); ?><br>
-		MySendClkSum: <?php echo $this->escape($status['MySendClkSum']); ?> / <?php echo $this->escape($thisUserAllClkSum); ?>
-		</b>
+
+		MySendClkSum: <span id="clickSum_<?php echo $status['usNo']; ?>"><?php echo $this->escape($status['MySendClkSum']); ?></span> / <?php echo $this->escape($allClkSum); ?>
+
+	</b><br>
+		ThisTimeTheyClickPercent: <span id="clickPercent_<?php echo $status['usNo']; ?>">
+			<script type="text/javascript">
+			document.write(thisTimeTheyClickPercent[viewNo]);
+			</script>
+			%</span>
+		<br>
+
 		<button type="submit" id="clickAction_<?php echo $status['usNo']; ?>" class="btn btn-warning btn-lg" class="clickAction" onclick="clickAction('post', '<?php echo $status['usNo']; ?>', '<?php echo $status['usId']; ?>', '<?php echo $status['usName']; ?>' )">Happy!</button>
 		<div>
-			<canvas id="myCikCanvas_<?php echo $status['usNo']; ?>" class="myCikCanvas" >
+			<canvas id="persentGraphCanvas_<?php echo $status['usNo']; ?>" class="myCikCanvas" >
 			Canvasに対応したブラウザが必要です。</canvas>
 		</div>
 

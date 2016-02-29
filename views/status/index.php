@@ -1,5 +1,9 @@
 <?php
-$jsonStatuses = json_encode($statuses);
+$head = [];
+$head[0] = $headerUser;
+$headAndStatuses = array_merge($head, $statuses);
+$jsonStatuses = json_encode($headAndStatuses);
+// var_dump($user['usNo']);
 ?>
 
 <script type="text/javascript">
@@ -8,6 +12,77 @@ socket = new WebSocket('ws://127.0.0.1:80/happy2');
 
 var viewNo = 0;
 var statuses = JSON.parse('<?php echo $jsonStatuses; ?>');
+console.log(statuses);
+
+// 各ユーザーへ自分がクリックしたパーセンテージを求める
+clickPercent	= function() {
+	var thisTimeMySendClkSum = [];
+	var thisTimeTheyClickPercent = [];
+	var p = [];
+
+	for (var i = 0; i < Object.keys(statuses).length; i++) {
+		if (i == 0) {
+			// headerUser処理
+			thisTimeMySendClkSum[i] = statuses[i].toMeClkSum;
+		} else {
+			thisTimeMySendClkSum[i] = statuses[i].MySendClkSum;
+		}
+		p[i] = thisTimeMySendClkSum[i] / <?php echo $clickStatus['allUsersSendClkSum']; ?>;
+		p[i] = p[i] * 10000;
+		thisTimeTheyClickPercent[i] = Math.round(p[i]) / 100;
+	}
+	return thisTimeTheyClickPercent;
+}
+var  thisTimeTheyClickPercent	= clickPercent();
+// console.log(thisTimeTheyClickPercent);
+
+
+// -----------------------------
+
+// クリック数の保持と書き換え
+var clickCountIncrement = function (){
+	var clickSum = [];
+	var numbers = [];
+	var sumId = [];
+	var percentId = [];
+	var allUsersSendClkSum = <?php echo $clickStatus['allUsersSendClkSum']; ?>;
+	for (var i = 0; i < Object.keys(statuses).length; i++) {
+		if (i == 0) {
+			// headerUser処理
+			clickSum[i] = statuses[i].toMeClkSum;
+		} else {
+			clickSum[i] = statuses[i].MySendClkSum;
+		}
+		numbers[i] = statuses[i].usNo;
+		sumId[i] = '#clickSum_' + numbers[i];
+		percentId[i] = '#clickPercent_' + numbers[i];
+	}
+
+	// クロージャ クリック総数を貯めて返す
+	return function(usNo){
+		for (var i = 0; i < Object.keys(statuses).length; i++) {
+			if (usNo == numbers[i]) {
+				clickSum[i]++;
+				var replaceSum = clickSum[i];
+				$(sumId[i]).html(clickSum[i]);	// クリック合計の書き換え
+			}
+		}
+		allUsersSendClkSum++;
+		var percent = [];
+		for (var i = 0; i < Object.keys(statuses).length; i++) {
+			percent[i] = clickSum[i] / allUsersSendClkSum;
+			percent[i] = percent[i] * 10000;
+			percent[i] = Math.round(percent[i]) / 100;
+			$(percentId[i]).html(percent[i] + '%');	// パーセンテージの書き換え
+		}
+		return percent;
+		// return replaceSum;
+	}
+};
+
+var ReplaceClickInfo = clickCountIncrement();
+
+
 </script>
 
 <?php $this->setLayoutVar('title', 'ホーム') ?>
@@ -20,7 +95,6 @@ var statuses = JSON.parse('<?php echo $jsonStatuses; ?>');
 <div id="res"></div>
 
 <hr>
-<canvas id="hoge" width="500" height="500"></canvas>
 
 <div id="main_user">
 	<?php echo $this->render('status/main_user', array('headerUser' => $headerUser,)); ?>
@@ -71,11 +145,11 @@ var statuses = JSON.parse('<?php echo $jsonStatuses; ?>');
 		echo $this->render('status/users_null', array('usersNullMessage' => $usersNullMessage));
 	} else {
 		foreach ($statuses as $status):
-			echo $this->render('status/users', array('base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'thisUserAllClkSum' => $headerUser['thisUserAllClkSum']));
+			echo $this->render('status/users', array('base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'allClkSum' => $headerUser['allClkSum']));
 		endforeach;
 	}
 ?>
 </div>
 
 <?php
-	echo $this->render('status/js/index_js', array('base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'postSecond'=> $postSecond, 'headerUser' => $headerUser));
+	echo $this->render('status/js/index_js', array('base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'postSecond'=> $postSecond, 'clickStatus'=> $clickStatus, 'headerUser' => $headerUser));

@@ -11,18 +11,28 @@
 	<br>
 
 	<span>Follower: <?php echo $this->escape($headerUser['ifFollower']); ?></span><br>
-	<img src="<?php echo $base_url .'/../img/'. $headerUser['usImg']; ?>" alt="user_photo">
+	<img src="<?php echo $base_url .'/../user/img/'. $headerUser['usImg']; ?>" alt="user_photo">
 	<br>
 	<b>
 	Pt: <?php echo $this->escape($headerUser['nowPt']); ?><br>
 	No: <?php echo $this->escape($headerUser['usNo']); ?><br>
 	Id: <?php echo $this->escape($headerUser['usId']); ?><br>
 	Name: <?php echo $this->escape($headerUser['usName']); ?><br>
-	TodayClick  ForYou / All: <?php echo $this->escape($headerUser['thisUserToMeClkSum']); ?> / <?php echo $this->escape($headerUser['thisUserAllClkSum']); ?>
-	</b>
-	<button type="submit" id="clickAction_<?php echo $headerUser['usNo']; ?>" class="btn btn-primary btn-lg" class="clickAction" onclick="clickAction('post', '<?php echo $headerUser['usNo']; ?>', '<?php echo $headerUser['usId']; ?>', '<?php echo $headerUser['usName']; ?>' )">My Happy!</button>
+	TodayClick  ForYou / All: <?php echo $this->escape($headerUser['toMeClkSum']); ?> / <?php echo $this->escape($headerUser['allClkSum']); ?><br>
 
+	MySendClkSum: <span id="clickSum_<?php echo $headerUser['usNo']; ?>"><?php echo $this->escape($headerUser['toMeClkSum']); ?></span> / <?php echo $this->escape($headerUser['allClkSum']); ?>
+
+	</b><br>
+		ThisTimeTheyClickPercent: <span id="clickPercent_<?php echo $headerUser['usNo']; ?>">
+			<script type="text/javascript">
+			document.write(thisTimeTheyClickPercent[viewNo]);
+			viewNo++;
+			</script>
+			%</span>
+		<br>
+
+	<button type="submit" id="clickAction_<?php echo $headerUser['usNo']; ?>" class="btn btn-primary btn-lg" class="clickAction" onclick="clickAction('post', '<?php echo $headerUser['usNo']; ?>', '<?php echo $headerUser['usId']; ?>', '<?php echo $headerUser['usName']; ?>' )">My Happy!</button>
 	<div>
-		<canvas id="main_user_CikCanvas" class="myCikCanvas" >
+		<canvas id="persentGraphCanvas_<?php echo $headerUser['usNo']; ?>" class="myCikCanvas" >
 		Canvasに対応したブラウザが必要です。</canvas>
 	</div>

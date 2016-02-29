@@ -17,7 +17,7 @@ class StatusRepository extends DbRepository
 	public function fetchClickStatus($usNo, $lastCalcTime)
 	{
 		$sql = "
-			SELECT sum(seClk) AS allUsersClkSum
+			SELECT sum(seClk) AS allUsersSendClkSum
 			FROM tbgvn
 			WHERE
 				usNo = :usNo
@@ -26,39 +26,10 @@ class StatusRepository extends DbRepository
 			AND now()
 		";
 
-		return $this->fetchAll($sql, array(
+		return $this->fetch($sql, array(
 			':usNo' => $usNo,
-			':lastCalcTime' => $lastCalcTime
+			':lastCalcTime' => $lastCalcTime,
 		));
-	}
-
-	// 引数 $usId : str 単数配列で来る。 $user['usNo']
-	public function fetchAllPersonalArchivesByUserId($usId)
-	{
-		$sql = "
-			SELECT a.*, u.usName
-			FROM status a
-				LEFT JOIN user u ON a.usId = u.id
-				LEFT JOIN following f ON f.following_id = a.usId
-					AND f.usId = :usId
-			WHERE f.usId = :usId OR u.id = :usId
-			ORDER BY a.created_at DESC
-		";
-
-		return $this->fetchAll($sql, array(':usId' => $usId));
-	}
-
-	public function fetchAllByUserId($usId)
-	{
-		$sql = "
-			SELECT a.*, u.usName
-			FROM status a
-				LEFT JOIN user u ON a.usId = u.id
-			WHERE u.id = :usId
-			ORDER BY a.created_at DESC
-		";
-
-		return $this->fetchAll($sql, array(':usId' => $usId));
 	}
 
 	public function fetchHeaderUserPerson($viewUser, $usNo, $lastCalcTime)
@@ -70,8 +41,8 @@ class StatusRepository extends DbRepository
 				master.usName,
 				master.usImg,
 				master.nowPt,
-				IFNULL(gvnTable.thisUserAllClkSum, 0) AS thisUserAllClkSum,
-				IFNULL(gvnTable2.thisUserToMeClkSum, 0) AS thisUserToMeClkSum,
+				IFNULL(gvnTable.allClkSum, 0) AS allClkSum,
+				IFNULL(gvnTable2.toMeClkSum, 0) AS toMeClkSum,
 				IF(ifFollowing.followingNo > 0, 1, 0) AS ifFollowing,
 				IF(ifFollower.usNo > 0, 1, 0) AS ifFollower
 
@@ -80,7 +51,7 @@ class StatusRepository extends DbRepository
 			LEFT JOIN(
 				SELECT
 					usNo,
-					SUM(seClk) AS thisUserAllClkSum
+					SUM(seClk) AS allClkSum
 					FROM tbgvn
 					WHERE
 						usNo = :viewUser
@@ -92,7 +63,7 @@ class StatusRepository extends DbRepository
 
 			LEFT JOIN(
 				SELECT usNo,
-					SUM(seClk) AS thisUserToMeClkSum
+					SUM(seClk) AS toMeClkSum
 					FROM tbgvn
 					WHERE
 						usNo = :viewUser

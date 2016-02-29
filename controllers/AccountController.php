@@ -85,6 +85,78 @@ class AccountController extends Controller
 		), 'signup');
 	}
 
+
+	public function profileAction()
+	{
+
+		$user = $this->session->get('user');
+
+
+
+		return $this->render(array(
+			'user' => $user,
+			'_token' => $this->generateCsrfToken('/edit/profile'),
+		));
+	}
+
+
+	public function profileEditConfirmAction()
+	{
+		if (!$this->request->isPost()) {
+			$this->forward404();
+		}
+
+		$token = $this->request->getPost('_token');
+		if (!$this->checkCsrfToken('account/profileEdit', $token)) {
+			return $this->redirect('/account/profileEdit');
+		}
+
+		$usName = $this->request->getPost('usName');
+		$usPs = $this->request->getPost('usPs');
+		// $usPs = $this->request->getPost('usImg');
+
+		$errors = array();
+
+		if (!mb_strlen($usName)) {
+			$errors[] = '名前を入力してください';
+		} elseif (2 > mb_strlen($usName) || mb_strlen($usName) > 16) {
+			$errors[] = '名前は2～16文字以内で入力してください。';
+		}
+
+		if (!strlen($usPs)) {
+			$errors[] = 'パスワードを入力してください';
+		} elseif (4 > strlen($usPs) || strlen($usPs) > 30) {
+			$errors[] = 'パスワードは4～30文字以内で入力してください。';
+		}
+
+		if (count($errors) === 0) {
+			$this->db_manager->get('User')->insert($usId, $usPs, $usName);
+
+
+			// tb_user_statusに位置と現在日時を登録
+			// ***ToDo***user側で緯度経度取得の実装
+			$latitude = $this->request->getPost('latitude');
+			$longitude = $this->request->getPost('longitude');
+			$this->db_manager->get('User')->tb_user_statusRegisterInsert($usNo, $latitude, $longitude);
+
+			$this->session->setAuthenticated(true);
+			$user = $this->db_manager->get('User')->fetchByUserName($usId);
+			$this->session->set('user', $user);
+
+			return $this->redirect('/');
+		}
+
+		return $this->render(array(
+			'usName' => $usName,
+			'usId' => $usId,
+			'usPs' => $usPs,
+			'usImg' => $usImg,
+			'errors' => $errors,
+			'_token' => $this->generateCsrfToken('account/profile_edit'),
+		), 'signup');
+	}
+
+
 /*
 	public function indexAction()
 	{

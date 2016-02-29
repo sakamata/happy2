@@ -1,166 +1,59 @@
 <script type="text/javascript">
 
-function dateFomater(date) {
-	date = date.getFullYear() + '-' +
-		('00' + (date.getMonth()+1)).slice(-2) + '-' +
-		('00' + date.getDate()).slice(-2) + ' ' +
-		('00' + date.getHours()).slice(-2) + ':' +
-		('00' + date.getMinutes()).slice(-2) + ':' +
-		('00' + date.getSeconds()).slice(-2);
-	return date;
-};
-
 // クリック率グラフの描画アニメーション
-/*
-id main_user_CikCanvas
-*/
-
 window.onload = function () {
 	clickGraph();
 };
 
-function clickGraph () {
-	var canvas = document.getElementById('main_user_CikCanvas');
-	if (!canvas || !canvas.getContext) return false;
-	var back = canvas.getContext('2d');
-	var bar =  canvas.getContext('2d');
-	var bt = 50;
-
-	// var ctx =  canvas.getContext('2d');
-	// ctx.rect(20, 20, 100, 100);
-	// ctx.stroke();
-
-	back.fillStyle = "#55bbff"; // cssと同様の設定が可能
-	back.strokeStyle = "#ff8800"; // cssと同様の設定が可能
-	back.lineWidth = 5; // 線幅px単位
-	back.lineJoin = "round"; // 交点の形状指定　丸
-	// 四角　塗りつぶし fillRect(x,y,w,h)
-	back.fillRect(50,50,200,60);
-
-	bar.fillStyle = "#0088ff"; // cssと同様の設定が可能
-	bar.fillRect(50,60,bt,40);
-
-};
-
-var clickEvent = document.getElementById("main_user_CikCanvas");
-clickEvent.addEventListener("down", clickGraph,false);
-
-
-// ------------------------------
-/*
-var canvas = document.getElementById('hoge');
-var ctx = canvas.getContext('2d');
-
-window.onload = function () {
-	init();
-};
-
-var toggle = true;
-
-function init() {
-	button(400,400,50,50);
-	var i = 0;
-	var j = 0;
-	setInterval(function () {
-		if (toggle) {
-			i++;
-			j++;
-		} else {
-			i--;
-			j--;
-		}
-		clear();
-		draw(i, j);
-	}, 1000/33);
-}
-
-function draw(x, y) {
-	ctx.strokeRect(x, y, 50, 50);
-}
-
-function clear() {
-	ctx.clearRect(0, 0, 400,400);
-}
-
-function button(x, y, width, height) {
-	ctx.rect(x, y, width, height);
-	ctx.stroke();
-	hoge.addEventListener('click',function (e) {
-		var button = e.target.getBoundingClientRect();
-		mouseX = e.clientX - button.left;
-		mouseY = e.clientY - button.top;
-		if (x < mouseX && mouseX < x + width) {
-			if (y < mouseY && mouseY < y + height) {
-				if (toggle) {
-					draw();
-					toggle = false;
-				} else {
-					clear();
-					toggle = true;
-				}
-			}
-		}
-	}, false);
-}
-
-*/
-// -----------------------------
-// マウスクリックによるbar増加アニメーション
-
-function test(statuses) {
-	var canvas = document.getElementById('hoge');
-	var ctx = canvas.getContext('2d');
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
-	ctx.font = '16pt Arial';
-	ctx.textAlign = 'center';
-	ctx.textBaseline = 'middle';
-	ctx.fillText('down',50,132);
-
-	setInterval( loop, 1000/50 );
-
-	var count = 0;
-
-	function loop() {
-		ctx.fillStyle = '#ffffff';
-		ctx.fillRect(100,0,400,400);
-		ctx.fillStyle = '#000000';
-		if (count >= 30) count = 0;
-		ctx.strokeRect(100, 122, 10*count , 20);
-	}
-
-	// ボタンクリックをきっかけにグラフ処理発火
-
-	var myBtn = document.getElementById("clickAction_<?php echo $headerUser['usNo']; ?>");
-	myBtn.addEventListener('mousedown', documentMouseDownHandler);
+function clickGraph (argumentsPercents) {
+	var allUsersSendClkSum = <?php echo $clickStatus['allUsersSendClkSum']; ?>;
+	var clickSum = [];
+	var numbers = [];
+	var cikCanvasId = [];
+	var percentId = [];
+	var percent = [];
+	var canvas = [];
+	var back = [];
+	var bar = [];
+	var bt = [];
+	var width = 200;
+	var height = 60;
 
 	for (var i = 0; i < Object.keys(statuses).length; i++) {
-		var ID = 'clickAction_' + statuses[i].usNo;
-		var btn = document.getElementById(ID);
-		btn.addEventListener('mousedown', documentMouseDownHandler);
+		if (i == 0) {
+			clickSum[i] = statuses[i].toMeClkSum;
+		} else {
+			clickSum[i] = statuses[i].MySendClkSum;
+		}
+		percent[i] = clickSum[i] / allUsersSendClkSum;
+		percent[i] = percent[i] * 10000;
+		if (!argumentsPercents) {
+			percent[i] = Math.round(percent[i]) / 100;
+		} else {
+			percent[i] = argumentsPercents[i];
+		}
+		numbers[i] = statuses[i].usNo;
+		cikCanvasId[i] = 'persentGraphCanvas_' + numbers[i];
+		canvas[i] = document.getElementById(cikCanvasId[i]);
+		if (!canvas[i] || !canvas[i].getContext) return false;
+		back[i] = canvas[i].getContext('2d');
+		bar[i] =  canvas[i].getContext('2d');
+		bt[i] = 30;
+
+		// cssと同様の設定が可能
+		back[i].fillStyle = "#55bbff";
+		back[i].strokeStyle = "#ff8800";
+		back[i].lineWidth = 5; // 線幅px単位
+		back[i].lineJoin = "round"; // 交点の形状指定　丸
+		// 四角　塗りつぶし fillRect(x,y,w,h)
+		back[i].fillRect(50,50,width,height);
+
+		bar[i].fillStyle = "#0088ff";
+		bar[i].fillRect(50, 50+(height*0.5/2), width * percent[i] / 100, height*0.5);
 	}
-
-	function documentMouseDownHandler() {
-		// グラフ変更処理はここに書く
-		// 初回　statusesにこの人へ今回自分がクリックした数を追加する　その値を反映
-
-		// 今回の自分の全クリック数をstatusesに追加、もしくはPHPの値で出力
-		var allClkSum = statuses[0].allClkSum;
-		var MySendClkSum = statuses[0].MySendClkSum;
-		// console.log(allClkSum);
-
-		// 2回目以降はその値にクリック分を加算
-		// クリックした際に（誰に、幾つ）貯めた値を元にグラフ処理
-		count++;
-	}
-}
-
-test(statuses);
-
-console.log(statuses);
+};
 
 // -----------------------------
-
 
 function followPost(followingNo, followAction, ifFollowing, f_token) {
 	var f_token = '<?php echo $follow_token; ?>';
@@ -195,6 +88,15 @@ function followPost(followingNo, followAction, ifFollowing, f_token) {
 	});
 }
 
+function dateFomater(date) {
+	date = date.getFullYear() + '-' +
+		('00' + (date.getMonth()+1)).slice(-2) + '-' +
+		('00' + date.getDate()).slice(-2) + ' ' +
+		('00' + date.getHours()).slice(-2) + ':' +
+		('00' + date.getMinutes()).slice(-2) + ':' +
+		('00' + date.getSeconds()).slice(-2);
+	return date;
+};
 
 function clickObjct(usNo) {
 		var clickCount = 1;
@@ -209,7 +111,6 @@ function clickObjct(usNo) {
 		};
 		return post;
 };
-
 
 // Postの値を溜める
 clickPool = function (post) {
@@ -251,7 +152,6 @@ clickPool = function (post) {
 };
 var clickPool = clickPool();
 
-
 function clickPost(posts) {
 	if (!posts || posts == 'reset' || typeof(posts) == "function") {
 		return;
@@ -278,7 +178,6 @@ function clickPost(posts) {
 	})
 };
 
-
 var clickAction = function(action, usNo, usId, usName) {
 	if (action == "intervalPost") {
 		var posts = clickPool();
@@ -302,17 +201,19 @@ var clickAction = function(action, usNo, usId, usName) {
 		sendUserImage : '<?php echo $this->escape($headerUser['usImg']); ?>'
 	};
 	var msg = JSON.stringify(msg);
+
 	// WebSocket送信
 	ID = '#clickAction_' + usNo;
 	$(document).on('click', ID, function(){
 		socket.send(msg);
 	});
 
-	// POST用のオブジェクトを生成
 	if (action == 'post') {
+		// POST用のオブジェクト生成とその他の処理
+		var percents = ReplaceClickInfo(usNo);
 		var post = clickObjct(usNo);
 		var posts = clickPool(post);
-		// outer();
+		clickGraph(percents);
 	}
 
 	var postsCount = Object.keys(posts).length;

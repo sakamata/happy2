@@ -34,6 +34,8 @@ class StatusController extends Controller
 		$user = $this->session->get('user');
 		$usNo = $user['usNo'];
 		$viewUser = $user['usNo'];
+
+		$clickStatus = $this->db_manager->get('Status')->fetchClickStatus($usNo, $this->lastCalcTime);
 		$headerUser = $this->headerUserPerson($viewUser, $usNo, $this->lastCalcTime);
 
 		$usersArray = strval($this->request->getPost('usersArray'));
@@ -66,9 +68,11 @@ class StatusController extends Controller
 			'_token' => $this->generateCsrfToken('status/post'),
 			'follow_token' => $this->generateCsrfToken('ajaxPost/follow'),
 			'click_token' => $this->generateCsrfToken('ajaxPost/clickPost'),
+			'user' => $user,
 			'headerUser' => $headerUser,
 			'usersArray' => $usersArray,
 			'statuses' => $statuses,
+			'clickStatus' => $clickStatus,
 			'userCount' => $userCount,
 			'page' => $page,
 			'limit' => $this->userViewLimit,
@@ -146,7 +150,6 @@ class StatusController extends Controller
 				$usersNullMessage = "testメッセージ　ユーザーはまだいません。";
 				$usersArrayMessage = "testをしているユーザー";
 				return array($userCount, $selected, $usersNullMessage, $usersArrayMessage);
-
 				break;
 
 			default:
@@ -158,7 +161,6 @@ class StatusController extends Controller
 				$usersNullMessage = "他のユーザーはまだいません。";
 				$usersArrayMessage = "新規登録ユーザー";
 				return array($userCount, $selected, $usersNullMessage, $usersArrayMessage);
-
 				break;
 		}
 	}
@@ -172,20 +174,17 @@ class StatusController extends Controller
 			case 'following':
 				$statuses = $this->db_manager->get('Status')->usersArrayFollowingUsers($usNo, $lastCalcTime, $limit, $offset, $order);
 				return $statuses;
-
 				break;
 
 			case 'followers':
 				$statuses = $this->db_manager->get('Status')->usersArrayFollowersUsers($usNo, $lastCalcTime, $limit, $offset, $order);
 				return $statuses;
-
 				break;
 
 			default:
 				// newUsers
 				$statuses = $this->db_manager->get('Status')->usersArrayNewUsers($usNo, $lastCalcTime, $limit, $offset, $order);
 				return $statuses;
-
 				break;
 		}
 	}
@@ -195,33 +194,6 @@ class StatusController extends Controller
 		$limit = $this->userViewLimit;
 		$offset = $page * $limit;
 		return $offset;
-	}
-
-	public function userAction($params)
-	{
-		$user = $this->db_manager->get('User')->fetchByUserName($params['usName']);
-
-		if (!$user) {
-			$this->forward404();
-		}
-
-		$statuses = $this->db_manager->get('Status')->fetchAllByUserId($user['usNo']);
-
-		$following = null;
-		if ($this->session->isAuthenticated()) {
-			$my = $this->session->get('user');
-			if ($my['usNo'] !== $user['usNo']) {
-				$following = $this->db_manager->get('Following')->isFollowing($my['usNo'], $user['usNo']);
-			}
-		}
-
-		return $this->render(array(
-			'user' => $user,
-			'statuses' => $statuses,
-			'following' => $following,
-			'_token' => $this->generateCsrfToken('account/follow'),
-		));
-
 	}
 
 }
