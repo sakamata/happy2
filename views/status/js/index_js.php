@@ -15,15 +15,17 @@ function clickGraph (argumentsPercents) {
 	var canvas = [];
 	var back = [];
 	var bar = [];
-	var bt = [];
-	var width = 200;
-	var height = 60;
+	var percentText = [];
 
 	for (var i = 0; i < Object.keys(statuses).length; i++) {
 		if (i == 0) {
+			var backColor = "#c8d6f0";
+			var barColor = "#3668c4";
 			clickSum[i] = statuses[i].toMeClkSum;
 		} else {
 			clickSum[i] = statuses[i].MySendClkSum;
+			var backColor = "#f9ddb5";
+			var barColor = "#f0ad4e";
 		}
 		percent[i] = clickSum[i] / allUsersSendClkSum;
 		percent[i] = percent[i] * 10000;
@@ -35,21 +37,30 @@ function clickGraph (argumentsPercents) {
 		numbers[i] = statuses[i].usNo;
 		cikCanvasId[i] = 'persentGraphCanvas_' + numbers[i];
 		canvas[i] = document.getElementById(cikCanvasId[i]);
+		var width = canvas[i].width;
+		var height = canvas[i].height;
+
 		if (!canvas[i] || !canvas[i].getContext) return false;
 		back[i] = canvas[i].getContext('2d');
 		bar[i] =  canvas[i].getContext('2d');
-		bt[i] = 30;
+		percentText[i] =  canvas[i].getContext('2d');
 
 		// cssと同様の設定が可能
-		back[i].fillStyle = "#55bbff";
-		back[i].strokeStyle = "#ff8800";
+		back[i].fillStyle = backColor;
 		back[i].lineWidth = 5; // 線幅px単位
 		back[i].lineJoin = "round"; // 交点の形状指定　丸
 		// 四角　塗りつぶし fillRect(x,y,w,h)
-		back[i].fillRect(50,50,width,height);
+		back[i].fillRect(width*0.2/2, height*0.5/2, width*0.8, height*0.5);
 
-		bar[i].fillStyle = "#0088ff";
-		bar[i].fillRect(50, 50+(height*0.5/2), width * percent[i] / 100, height*0.5);
+		bar[i].fillStyle = barColor;
+		bar[i].fillRect(width*0.2/2, height*0.5/2 + height*0.05, width*0.8 * percent[i] / 100, height*0.4);
+		percent[i] = percent[i] + "%";
+		percentText[i].font =  "bold 12px 'Meiryo'";
+		percentText[i].textAlign = "center";
+		percentText[i].strokeStyle = "#fff";
+		percentText[i].strokeText(percent[i], canvas[i].width/2, canvas[i].height/2 + height*0.05);
+		percentText[i].fillStyle = "#000";
+		percentText[i].fillText(percent[i], canvas[i].width/2, canvas[i].height/2 + height*0.05);
 	}
 };
 

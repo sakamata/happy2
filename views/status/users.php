@@ -3,46 +3,58 @@
 		// var usNo = statuses[viewNo].usNo;
 	</script>
 
-	<div class="status">
-		<a href="#">?</a><br>
-		<span>ON/OFF</span><br>
-		<span>Following: <?php echo $this->escape($status['ifFollowing']); ?></span>
+	<div class="viewUsers">
+
+		<div class="simpleStatus">
+			<a href="#">?</a><br>
+			<span>ON/OFF</span><br>
+			<!-- <span>Following: <?php echo $this->escape($status['ifFollowing']); ?></span> -->
 <?php
-		echo $this->render('status/follow_status', array('base_url' => $base_url, 'status' => $status,));
-		echo $this->render('status/follow_button', array('base_url' => $base_url, 'status' => $status, 'follow_token'=> $follow_token,));
+			echo $this->render('status/follow_status', array('base_url' => $base_url, 'status' => $status,));
+			echo $this->render('status/follow_button', array('base_url' => $base_url, 'status' => $status, 'follow_token'=> $follow_token,));
 ?>
-		<br>
-		<span>Follower: <?php echo $this->escape($status['ifFollower']); ?></span><br>
-		img:<?php echo $this->escape($status['usImg']); ?><br>
-		<img src="<?php echo $base_url .'/../user/img/'. $status['usImg']; ?>" alt="user_photo">
-
-		<b>
-		Pt: <?php echo $this->escape($status['nowPt']); ?><br>
-		No: <?php echo $this->escape($status['usNo']); ?><br>
-		Id: <?php echo $this->escape($status['usId']); ?><br>
-		Name: <?php echo $this->escape($status['usName']); ?><br>
-		TodayClick  ForYou / All: <?php echo $this->escape($status['toMeClkSum']); ?> / <?php echo $this->escape($status['allClkSum']); ?><br>
-
-		MySendClkSum: <span id="clickSum_<?php echo $status['usNo']; ?>"><?php echo $this->escape($status['MySendClkSum']); ?></span> / <?php echo $this->escape($allClkSum); ?>
-
-	</b><br>
-		ThisTimeTheyClickPercent: <span id="clickPercent_<?php echo $status['usNo']; ?>">
-			<script type="text/javascript">
-			document.write(thisTimeTheyClickPercent[viewNo]);
-			</script>
-			%</span>
-		<br>
-
-		<button type="submit" id="clickAction_<?php echo $status['usNo']; ?>" class="btn btn-warning btn-lg" class="clickAction" onclick="clickAction('post', '<?php echo $status['usNo']; ?>', '<?php echo $status['usId']; ?>', '<?php echo $status['usName']; ?>' )">Happy!</button>
-		<div>
-			<canvas id="persentGraphCanvas_<?php echo $status['usNo']; ?>" class="myCikCanvas" >
-			Canvasに対応したブラウザが必要です。</canvas>
+			<!-- <span>Follower: <?php echo $this->escape($status['ifFollower']); ?></span><br> -->
 		</div>
-
+		<div class="userImageArea">
+			<img src="<?php echo $base_url .'/../user/img/'. $status['usImg']; ?>" alt="user_photo">
+			<br>
+			<p>ID:<?php echo $this->escape($status['usId']); ?></p>
+			<p>glaph</p>
+		</div>
+		<div class="userInfoArea">
+			<div class="userBalioon">
+				<p><?php echo $this->escape($status['toMeClkSum']); ?></p>
+			</div>
+			<div class="userInfo">
+				<!-- <p>all: <?php echo $this->escape($status['allClkSum']); ?></p> -->
+				<p><?php echo $this->escape($status['usName']); ?></p>
+				<p><?php echo $this->escape($status['roundPt']); ?> Pt</p>
+			</div>
+		</div>
+		<div class="userButtonArea">
+			<div class="userButton">
+				<!-- class="btn btn-warning btn-lg"  -->
+				<button type="submit" id="clickAction_<?php echo $status['usNo']; ?>" class="clickAction" onclick="clickAction('post', '<?php echo $status['usNo']; ?>', '<?php echo $status['usId']; ?>', '<?php echo $status['usName']; ?>' )">
+				<span id="clickSum_<?php echo $status['usNo']; ?>" class="countNumber"><?php echo $this->escape($status['MySendClkSum']); ?></span><br>Happy!</button>
+<!-- <?php echo $this->escape($allClkSum); ?> -->
+			</div>
+			<div class="clearBoth">	</div>
+			<div class="userGraph">
+				<canvas id="persentGraphCanvas_<?php echo $status['usNo']; ?>" class="myCikCanvas" width="300" height="50">Canvasに対応したブラウザが必要です。</canvas>
+			</div>
+		</div>
+		<div class="clearBoth">	</div>
+<!--
+			Id: <?php echo $this->escape($status['usId']); ?><br>
+			No: <?php echo $this->escape($status['usNo']); ?><br>
+			ThisTimeTheyClickPercent: <span id="clickPercent_<?php echo $status['usNo']; ?>">
+			<script type="text/javascript">
+				document.write(thisTimeTheyClickPercent[viewNo]);
+			</script>%</span>
+ -->
 	</div>
-
-	<hr>
 
 	<script type="text/javascript">
 		viewNo++;
 	</script>
+	<div class="clearBoth">	</div>

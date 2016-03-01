@@ -3,13 +3,13 @@ $head = [];
 $head[0] = $headerUser;
 $headAndStatuses = array_merge($head, $statuses);
 $jsonStatuses = json_encode($headAndStatuses);
-// var_dump($user['usNo']);
 ?>
 
 <script type="text/javascript">
 var socket;
 socket = new WebSocket('ws://127.0.0.1:80/happy2');
 
+var myUserNo = <?php echo $user['usNo']; ?>;
 var viewNo = 0;
 var statuses = JSON.parse('<?php echo $jsonStatuses; ?>');
 console.log(statuses);
@@ -97,7 +97,7 @@ var ReplaceClickInfo = clickCountIncrement();
 <hr>
 
 <div id="main_user">
-	<?php echo $this->render('status/main_user', array('headerUser' => $headerUser,)); ?>
+	<?php echo $this->render('status/main_user', array('headerUser' => $headerUser, 'user' => $user,)); ?>
 </div>
 <hr>
 

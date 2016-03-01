@@ -31,11 +31,11 @@ a {
 }
 
 #main {
-	margin: 0 30px;
+	margin: 0px;
 }
 
 #main_user {
-	background-color: #eee;
+	background-color: #b2fcc4;
 }
 
 #wsMessage{
@@ -44,6 +44,11 @@ a {
 	top: 50px;
 	text-align: center;
 	/*visibility :hidden;*/
+}
+
+#statuses {
+	background-color: #b2fcc4;
+	padding: 1%;
 }
 
 .follow_status img {
@@ -57,10 +62,97 @@ a {
 	border: 1px solid #aaa;
 }
 
-.status {
+.viewUsers {
+	width: 100%;
 	padding: 10px;
+	background-color: #fff;
+	border-radius: 10px;
 	border-bottom: 2px solid #CCCCCC;
+	margin-right: auto;
+	margin-left: auto;
 	margin-bottom: 10px;
+}
+
+.simpleStatus {
+	background-color: #b2fcc4;
+	border-radius: 5px;
+	float: left;
+	margin-right: 2%;
+}
+
+.userImageArea {
+	float: left;
+	margin-right: 2%;
+}
+
+.userImageArea img {
+	border-radius: 10px;
+}
+
+.userInfoArea {
+	width: 25%;
+	float: left;
+}
+
+.userBalioon {
+	height: auto;
+	font-size: 3em;
+	width: 3em;
+	border-radius: 15px;
+	background-color: #fff;
+	border: 3px solid #888;
+}
+
+.userBalioon p{
+	text-align: right;
+	margin: 0px 20px;
+}
+
+.userInfo {
+	margin-top: 30px;
+	line-height: 0.8em;
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+.userButtonArea {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	float: left;
+}
+
+.userButton {
+	text-align: center;
+	/*margin-right : auto;
+	margin-left : auto;*/
+}
+
+.clickAction {
+	width: 80%;
+	height: 100px;
+	border-radius: 15px;
+	/*border: 2px solid #eb9b2a;*/
+	border: 2px solid #e3b508;
+	line-height: 1em;
+	color: #fff;
+	font-size: 2.5em;
+	text-shadow: 2px 2px 1px rgba(0,0,0,0.2);
+	/*background-color: #f0ad4e;*/
+	background-color: #f7cb24;
+	outline:none;
+	padding: 10px;
+}
+
+.countNumber{
+	color: #333;
+	font-weight: bold;
+}
+
+.userGraph {
+
+}
+
+.clearBoth {
+	clear: both;
 }
 
 .status_null {
@@ -71,10 +163,10 @@ a {
 	margin-bottom: 10px;
 }
 
+/* サイス指定禁止 canvasID部分対応の為 */
 .myCikCanvas {
-	width: 30%;
-	height: 50px;
-	background-color: #ddd;
+	/*background-color: #ddd;*/
+	border-radius: 5px;
 }
 
 .order_changer form {

@@ -36,7 +36,9 @@ class StatusController extends Controller
 		$viewUser = $user['usNo'];
 
 		$clickStatus = $this->db_manager->get('Status')->fetchClickStatus($usNo, $this->lastCalcTime);
+		$array = [];
 		$headerUser = $this->headerUserPerson($viewUser, $usNo, $this->lastCalcTime);
+		$headerUser = $this->pointRounder($headerUser);
 
 		$usersArray = strval($this->request->getPost('usersArray'));
 		if (empty($usersArray)) {
@@ -61,6 +63,7 @@ class StatusController extends Controller
 		} else {
 			$offset = $this->pager($page, $userCount);
 			$statuses = $this->switchUsersArray($usersArray, $usNo, $offset, $order);
+			$statuses = $this->pointRounder($statuses);
 		}
 
 		return $this->render(array(
@@ -194,6 +197,26 @@ class StatusController extends Controller
 		$limit = $this->userViewLimit;
 		$offset = $page * $limit;
 		return $offset;
+	}
+
+	public function pointRounder($users)
+	{
+		if(array_key_exists('nowPt', $users)) {
+			$nowPt = $users['nowPt'];
+			$nowPt = floatval($nowPt);
+			$nowPt = round($nowPt, 2);
+			$users['roundPt'] = strval($nowPt);
+		} else {
+			$i = 0;
+			foreach ($users as $user) {
+				$nowPt = $user['nowPt'];
+				$nowPt = floatval($nowPt);
+				$nowPt = round($nowPt, 2);
+				$users[$i]['roundPt'] = strval($nowPt);
+				$i++;
+			}
+		}
+		return $users;
 	}
 
 }
