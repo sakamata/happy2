@@ -55,12 +55,12 @@ function clickGraph (argumentsPercents) {
 		bar[i].fillStyle = barColor;
 		bar[i].fillRect(width*0.2/2, height*0.5/2 + height*0.05, width*0.8 * percent[i] / 100, height*0.4);
 		percent[i] = percent[i] + "%";
-		percentText[i].font =  "bold 12px 'Meiryo'";
+		percentText[i].font =  "bold 20px 'Meiryo'";
 		percentText[i].textAlign = "center";
 		percentText[i].strokeStyle = "#fff";
-		percentText[i].strokeText(percent[i], canvas[i].width/2, canvas[i].height/2 + height*0.05);
+		percentText[i].strokeText(percent[i], canvas[i].width/2, canvas[i].height/2 + height*0.12);
 		percentText[i].fillStyle = "#000";
-		percentText[i].fillText(percent[i], canvas[i].width/2, canvas[i].height/2 + height*0.05);
+		percentText[i].fillText(percent[i], canvas[i].width/2, canvas[i].height/2 + height*0.12);
 	}
 };
 

@@ -1,3 +1,4 @@
+<?php $this->setLayoutVar('title', 'ホーム') ?>
 <?php
 $head = [];
 $head[0] = $headerUser;
@@ -81,45 +82,41 @@ var clickCountIncrement = function (){
 };
 
 var ReplaceClickInfo = clickCountIncrement();
-
-
 </script>
 
-<?php $this->setLayoutVar('title', 'ホーム') ?>
-
+<form class="indexFrom" action="<?php echo $this->escape($base_url); ?>"  method="post">
+	<input type='hidden' name='order' value='<?php echo $this->escape($order); ?>'>
+	<div class="form-group">
+		<div class="form-inline">
+			<div class="col-xs-5 col-sm-4 col-md-4 col-lg-4">
+				<input type="text" class="form-control input-sm" id="InputText" placeholder="ユーザー検索">
+			</div>
+			<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+				<button type="submit" class="btn btn-warning btn-sm">send</button>
+			</div>
+			<div class="hidden-xs col-sm-2 col-md-2 col-lg-2">
+				<lavel for="InputSelect">並び替え</lavel>
+			</div>
+			<div class="col-xs-5 col-sm-4 col-md-4 col-lg-4">
+				<select class="form-control input-sm" id="InputSelect" name="usersArray" onChange="this.form.submit()">
+				<option value="newUsers" <?php echo $selected['newUsers']; ?>>新規ユーザー順</option>
+				<option value="following" <?php echo $selected['following']; ?>>フォロー中</option>
+				<option value="followers" <?php echo $selected['followers']; ?>>フォローされている</option>
+				<!-- <option value="test" <?php echo $selected['test']; ?>>テスト</option> -->
+				</select>
+			</div>
+		</div>
+	</div>
+</form>
+<div id="dummyIndexForm"></div>
 <h2>ホーム</h2>
-
-<div id="wsStatus"></div>
-	<input type="text" id="mes" placeholder="WebSocket Test">
-	<input type="button" id="wsButton" value="send">
-<div id="res"></div>
-
-<hr>
 
 <div id="main_user">
 	<?php echo $this->render('status/main_user', array('headerUser' => $headerUser, 'user' => $user,)); ?>
 </div>
 <hr>
 
-<form class="form-inline" action="<?php echo $this->escape($base_url); ?>"  method="post">
-	<div class="form-group">
-		<input type='hidden' name='order' value='<?php echo $this->escape($order); ?>'>
-		<input type="text" class="form-control input-lg" id="InputText">
-	</div>
 
-		<button type="submit" class="btn btn-warning btn-lg">send</button>
-
-	<div class="form-group">
-		<lavel for="InputSelect">並び替え</lavel>
-
-		<select class="form-control input-lg" id="InputSelect" name="usersArray" onChange="this.form.submit()">
-			<option value="newUsers" <?php echo $selected['newUsers']; ?>>新規ユーザー順</option>
-			<option value="following" <?php echo $selected['following']; ?>>フォロー中</option>
-			<option value="followers" <?php echo $selected['followers']; ?>>フォローされている</option>
-			<option value="test" <?php echo $selected['test']; ?>>テスト</option>
-		</select>
-	</div>
-</form>
 
 <?php
 	echo $this->render('status/pager', array('page' => $page, 'limit' => $limit, 'userCount' => $userCount, 'order' => $order, 'usersArray' => $usersArray));

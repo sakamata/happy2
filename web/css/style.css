@@ -12,13 +12,51 @@ a {
 }
 
 #header {
+	width: 100%;
+	height: 36px;
 	background-color: #7ECE15;
-	padding: 20px;
-	border-bottom: 3px solid #CCCCCC;
+	/*padding: 20px;*/
+	position: fixed;
+	top: 0;
+	left: 0;
+	margin: 0;
+	padding: 5px;
+	z-index: 2;
+}
+
+.indexFrom {
+	position: fixed;
+	top: 36px;
+	left: 0;
+	margin: 0;
+	padding: 5px;
+	height: 36px;
+	background-color: #fff;
+	z-index: 1;
+}
+
+#dummyIndexForm {
+	position: fixed;
+	width: 100%;
+	top: 36px;
+	left: 0;
+	margin: 0;
+	padding: 5px;
+	height: 38px;
+	border-bottom: 1px solid #8bc244;
+	background-color: #fff;
+}
+
+#header_menu {
+	float: right;
+	display: inline;
 }
 
 #header h1 {
-	margin: 0;
+	font-size: 1.5em;
+	padding-top: 10px;
+	margin-left: 15px;
+	display: inline;
 }
 
 #header h1 a {
@@ -32,16 +70,24 @@ a {
 
 #main {
 	margin: 0px;
+	margin-top: 78px;
 }
 
 #main_user {
 	background-color: #b2fcc4;
+	width: 100%;
+	padding: 10px 5px;
+	border-bottom: 2px solid #CCCCCC;
+	margin-right: auto;
+	margin-left: auto;
+	margin-bottom: 10px;
 }
 
 #wsMessage{
 	position: fixed;
+	z-index: 3;
 	left: 30%;
-	top: 50px;
+	top: 0px;
 	text-align: center;
 	/*visibility :hidden;*/
 }
@@ -52,19 +98,19 @@ a {
 }
 
 .follow_status img {
-	width: 100px;
-	border-radius: 10px;
+	width: 60px;
+	border-radius: 5px;
 }
 
 .follow_button, .unfollow_button {
-	width: 100px;
-	border-radius: 10px;
+	width: 60px;
+	border-radius: 5px;
 	border: 1px solid #aaa;
 }
 
 .viewUsers {
 	width: 100%;
-	padding: 10px;
+	padding: 10px 5px;
 	background-color: #fff;
 	border-radius: 10px;
 	border-bottom: 2px solid #CCCCCC;
@@ -73,59 +119,108 @@ a {
 	margin-bottom: 10px;
 }
 
+.mainStatus {
+	float: left;
+	margin-bottom: 15px;
+}
+
 .simpleStatus {
-	background-color: #b2fcc4;
+	background-color: #e2fee5;
+	width: 80px;
+	height: 220px;
+	padding: 10px;
 	border-radius: 5px;
 	float: left;
-	margin-right: 2%;
+	margin-right: 5px;
+}
+
+.userCenterArea {
+	float: left;
+	width: 210px;
+	height: 130px;
 }
 
 .userImageArea {
 	float: left;
-	margin-right: 2%;
+	width: 110px;
+	height: 130px;
+	text-align: center;
+	word-wrap: break-word;
+}
+
+.userImageArea p {
+	margin-bottom: 0px;
+	line-height: 1em;
 }
 
 .userImageArea img {
 	border-radius: 10px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .userInfoArea {
-	width: 25%;
-	float: left;
+	width: 90px;
+	height: 130px;
+	float: right;
+	margin-left: 1.5%;
 }
 
 .userBalioon {
+	float: left;
 	height: auto;
-	font-size: 3em;
-	width: 3em;
-	border-radius: 15px;
+	font-size: 2em;
+	width: 80px;
+	border-radius: 10px;
 	background-color: #fff;
-	border: 3px solid #888;
+	border: 2px solid #888;
 }
 
-.userBalioon p{
-	text-align: right;
-	margin: 0px 20px;
+.userBalioon p {
+	text-align: center;
+	margin: 0px;
+	padding: 0px;
 }
 
-.userInfo {
-	margin-top: 30px;
+.userInfoLeft {
+	margin-top: 45px;
 	line-height: 0.8em;
 	font-weight: bold;
 	font-size: 1.2em;
 }
 
+.userInfoLeft p {
+	text-align: right;
+	margin-right: 15px
+}
+
+.userInfoBottom {
+	background-color: #eee;
+	text-align: center;
+	line-height: 1.2em;
+	font-size: 1.4em;
+	font-weight: bold;
+}
+
+.userInfoBottom p {
+	margin-bottom: 0px;
+	padding: 5px;
+}
+
 .userButtonArea {
+	width: 295px;
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 	float: left;
 }
 
 .userButton {
 	text-align: center;
-	/*margin-right : auto;
-	margin-left : auto;*/
+	margin-right : auto;
+	margin-left : auto;
 }
 
+/* Happy!ボタンの設定 */
 .clickAction {
 	width: 80%;
 	height: 100px;
