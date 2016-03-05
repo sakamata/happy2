@@ -16,7 +16,7 @@
 <div class="container">
 	<div class="row">
 	<div class="mainUser">
-		<div class="mainStatus col-sm-6 col-md-6 col-lg-6">
+		<div class="col-sm-6 col-md-6 col-lg-6">
 			<div class="mainStatus">
 				<div class="simpleStatus">
 					<a href="#">?</a><br>
@@ -55,7 +55,7 @@
 					<button type="submit" id="clickAction_<?php echo $headerUser['usNo']; ?>" class="myClickAction" onclick="clickAction('post', '<?php echo $headerUser['usNo']; ?>', '<?php echo $headerUser['usId']; ?>', '<?php echo $headerUser['usName']; ?>' )"><span id="clickSum_<?php echo $headerUser['usNo']; ?>" class="countNumber"><?php echo $this->escape($headerUser['toMeClkSum']); ?></span><br>My Happy!</button>
 				</div><!-- userButton -->
 				<div class="userGraph">
-					<canvas id="persentGraphCanvas_<?php echo $headerUser['usNo']; ?>" class="myCikCanvas" width="300" height="70">
+					<canvas id="persentGraphCanvas_<?php echo $headerUser['usNo']; ?>" class="myCikCanvas" width="290" height="40">
 						Canvasに対応したブラウザが必要です。</canvas>
 				</div><!-- userGraph -->
 			</div><!-- userButtonArea -->

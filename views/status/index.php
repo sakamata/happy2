@@ -103,7 +103,7 @@ var ReplaceClickInfo = clickCountIncrement();
 			</div>
 			<div class="col-xs-5 col-sm-4 col-md-4 col-lg-4">
 				<select class="form-control input-sm" id="InputSelect" name="usersArray" onChange="this.form.submit()">
-				<option value="newUsers" <?php echo $selected['newUsers']; ?>>新規ユーザー順</option>
+				<option value="newUsers" <?php echo $selected['newUsers']; ?>>登録順</option>
 				<option value="following" <?php echo $selected['following']; ?>>フォロー中</option>
 				<option value="followers" <?php echo $selected['followers']; ?>>フォローされている</option>
 				<!-- <option value="test" <?php echo $selected['test']; ?>>テスト</option> -->

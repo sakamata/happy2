@@ -50,10 +50,10 @@ function clickGraph (argumentsPercents) {
 		back[i].lineWidth = 5; // 線幅px単位
 		back[i].lineJoin = "round"; // 交点の形状指定　丸
 		// 四角　塗りつぶし fillRect(x,y,w,h)
-		back[i].fillRect(width*0.2/2, height*0.5/2, width*0.8, height*0.5);
+		back[i].fillRect(0, 0, width, height);
 
 		bar[i].fillStyle = barColor;
-		bar[i].fillRect(width*0.2/2, height*0.5/2 + height*0.05, width*0.8 * percent[i] / 100, height*0.4);
+		bar[i].fillRect(0, height*0.1, width*percent[i] / 100, height*0.8);
 		percent[i] = percent[i] + "%";
 		percentText[i].font =  "bold 20px 'Meiryo'";
 		percentText[i].textAlign = "center";
