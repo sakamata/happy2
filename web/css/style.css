@@ -96,8 +96,9 @@ a {
 	background-color: #b2fcc4;
 }
 
-#mainUser {
-	background-color: #e2fee5;
+.mainUser {
+	background-color: #ddd;
+	/*background-color: #e2fee5;*/
 	width: 100%;
 	padding: 10px 5px;
 	border-radius: 10px;
@@ -143,8 +144,10 @@ a {
 }
 
 .mainStatus {
-	float: left;
-	margin-bottom: 15px;
+	width: 290px;
+	height: 240px;
+	margin-bottom: 5px;
+	margin: 0 auto;
 }
 
 .simpleStatus {
@@ -247,7 +250,8 @@ a {
 .userButtonArea {
 	width: 290px;
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-	float: left;
+	margin-right : auto;
+	margin-left : auto;
 }
 
 .userButton {

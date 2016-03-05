@@ -15,12 +15,14 @@
  -->
 <div class="container">
 	<div class="row">
-		<div id="mainUser">
-			<div class="mainStatus" class="col-xs-8">
+	<div class="mainUser">
+		<div class="mainStatus col-sm-6 col-md-6 col-lg-6">
+			<div class="mainStatus">
 				<div class="simpleStatus">
 					<a href="#">?</a><br>
 					<span>ON/OFF</span><br>
 					<!-- ***ToDo*** follow status & followButton -->
+					No: <?php echo $this->escape($headerUser['usNo']); ?>
 				</div><!-- simpleStatus -->
 				<div class="userCenterArea">
 					<div class="userImageArea">
@@ -43,10 +45,12 @@
 						<p>■■■■■■■■■■■■■■■</p>
 						<p><?php echo $this->escape($headerUser['usName']); ?></p>
 					</div>
-							<!-- No: <?php echo $this->escape($headerUser['usNo']); ?><br> -->
 				</div><!-- userCenterArea -->
 			</div><!-- mainStatus -->
-			<div class="userButtonArea" class="col-xs-4">
+		</div><!-- col -->
+
+		<div class="col-sm-6 col-md-6 col-lg-6">
+			<div class="userButtonArea">
 				<div class="userButton">
 					<button type="submit" id="clickAction_<?php echo $headerUser['usNo']; ?>" class="myClickAction" onclick="clickAction('post', '<?php echo $headerUser['usNo']; ?>', '<?php echo $headerUser['usId']; ?>', '<?php echo $headerUser['usName']; ?>' )"><span id="clickSum_<?php echo $headerUser['usNo']; ?>" class="countNumber"><?php echo $this->escape($headerUser['toMeClkSum']); ?></span><br>My Happy!</button>
 				</div><!-- userButton -->
@@ -55,8 +59,9 @@
 						Canvasに対応したブラウザが必要です。</canvas>
 				</div><!-- userGraph -->
 			</div><!-- userButtonArea -->
-			<div class="clearBoth">	</div>
-		</div><!-- mainUser -->
+		</div><!-- col -->
+		<p>　</p><br>
+	</div><!-- mainUser -->
 	</div><!-- row -->
 </div><!-- container -->
 
