@@ -19,6 +19,7 @@
 	<div id="header">
 		<h1><a href="<?php echo $base_url; ?>/">Happy</a></h1>
 		<div id="header_menu">
+
 <?php if($session->isAuthenticated()): ?>
 				<a href="<?php echo $base_url; ?>/account/profile">編集</a>
 				<a href="">ヘルプ</a>
@@ -27,11 +28,9 @@
 				<a href="<?php echo $base_url; ?>/account/signin">ログイン</a>
 				<a href="<?php echo $base_url; ?>/account/signup">アカウント登録</a>
 <?php endif; ?>
-			<br><span>集計回数　XX回</span>
-			<div id="wsStatus"></div>
 
-		</div>
-	</div>
+		</div><!-- header_menu -->
+	</div><!-- header -->
 	<div id="wsMessage">
 		<ul id="msg">
 		</ul>

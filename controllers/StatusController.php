@@ -133,7 +133,7 @@ class StatusController extends Controller
 
 				$selected['following'] = 'selected';
 				$usersNullMessage = "フォロー中のユーザーはまだいません。";
-				$usersArrayMessage = "フォローをしているユーザー";
+				$usersArrayMessage = "フォロー中の";
 				return array($userCount, $selected, $usersNullMessage, $usersArrayMessage);
 				break;
 
@@ -143,7 +143,7 @@ class StatusController extends Controller
 
 				$selected['followers'] = 'selected';
 				$usersNullMessage = "フォローされているユーザーはまだいません。";
-				$usersArrayMessage = "フォローされているユーザー";
+				$usersArrayMessage = "フォローされている";
 				return array($userCount, $selected, $usersNullMessage, $usersArrayMessage);
 				break;
 
@@ -162,7 +162,7 @@ class StatusController extends Controller
 				$userCount = $userCount['tbus'];
 				$selected['newUsers'] = 'selected';
 				$usersNullMessage = "他のユーザーはまだいません。";
-				$usersArrayMessage = "新規登録ユーザー";
+				$usersArrayMessage = "登録順";
 				return array($userCount, $selected, $usersNullMessage, $usersArrayMessage);
 				break;
 		}

@@ -66,6 +66,9 @@ var clickCountIncrement = function (){
 				clickSum[i]++;
 				var replaceSum = clickSum[i];
 				$(sumId[i]).html(clickSum[i]);	// クリック合計の書き換え
+				if (i == 0) {
+					$(".myCountBalloon").html(clickSum[i]);	// 自分の吹き出し数の書き換え
+				}
 			}
 		}
 		allUsersSendClkSum++;
@@ -83,7 +86,8 @@ var clickCountIncrement = function (){
 
 var ReplaceClickInfo = clickCountIncrement();
 </script>
-
+<div class="container">
+<div class="row">
 <form class="indexFrom" action="<?php echo $this->escape($base_url); ?>"  method="post">
 	<input type='hidden' name='order' value='<?php echo $this->escape($order); ?>'>
 	<div class="form-group">
@@ -108,16 +112,34 @@ var ReplaceClickInfo = clickCountIncrement();
 		</div>
 	</div>
 </form>
+</div><!-- row -->
+</div><!-- container -->
+
 <div id="dummyIndexForm"></div>
-<h2>ホーム</h2>
+
+<div class="container">
+	<div class="row">
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+			<div id="pageTitle">
+				<h2>ホーム</h2>
+			</div><!-- pageTitle -->
+		</div><!--  -->
+		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+			<div id="calcStatusArea">
+				<p>集計回数　XX回	<span id="wsStatus"></span></p>
+			</div>
+		</div>
+	</div><!-- row -->
+</div><!-- container -->
 
 <div id="main_user">
 	<?php echo $this->render('status/main_user', array('headerUser' => $headerUser, 'user' => $user,)); ?>
 </div>
-<hr>
 
 
-
+<div class="container">
+	<div class="row">
+		<div id="orderInfoArea">
 <?php
 	echo $this->render('status/pager', array('page' => $page, 'limit' => $limit, 'userCount' => $userCount, 'order' => $order, 'usersArray' => $usersArray));
 
@@ -125,16 +147,27 @@ var ReplaceClickInfo = clickCountIncrement();
 		echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray));
 	endif;
 ?>
+	<form action="<?php echo $base_url; ?>/status/post" method="post" accept-charset="utf-8">
+		<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
+	</form>
 
-<form action="<?php echo $base_url; ?>/status/post" method="post" accept-charset="utf-8">
-	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
-</form>
 
-<?php
+	<?php
 	if (count($statuses) !== 0) :
-		echo $usersArrayMessage.'<b>'. count($statuses) . '</b>件を表示しています。';
+		echo '<p>'.$usersArrayMessage.'<b>'. count($statuses) . '</b>名を表示しています。</p>';
 	endif;
-?>
+	?>
+		</div><!-- orderInfoArea -->
+	</div><!-- row -->
+</div><!-- container-fluid -->
+
+<div class="container">
+<div class="row">
+<div id="orderMassageArea">
+</div><!-- orderMassageArea -->
+</div><!-- row -->
+</div><!-- container -->
+
 
 <div id="statuses">
 <?php

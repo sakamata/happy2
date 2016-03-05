@@ -3,9 +3,9 @@
 		// var usNo = statuses[viewNo].usNo;
 	</script>
 
-	<div class="viewUsers">
-		<div class="container">
-			<div class="row">
+	<div class="container">
+		<div class="row">
+			<div class="viewUsers">
 				<div class="mainStatus" class="col-xs-8">
 					<div class="simpleStatus">
 						<a href="#">?</a><br>
@@ -16,6 +16,7 @@
 						echo $this->render('status/follow_button', array('base_url' => $base_url, 'status' => $status, 'follow_token'=> $follow_token,));
 			?>
 						<!-- <span>Follower: <?php echo $this->escape($status['ifFollower']); ?></span><br> -->
+						<p>No:<?php echo $this->escape($status['usNo']); ?></p>
 					</div><!-- simpleStatus -->
 
 					<div class="userCenterArea">
@@ -24,14 +25,14 @@
 							<p>ID:<?php echo $this->escape($status['usId']); ?></p>
 						</div><!-- userImageArea -->
 						<div class="userInfoArea">
-							<div class="userBalioon">
+							<div class="userBalloon">
 								<p><?php echo $this->escape($status['toMeClkSum']); ?></p>
 							</div>
 							<div class="clearBoth">	</div>
 							<div class="userInfoLeft">
 								<!-- <p>all: <?php echo $this->escape($status['allClkSum']); ?></p> -->
 								<p><?php echo $this->escape($status['roundPt']); ?> Pt</p>
-							</div><!-- userInfo -->
+							</div><!-- userInfoLeft -->
 						</div><!-- userInfoArea -->
 						<div class="clearBoth">	</div>
 						<div class="userInfoBottom">
@@ -46,7 +47,7 @@
 						<!-- class="btn btn-warning btn-lg"  -->
 						<button type="submit" id="clickAction_<?php echo $status['usNo']; ?>" class="clickAction" onclick="clickAction('post', '<?php echo $status['usNo']; ?>', '<?php echo $status['usId']; ?>', '<?php echo $status['usName']; ?>' )">
 						<span id="clickSum_<?php echo $status['usNo']; ?>" class="countNumber"><?php echo $this->escape($status['MySendClkSum']); ?></span><br>Happy!</button>
-		<!-- <?php echo $this->escape($allClkSum); ?> -->
+						<!-- <?php echo $this->escape($allClkSum); ?> -->
 					</div><!-- userButton -->
 					<!-- <div class="clearBoth">	</div> -->
 					<div class="userGraph">
@@ -62,9 +63,9 @@
 					document.write(thisTimeTheyClickPercent[viewNo]);
 				</script>%</span>
 	 -->
-			</div><!-- row -->
-		</div><!-- container -->
-	</div><!-- viewUsers -->
+			</div><!-- viewUsers -->
+		</div><!-- row -->
+	</div><!-- container -->
 	<script type="text/javascript">
 		viewNo++;
 	</script>
