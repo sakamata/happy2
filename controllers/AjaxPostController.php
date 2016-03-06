@@ -80,7 +80,7 @@ class AjaxPostController extends Controller
 	public function followAction()
 	{
 		$token = strval($this->request->getPost('f_token'));
-		if (!$this->checkCsrfToken('ajaxPost/follow', $token)) {
+		if (!$this->checkCsrfTokenLasting('ajaxPost/follow', $token)) {
 			return;
 		}
 		$followingNo = intval($this->request->getPost('followingNo'));
