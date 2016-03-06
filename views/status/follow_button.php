@@ -1,4 +1,4 @@
-<form  method="post" name="followAction" accept-charset="utf-8" onSubmit="followPost(<?php echo $status['usNo']; ?> , <?php echo $status['ifFollowing']; ?> , <?php echo $status['ifFollowing']; ?> , follow_token); return false;">
+<form method="post" name="followAction" accept-charset="utf-8" onSubmit="followPost(<?php echo $status['usNo']; ?> , <?php echo $status['ifFollowing']; ?> , <?php echo $status['ifFollowing']; ?> , follow_token); return false;">
 	<input type="hidden" name="follow_token" value="<?php echo $this->escape($follow_token); ?>">
 	<input type="hidden" name="followingNo" value="<?php echo $this->escape($status['usNo']); ?>">
 	<div id="follow_form_<?php echo $status['usNo']; ?>">

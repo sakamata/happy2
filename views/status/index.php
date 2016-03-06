@@ -2,7 +2,13 @@
 <?php
 $head = [];
 $head[0] = $headerUser;
-$headAndStatuses = array_merge($head, $statuses);
+if ($statuses) {
+	$headAndStatuses = array_merge($head, $statuses);
+} else {
+	$headAndStatuses = $head;
+	$status ="";
+}
+
 $jsonStatuses = json_encode($headAndStatuses);
 ?>
 
