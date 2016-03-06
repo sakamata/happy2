@@ -1,5 +1,19 @@
 <script type="text/javascript">
 
+// 受信したメッセージを元にothersUserのグラフと数値の書き換え
+window.onload = function () {
+	otherUserInfo();
+};
+
+function otherUserInfo(msg) {
+	if (!msg) {
+		// 現在の値を取得してグラフを表示
+	} else {
+		// msgで上書き処理
+	}
+}
+
+
 // クリック率グラフの描画アニメーション
 window.onload = function () {
 	clickGraph();
@@ -203,13 +217,13 @@ var clickAction = function(action, usNo, usId, usName) {
 
 	// WebSocketで共有する値
 	var msg = {
-		usNo : usNo,
-		usId : usId,
-		usName : usName,
-		sendUserNo : <?php echo $this->escape($headerUser['usNo']); ?>,
-		sendUserId : '<?php echo $this->escape($headerUser['usId']); ?>',
-		sendUserName : '<?php echo $this->escape($headerUser['usName']); ?>',
-		sendUserImage : '<?php echo $this->escape($headerUser['usImg']); ?>'
+		receiveNo : usNo,
+		receiveUserId : usId,
+		receiveUserName : usName,
+		sendUserNo : <?php echo $this->escape($user['usNo']); ?>,
+		sendUserId : '<?php echo $this->escape($user['usId']); ?>',
+		sendUserName : '<?php echo $this->escape($user['usName']); ?>',
+		sendUserImage : '<?php echo $this->escape($user['usImg']); ?>'
 	};
 	var msg = JSON.stringify(msg);
 
@@ -221,7 +235,7 @@ var clickAction = function(action, usNo, usId, usName) {
 
 	if (action == 'post') {
 		// POST用のオブジェクト生成とその他の処理
-		var percents = ReplaceClickInfo(usNo);
+		var percents = ReplaceMyClickInfo(usNo);
 		var post = clickObjct(usNo);
 		var posts = clickPool(post);
 		clickGraph(percents);

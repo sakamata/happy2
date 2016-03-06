@@ -37,7 +37,9 @@
 							</div><!-- userInfoArea -->
 							<div class="clearBoth">	</div>
 							<div class="userInfoBottom">
-								<p>■■■■■■■■■■■■■■■</p>
+								<div class="otheerUserGraph">
+									<canvas id="otheerPersentGraphCanvas_<?php echo $status['usNo']; ?>" class="myCikCanvas" width="290" height="40">Canvasに対応したブラウザが必要です。</canvas>
+								</div><!-- userGraph -->
 								<p><?php echo $this->escape($status['usName']); ?></p>
 							</div>
 						</div><!-- userCenterArea -->

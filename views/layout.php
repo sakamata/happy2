@@ -63,12 +63,37 @@
 		socket.onmessage = function(msg){
 			var msg = msg.data;
 			var msg = JSON.parse(msg);
-			// console.log(msg);
-			newsPop(msg);
+			console.log(msg);
 
-			// ***ToDo*** 取得した値をグラフに反映?
-			// test(msg);
+			// ***ToDo*** user一覧が表示されていないページでの処理方法を検討
 
+			// 自分がクリックした場合
+			if (msg.sendUserNo == myUserNo) {
+				// グラフとクリック数の書き換え
+				otherUserInfo(msg);
+				return;
+
+			// 表示中のユーザーか？
+			} else if(msg.receiveNo == myUserNo) {
+				// 自分宛なら今の仕様で表示
+				toMeNewsPop(msg);
+
+			} else {
+				// 表示中の他のユーザーか？
+				for (var i = 0; i < Object.keys(statuses).length; i++) {
+					if (msg.receiveNo == statuses[i].usNo) {
+						// グラフとクリック数の書き換え
+						console.log('誰かのグラフ（全クリック数と比率）を書き換えろ!');
+						otherUserInfo(msg);
+
+					} else {
+						// その他ユーザー間なら簡易表示
+						console.log('簡易表示にしろ!');
+						toOhterNewsPop(msg);
+
+					}
+				}
+			}
 		};
 
 		socket.onclose = function(msg){
@@ -80,9 +105,14 @@
 	});
 
 
+	function toOhterNewsPop(mess){
+		return;
+	}
+
+
 	// クリックされたメッセージを表示
-	function newsPop(mess){
-		var li = '<li>' + mess.sendUserName + 'から' + mess.usName + 'へクリックされました</li>';
+	function toMeNewsPop(mess){
+		var li = '<li>' + mess.sendUserName + 'から' + mess.receiveUserName + 'へクリックされました</li>';
 
 		var jqdiv = $('<div>')
 		.appendTo($('#msg'))

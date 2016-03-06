@@ -83,8 +83,8 @@ var clickCountIncrement = function (){
 		// return replaceSum;
 	}
 };
+var ReplaceMyClickInfo = clickCountIncrement();
 
-var ReplaceClickInfo = clickCountIncrement();
 </script>
 <div class="container">
 <div class="row">
@@ -161,13 +161,6 @@ var ReplaceClickInfo = clickCountIncrement();
 	</div><!-- row -->
 </div><!-- container-fluid -->
 
-<div class="container">
-<div class="row">
-<div id="orderMassageArea">
-</div><!-- orderMassageArea -->
-</div><!-- row -->
-</div><!-- container -->
-
 
 <div id="statuses">
 <?php
@@ -182,4 +175,4 @@ var ReplaceClickInfo = clickCountIncrement();
 </div>
 
 <?php
-	echo $this->render('status/js/index_js', array('base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'postSecond'=> $postSecond, 'clickStatus'=> $clickStatus, 'headerUser' => $headerUser));
+	echo $this->render('status/js/index_js', array('base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'postSecond'=> $postSecond, 'clickStatus'=> $clickStatus, 'headerUser' => $headerUser, 'user' => $user,));
