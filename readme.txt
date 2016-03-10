@@ -188,5 +188,9 @@ echo $this->render('admin/tbgvnPosts', array('_token' => $_token));
 ------------------------------------------------------
 
 Thanks!
+
 Convert JS date time to MySQL datetime
 http://stackoverflow.com/questions/5129624/convert-js-date-time-to-mysql-datetime
+
+画面サイズに合わせて高さを指定する3つの方法
+http://weboook.blog22.fc2.com/blog-entry-411.html

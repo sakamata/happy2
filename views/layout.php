@@ -31,13 +31,16 @@
 
 		</div><!-- header_menu -->
 	</div><!-- header -->
-	<div id="wsMessage">
-		<ul id="msg">
-		</ul>
+	<div id="toMeWsMessage">
+		<ul id="msg"> </ul>
 	</div>
 
 	<div id="main">
 		<?php echo $_content; ?>
+	</div>
+
+	<div id="footer">
+		<ul id="otherMsg">massage!!</ul>
 	</div>
 
 	<script>
@@ -74,7 +77,7 @@
 				return;
 
 			// 表示中のユーザーか？
-			} else if(msg.receiveNo == myUserNo) {
+			} else if (msg.receiveNo == myUserNo) {
 				// 自分宛なら今の仕様で表示
 				toMeNewsPop(msg);
 
@@ -105,8 +108,66 @@
 	});
 
 
+	// 画面下にmassageスペースを固定
+	$(document).ready(function () {
+		hsize = $(window).height();
+		// hsize = hsize - 50;
+		$("#footer").css("top", hsize + "px");
+	});
+	$(window).resize(function () {
+		hsize = $(window).height();
+		hsize = hsize - 50;
+		$("#footer").css("top", hsize + "px");
+	});
+
 	function toOhterNewsPop(mess){
-		return;
+		var li = '<li>' + mess.sendUserName + 'から' + mess.receiveUserName + 'へクリックされました</li>';
+		var jqdiv = $('<div>')
+		.appendTo($('#otherMsg'))
+		.html(li)
+		.css({
+			'position': 'fixed',
+			'margin-right': 'auto',
+			'margin-left': 'auto',
+			'top': '10px',
+			'background':'-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffec64), color-stop(1, #ffab23))',
+			'background':'linear-gradient(top, #ffec64 5%, #ffab23 100%)',
+			'background':'-webkit-linear-gradient(top, #ffec64 5%, #ffab23 100%)',
+			'background-color':'#ffec64',
+			'border-radius':'5px',
+			'border':'1px solid #ffaa22',
+			'cursor':'pointer',
+			'color':'#333',
+			'padding':'15px',
+			'text-decoration':'none',
+			'list-style-type': 'none'
+		})
+		.fadeIn(500)
+		.bind('click' , function(){
+			$(this).stop(true,false)
+			.fadeOut(500,function(){
+				jqdiv.remove();
+				// next();
+			});
+		});
+
+		$('<div>').queue(function(next){
+			jqdiv
+			.animate({top: '-200px'},1500)
+			.delay(2500)
+			.fadeOut(500,function(){
+				jqdiv.remove();
+				next();
+			})
+			.bind('click' , function(){
+				$(this).stop(true,false)
+				.fadeOut(500,function(){
+					jqdiv.remove();
+					next();
+				});
+			});
+		});
+		(new Audio(window.newsPopSound)).play();
 	}
 
 

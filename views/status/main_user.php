@@ -60,7 +60,7 @@
 				</div><!-- userGraph -->
 			</div><!-- userButtonArea -->
 		</div><!-- col -->
-		<p>　</p><br>
+		<p class="clearBoth">.</p>
 	</div><!-- mainUser -->
 	</div><!-- row -->
 </div><!-- container -->

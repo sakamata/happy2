@@ -37,13 +37,14 @@
 							</div><!-- userInfoArea -->
 							<div class="clearBoth">	</div>
 							<div class="userInfoBottom">
-								<div class="otheerUserGraph">
+								<div class="otherUserGraph">
 									<canvas id="otheerPersentGraphCanvas_<?php echo $status['usNo']; ?>" class="myCikCanvas" width="290" height="40">Canvasに対応したブラウザが必要です。</canvas>
 								</div><!-- userGraph -->
 								<p><?php echo $this->escape($status['usName']); ?></p>
 							</div>
 						</div><!-- userCenterArea -->
 					</div><!-- mainStatus -->
+					<div class="clearBoth">	</div>
 				</div><!-- col -->
 
 				<div class="col-sm-6 col-md-6 col-lg-6">
@@ -58,7 +59,7 @@
 						</div><!-- userGraph -->
 					</div><!-- userButtonArea -->
 				</div><!-- col -->
-				<p>　</p><br>
+				<p class="clearBoth">.</p>
 	<!--
 				Id: <?php echo $this->escape($status['usId']); ?><br>
 				No: <?php echo $this->escape($status['usNo']); ?><br>

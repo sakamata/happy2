@@ -86,9 +86,10 @@ function followPost(followingNo, followAction, ifFollowing, f_token) {
 		var followAction = 'unFollow';
 	} else if (followAction === 0) {
 		var followAction = 'doFollow';
-	}	else {
+	} else {
 		return;
 	}
+
 	var contact_form_contents = {
 		followingNo : followingNo,
 		followAction : followAction,
@@ -99,8 +100,7 @@ function followPost(followingNo, followAction, ifFollowing, f_token) {
 		url: '<?php echo $base_url; ?>/ajaxPost/follow',
 		data: contact_form_contents,
 		success: function(res) {
-			var formId = 'follow_form_' + followingNo;
-			var elem = document.getElementById(formId);
+			var formId = '#follow_form_' + followingNo;
 
 			for (var i = 0; i < Object.keys(statuses).length; i++) {
 				if(statuses[i].usNo == followingNo) {
@@ -110,10 +110,9 @@ function followPost(followingNo, followAction, ifFollowing, f_token) {
 			}
 
 			if (followAction === 'unFollow') {
-				elem.innerHTML = '<input type="hidden" name="followAction" value="follow"><input type="image" class="follow_button" src="<?php echo $base_url; ?>/../img/unfollowed_icon.png" alt="unfollow_button" value="follow">';
-				// ***ToDo*** 関係アイコンの差し替え,相手のフォロー関係の0,1で切り替え
+				$(formId).html('<input type="hidden" name="followAction" value="follow"><input type="image" class="follow_button" src="<?php echo $base_url; ?>/../img/unfollowed_icon.png" alt="unfollow_button" value="follow">');
 				if(ifFollowerUser == 0) {
-					//無関係アイコンに
+					// 無関係アイコンに
 					$(iconId).html('<img src="<?php echo $base_url; ?>/../img/no_follow_each_other_icon.png" alt="no_follow_each_other_icon">');
 				} else {
 					// 片思われアイコンに
@@ -121,17 +120,14 @@ function followPost(followingNo, followAction, ifFollowing, f_token) {
 				}
 
 			} else if (followAction === 'doFollow') {
-				elem.innerHTML = '<input type="hidden" name="followAction" value="follow"><input type="image" class="follow_button" src="<?php echo $base_url; ?>/../img/followed_icon.png" alt="unfollow_button" value="follow">';
-				// ***ToDo*** 関係アイコンの差し替え,相手のフォロー関係の0,1で切り替え
-
+				$(formId).html('<input type="hidden" name="followAction" value="follow"><input type="image" class="follow_button" src="<?php echo $base_url; ?>/../img/followed_icon.png" alt="unfollow_button" value="follow">');
 				if(ifFollowerUser == 0) {
-					//片思いアイコンに
+					// 片思いアイコンに
 					$(iconId).html('<img src="<?php echo $base_url; ?>/../img/following_icon.png" alt="following_icon">');
 				} else {
 					// 両想いアイコンに
 					$(iconId).html('<img src="<?php echo $base_url; ?>/../img/follow_each_other_icon.png" alt="follow_each_other_icon">');
 				}
-
 			};
 		},
 		error: function() {
