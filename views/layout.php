@@ -66,36 +66,42 @@
 		socket.onmessage = function(msg){
 			var msg = msg.data;
 			var msg = JSON.parse(msg);
-			console.log(msg);
+			// console.log(msg);
 
 			// ***ToDo*** user一覧が表示されていないページでの処理方法を検討
 
 			// 自分がクリックした場合
 			if (msg.sendUserNo == myUserNo) {
+				// その他ユーザー間なら簡易表示
+				console.log('簡易表示にしろ!');
+				toOhterNewsPop(msg);
+
 				// グラフとクリック数の書き換え
 				otherUserInfo(msg);
-				return;
+				console.log('誰かのグラフ（全クリック数と比率）を書き換えろ!');
 
-			// 表示中のユーザーか？
-			} else if (msg.receiveNo == myUserNo) {
-				// 自分宛なら今の仕様で表示
+			// 自分宛なら今の仕様で表示
+			} else if(msg.receiveNo == myUserNo) {
 				toMeNewsPop(msg);
+				// グラフとクリック数の書き換え
+				otherUserInfo(msg);
+				console.log('誰かのグラフ（全クリック数と比率）を書き換えろ!');
 
+
+				// 表示中のユーザーか？
 			} else {
 				// 表示中の他のユーザーか？
 				for (var i = 0; i < Object.keys(statuses).length; i++) {
-					if (msg.receiveNo == statuses[i].usNo) {
+					if (msg.receiveNo === statuses[i].usNo) {
 						// グラフとクリック数の書き換え
-						console.log('誰かのグラフ（全クリック数と比率）を書き換えろ!');
 						otherUserInfo(msg);
-
-					} else {
+						console.log('誰かのグラフ（全クリック数と比率）を書き換えろ!');
 						// その他ユーザー間なら簡易表示
-						console.log('簡易表示にしろ!');
 						toOhterNewsPop(msg);
-
+						console.log('簡易表示にしろ!');
 					}
 				}
+
 			}
 		};
 
