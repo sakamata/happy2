@@ -30,7 +30,7 @@
 						<p>ID:<?php echo $this->escape($headerUser['usId']); ?></p>
 					</div><!-- userImageArea -->
 					<div class="userInfoArea">
-						<div class="myUserBalloon">
+						<div id="headerUserBalloon">
 							<p>
 								<span class="myCountBalloon"><?php echo $this->escape($headerUser['toMeClkSum']); ?></span>
 							</p>
@@ -42,7 +42,9 @@
 					</div><!-- userInfoArea -->
 					<div class="clearBoth">	</div>
 					<div class="userInfoBottom">
-						<p>■■■■■■■■■■■■■■■</p>
+						<div class="otherUserGraph">
+							<canvas id="otherPersentGraphCanvas_<?php echo $headerUser['usNo']; ?>" class="otherCikCanvas" width="190" height="20">Canvasに対応したブラウザが必要です。</canvas>
+						</div><!-- userGraph -->
 						<p><?php echo $this->escape($headerUser['usName']); ?></p>
 					</div>
 				</div><!-- userCenterArea -->

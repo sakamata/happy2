@@ -40,7 +40,7 @@
 	</div>
 
 	<div id="footer">
-		<ul id="otherMsg">massage!!</ul>
+		<ul id="otherMsg"> </ul>
 	</div>
 
 	<script>
@@ -66,42 +66,37 @@
 		socket.onmessage = function(msg){
 			var msg = msg.data;
 			var msg = JSON.parse(msg);
-			// console.log(msg);
-
-			// ***ToDo*** user一覧が表示されていないページでの処理方法を検討
-
-			// 自分がクリックした場合
-			if (msg.sendUserNo == myUserNo) {
-				// その他ユーザー間なら簡易表示
-				console.log('簡易表示にしろ!');
-				toOhterNewsPop(msg);
-
-				// グラフとクリック数の書き換え
-				otherUserInfo(msg);
-				console.log('誰かのグラフ（全クリック数と比率）を書き換えろ!');
 
 			// 自分宛なら今の仕様で表示
-			} else if(msg.receiveNo == myUserNo) {
+			if(msg.receiveNo == myUserNo && msg.sendUserNo != myUserNo) {
 				toMeNewsPop(msg);
 				// グラフとクリック数の書き換え
-				otherUserInfo(msg);
-				console.log('誰かのグラフ（全クリック数と比率）を書き換えろ!');
+				ReplaceOtherClickInfo(msg);
+				console.log('誰か(自分)のグラフ（全クリック数と比率）を書き換えろ!');
 
-
-				// 表示中のユーザーか？
+			// 自分宛以外は全て簡易表示
 			} else {
-				// 表示中の他のユーザーか？
-				for (var i = 0; i < Object.keys(statuses).length; i++) {
-					if (msg.receiveNo === statuses[i].usNo) {
-						// グラフとクリック数の書き換え
-						otherUserInfo(msg);
-						console.log('誰かのグラフ（全クリック数と比率）を書き換えろ!');
-						// その他ユーザー間なら簡易表示
-						toOhterNewsPop(msg);
-						console.log('簡易表示にしろ!');
+
+				toOhterNewsPop(msg);
+				console.log('簡易表示にしろ!');
+
+				// 自分がクリックした場合
+				if (msg.sendUserNo == myUserNo) {
+					// グラフとクリック数の書き換え
+					ReplaceOtherClickInfo(msg);
+					console.log('誰かと自分のグラフ（全クリック数と比率）を書き換えろ!');
+
+				// 表示中のユーザーなら簡易表示とクリック数書き換え
+				} else {
+					// 表示中の他のユーザーか？
+					for (var i = 0; i < Object.keys(statuses).length; i++) {
+						if (msg.receiveNo === statuses[i].usNo) {
+							// グラフとクリック数の書き換え
+							ReplaceOtherClickInfo(msg);
+							console.log('誰かのグラフ（全クリック数と比率）を書き換えろ!');
+						}
 					}
 				}
-
 			}
 		};
 
@@ -117,7 +112,7 @@
 	// 画面下にmassageスペースを固定
 	$(document).ready(function () {
 		hsize = $(window).height();
-		// hsize = hsize - 50;
+		hsize = hsize - 50;
 		$("#footer").css("top", hsize + "px");
 	});
 	$(window).resize(function () {
@@ -127,23 +122,26 @@
 	});
 
 	function toOhterNewsPop(mess){
-		var li = '<li>' + mess.sendUserName + 'から' + mess.receiveUserName + 'へクリックされました</li>';
+		var li = '<li><b>' + mess.sendUserName + '</b>から' + mess.receiveUserName + '<b>へクリックされました</b></li>';
 		var jqdiv = $('<div>')
 		.appendTo($('#otherMsg'))
 		.html(li)
 		.css({
 			'position': 'fixed',
+			'left': '0',
+			'bottom': '0',
+			'z-index': '15',
+			'heigth': '30px',
 			'margin-right': 'auto',
 			'margin-left': 'auto',
-			'top': '10px',
-			'background':'-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffec64), color-stop(1, #ffab23))',
-			'background':'linear-gradient(top, #ffec64 5%, #ffab23 100%)',
-			'background':'-webkit-linear-gradient(top, #ffec64 5%, #ffab23 100%)',
-			'background-color':'#ffec64',
+			'background':'-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #fcfcfc), color-stop(1, #cccccc))',
+			'background':'linear-gradient(top, #fcfcfc 5%, #cccccc 100%)',
+			'background':'-webkit-linear-gradient(top, #fcfcfc 5%, #cccccc 100%)',
+			'background-color':'#fcfcfc',
 			'border-radius':'5px',
-			'border':'1px solid #ffaa22',
+			'border':'1px solid #ccc',
 			'cursor':'pointer',
-			'color':'#333',
+			'color':'#888',
 			'padding':'15px',
 			'text-decoration':'none',
 			'list-style-type': 'none'
@@ -159,9 +157,10 @@
 
 		$('<div>').queue(function(next){
 			jqdiv
-			.animate({top: '-200px'},1500)
-			.delay(2500)
-			.fadeOut(500,function(){
+			.animate({left: '5%'},1000)
+			.delay(500)
+			.animate({left: '30%'},2000)
+			.fadeOut(1000,function(){
 				jqdiv.remove();
 				next();
 			})
@@ -179,7 +178,7 @@
 
 	// クリックされたメッセージを表示
 	function toMeNewsPop(mess){
-		var li = '<li>' + mess.sendUserName + 'から' + mess.receiveUserName + 'へクリックされました</li>';
+		var li = '<li><b>' + mess.sendUserName + '</b>から' + mess.receiveUserName + '<b>へクリックされました</b></li>';
 
 		var jqdiv = $('<div>')
 		.appendTo($('#msg'))

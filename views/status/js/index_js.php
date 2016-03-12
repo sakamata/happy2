@@ -1,25 +1,13 @@
 <script type="text/javascript">
 
-// 受信したメッセージを元にothersUserのグラフと数値の書き換え
-window.onload = function () {
-	otherUserInfo();
-};
-
-function otherUserInfo(msg) {
-	if (!msg) {
-		// 現在の値を取得してグラフを表示
-	} else {
-		// msgで上書き処理
-	}
-}
-
 
 // クリック率グラフの描画アニメーション
 window.onload = function () {
-	clickGraph();
+	clickGraph('myClicks');
+	clickGraph('otherClicks');
 };
 
-function clickGraph (argumentsPercents) {
+function clickGraph (area, argumentsPercents) {
 	var allUsersSendClkSum = <?php echo $clickStatus['allUsersSendClkSum']; ?>;
 	var clickSum = [];
 	var numbers = [];
@@ -48,8 +36,14 @@ function clickGraph (argumentsPercents) {
 		} else {
 			percent[i] = argumentsPercents[i];
 		}
+
 		numbers[i] = statuses[i].usNo;
-		cikCanvasId[i] = 'persentGraphCanvas_' + numbers[i];
+		if (area === 'myClicks') {
+			cikCanvasId[i] = 'persentGraphCanvas_' + numbers[i];
+		} else if (area === 'otherClicks') {
+			cikCanvasId[i] = 'otherPersentGraphCanvas_' + numbers[i];
+		}
+
 		canvas[i] = document.getElementById(cikCanvasId[i]);
 		var width = canvas[i].width;
 		var height = canvas[i].height;
@@ -61,20 +55,26 @@ function clickGraph (argumentsPercents) {
 
 		// cssと同様の設定が可能
 		back[i].fillStyle = backColor;
-		back[i].lineWidth = 5; // 線幅px単位
-		back[i].lineJoin = "round"; // 交点の形状指定　丸
+		back[i].lineWidth = 5; // 文字枠px
+		back[i].lineJoin = "round"; // 交点の形状
 		// 四角　塗りつぶし fillRect(x,y,w,h)
 		back[i].fillRect(0, 0, width, height);
 
 		bar[i].fillStyle = barColor;
 		bar[i].fillRect(0, height*0.1, width*percent[i] / 100, height*0.8);
 		percent[i] = percent[i] + "%";
-		percentText[i].font =  "bold 20px 'Meiryo'";
+
+		if (area === 'myClicks') {
+			percentText[i].font =  "bold 20px 'Meiryo'";
+		} else if (area === 'otherClicks') {
+			percentText[i].font =  "bold 12px 'Meiryo'";
+		}
+
 		percentText[i].textAlign = "center";
 		percentText[i].strokeStyle = "#fff";
-		percentText[i].strokeText(percent[i], canvas[i].width/2, canvas[i].height/2 + height*0.12);
+		percentText[i].strokeText(percent[i], canvas[i].width/2, canvas[i].height/2 + height*0.2);
 		percentText[i].fillStyle = "#000";
-		percentText[i].fillText(percent[i], canvas[i].width/2, canvas[i].height/2 + height*0.12);
+		percentText[i].fillText(percent[i], canvas[i].width/2, canvas[i].height/2 + height*0.2);
 	}
 };
 
@@ -261,7 +261,7 @@ var clickAction = function(action, usNo, usId, usName) {
 		var percents = ReplaceMyClickInfo(usNo);
 		var post = clickObjct(usNo);
 		var posts = clickPool(post);
-		clickGraph(percents);
+		clickGraph('myClicks', percents);
 	}
 
 	var postsCount = Object.keys(posts).length;

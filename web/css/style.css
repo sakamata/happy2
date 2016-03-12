@@ -209,7 +209,7 @@ a {
 	margin-left: 1.5%;
 }
 
-.userBalloon, .myUserBalloon {
+.userBalloon, #headerUserBalloon {
 	float: left;
 	height: auto;
 	font-size: 2em;
@@ -217,7 +217,7 @@ a {
 	border-radius: 10px;
 }
 
-.myUserBalloon {
+#headerUserBalloon {
 	border: 2px solid #3668c4;
 	background-color: #7096de;
 }
@@ -228,13 +228,13 @@ a {
 }
 
 
-.userBalloon p, .myUserBalloon p {
+.userBalloon p, #headerUserBalloon p {
 	text-align: center;
 	margin: 0px;
 	padding: 0px;
 }
 
-.myUserBalloon p {
+#headerUserBalloon p {
 	color: #fff;
 }
 
@@ -311,6 +311,11 @@ a {
 .myCikCanvas {
 	border-radius: 10px;
 }
+
+.otherCikCanvas {
+	border-radius: 5px;
+}
+
 
 .clearBoth {
 	clear: both;
@@ -391,23 +396,12 @@ ul.error_list li {
 
 #footer {
 	position: fixed;
-	width: 100%;
-	height: 100px;
-	background-color: #88f;
+	/*width: 100%;*/
+	left: 30%;
+	height: 50px;
 	margin-left: auto;
 	margin-right: auto;
 	text-align: center;
-}
-
-#otherMsg {
-	position: fixed;
-	width: 80%;
-	height: 80px;
-	background-color: #888;
-	margin-left: auto;
-	margin-right: auto;
-	text-align: center;
-	bottom: 0;
 }
 
 #bottom_menu_test {

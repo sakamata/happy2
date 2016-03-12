@@ -26,7 +26,7 @@
 								<p>ID:<?php echo $this->escape($status['usId']); ?></p>
 							</div><!-- userImageArea -->
 							<div class="userInfoArea">
-								<div class="userBalloon">
+								<div class="userBalloon" id="userBalloon_<?php echo $this->escape($status['usNo']); ?>">
 									<p><?php echo $this->escape($status['toMeClkSum']); ?></p>
 								</div>
 								<div class="clearBoth">	</div>
@@ -38,7 +38,7 @@
 							<div class="clearBoth">	</div>
 							<div class="userInfoBottom">
 								<div class="otherUserGraph">
-									<canvas id="otheerPersentGraphCanvas_<?php echo $status['usNo']; ?>" class="myCikCanvas" width="290" height="40">Canvasに対応したブラウザが必要です。</canvas>
+									<canvas id="otherPersentGraphCanvas_<?php echo $status['usNo']; ?>" class="otherCikCanvas" width="190" height="20">Canvasに対応したブラウザが必要です。</canvas>
 								</div><!-- userGraph -->
 								<p><?php echo $this->escape($status['usName']); ?></p>
 							</div>

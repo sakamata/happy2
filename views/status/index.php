@@ -41,12 +41,9 @@ clickPercent	= function() {
 	return thisTimeTheyClickPercent;
 }
 var  thisTimeTheyClickPercent	= clickPercent();
-// console.log(thisTimeTheyClickPercent);
 
 
-// -----------------------------
-
-// クリック数の保持と書き換え
+// ボタン押下によるクリック数の保持と書き換え
 var clickCountIncrement = function (){
 	var clickSum = [];
 	var numbers = [];
@@ -90,6 +87,60 @@ var clickCountIncrement = function (){
 	}
 };
 var ReplaceMyClickInfo = clickCountIncrement();
+
+
+
+// 他のユーザークリック由来のメッセージを元にグラフと数値の書き換え
+
+var otherClickCountIncrement = function (){
+	var toMeClkSum = [];
+	var numbers = [];
+	var allClkSum = [];
+	var sumId = [];
+	for (var i = 0; i < Object.keys(statuses).length; i++) {
+		toMeClkSum[i] = statuses[i].toMeClkSum;
+		numbers[i] = statuses[i].usNo;
+		allClkSum[i] = statuses[i].allClkSum;
+		if (i == 0) {
+			// headerUser処理
+			// 何もしない（別の処理を適用済み）
+		} else {
+			sumId[i] = '#userBalloon_' + numbers[i];
+		}
+	}
+
+	// クロージャ クリック総数を貯めて返す
+	return function(msg){
+		console.log(msg);
+		for (var i = 0; i < Object.keys(statuses).length; i++) {
+			// headerUserは処理無し
+			if (i != 0) {
+				if (msg.sendUserNo == numbers[i]) {
+					allClkSum[i]++;
+					// 自分宛ならクリックバルーンの書き換え
+					if (msg.receiveNo == myUserNo) {
+						toMeClkSum[i]++;
+						// クリック合計の書き換え
+						$(sumId[i]).html('<p>' + toMeClkSum[i] + '</p>');
+						// .animate({'background-color': '#f00'})
+						// .delay(100)
+						// .animate({'background-color': '#fff'});
+
+					}
+				}
+			}
+		}
+		var percent = [];
+		for (var i = 0; i < Object.keys(statuses).length; i++) {
+			percent[i] = toMeClkSum[i] / allClkSum[i];
+			percent[i] = percent[i] * 10000;
+			percent[i] = Math.round(percent[i]) / 100;
+		}
+		return percent;
+	}
+};
+var ReplaceOtherClickInfo = otherClickCountIncrement();
+
 
 </script>
 <div class="container">
