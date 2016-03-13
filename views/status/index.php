@@ -21,45 +21,21 @@ var viewNo = 0;
 var statuses = JSON.parse('<?php echo $jsonStatuses; ?>');
 console.log(statuses);
 
-// 各ユーザーへ自分がクリックしたパーセンテージを求める
-clickPercent	= function() {
-	var thisTimeMySendClkSum = [];
-	var thisTimeTheyClickPercent = [];
-	var p = [];
-
-	for (var i = 0; i < Object.keys(statuses).length; i++) {
-		if (i == 0) {
-			// headerUser処理
-			thisTimeMySendClkSum[i] = statuses[i].toMeClkSum;
-		} else {
-			thisTimeMySendClkSum[i] = statuses[i].MySendClkSum;
-		}
-		p[i] = thisTimeMySendClkSum[i] / <?php echo $clickStatus['allUsersSendClkSum']; ?>;
-		p[i] = p[i] * 10000;
-		thisTimeTheyClickPercent[i] = Math.round(p[i]) / 100;
-	}
-	return thisTimeTheyClickPercent;
-}
-var  thisTimeTheyClickPercent	= clickPercent();
-
-
 // ボタン押下によるクリック数の保持と書き換え
-var clickCountIncrement = function (){
+var myClickCountIncrement = function (){
 	var clickSum = [];
 	var numbers = [];
 	var sumId = [];
-	var percentId = [];
 	var allUsersSendClkSum = <?php echo $clickStatus['allUsersSendClkSum']; ?>;
 	for (var i = 0; i < Object.keys(statuses).length; i++) {
 		if (i == 0) {
 			// headerUser処理
-			clickSum[i] = statuses[i].toMeClkSum;
+			clickSum[i] = statuses[i].thisTimeToMeClkSum;
 		} else {
 			clickSum[i] = statuses[i].MySendClkSum;
 		}
 		numbers[i] = statuses[i].usNo;
 		sumId[i] = '#clickSum_' + numbers[i];
-		percentId[i] = '#clickPercent_' + numbers[i];
 	}
 
 	// クロージャ クリック総数を貯めて返す
@@ -80,59 +56,48 @@ var clickCountIncrement = function (){
 			percent[i] = clickSum[i] / allUsersSendClkSum;
 			percent[i] = percent[i] * 10000;
 			percent[i] = Math.round(percent[i]) / 100;
-			$(percentId[i]).html(percent[i] + '%');	// パーセンテージの書き換え
 		}
 		return percent;
-		// return replaceSum;
 	}
 };
-var ReplaceMyClickInfo = clickCountIncrement();
-
+var ReplaceMyClickInfo = myClickCountIncrement();
 
 
 // 他のユーザークリック由来のメッセージを元にグラフと数値の書き換え
-
 var otherClickCountIncrement = function (){
-	var toMeClkSum = [];
+	var thisTimeToMeClkSum = [];
 	var numbers = [];
-	var allClkSum = [];
+	var thisTimeAllClkSum = [];
 	var sumId = [];
 	for (var i = 0; i < Object.keys(statuses).length; i++) {
-		toMeClkSum[i] = statuses[i].toMeClkSum;
+		thisTimeToMeClkSum[i] = statuses[i].thisTimeToMeClkSum;
 		numbers[i] = statuses[i].usNo;
-		allClkSum[i] = statuses[i].allClkSum;
-		if (i == 0) {
-			// headerUser処理
-			// 何もしない（別の処理を適用済み）
-		} else {
+		thisTimeAllClkSum[i] = statuses[i].thisTimeAllClkSum;
+		if (i != 0) {
 			sumId[i] = '#userBalloon_' + numbers[i];
 		}
 	}
 
 	// クロージャ クリック総数を貯めて返す
 	return function(msg){
-		console.log(msg);
 		for (var i = 0; i < Object.keys(statuses).length; i++) {
-			// headerUserは処理無し
-			if (i != 0) {
-				if (msg.sendUserNo == numbers[i]) {
-					allClkSum[i]++;
-					// 自分宛ならクリックバルーンの書き換え
-					if (msg.receiveNo == myUserNo) {
-						toMeClkSum[i]++;
+			if (msg.sendUserNo == numbers[i]) {
+				thisTimeAllClkSum[i]++;
+				// 自分宛ならクリックバルーンの書き換え
+				if (msg.receiveNo == myUserNo) {
+					thisTimeToMeClkSum[i]++;
+					if (i != 0) {
 						// クリック合計の書き換え
-						$(sumId[i]).html('<p>' + toMeClkSum[i] + '</p>');
-						// .animate({'background-color': '#f00'})
-						// .delay(100)
-						// .animate({'background-color': '#fff'});
-
+						$(sumId[i]).html('<p>' + thisTimeToMeClkSum[i] + '</p>')
+							.animate({'background-color': '#f00'})
+							.animate({'background-color': '#fff'});
 					}
 				}
 			}
 		}
 		var percent = [];
 		for (var i = 0; i < Object.keys(statuses).length; i++) {
-			percent[i] = toMeClkSum[i] / allClkSum[i];
+			percent[i] = thisTimeToMeClkSum[i] / thisTimeAllClkSum[i];
 			percent[i] = percent[i] * 10000;
 			percent[i] = Math.round(percent[i]) / 100;
 		}
@@ -225,7 +190,7 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 		echo $this->render('status/users_null', array('usersNullMessage' => $usersNullMessage));
 	} else {
 		foreach ($statuses as $status):
-			echo $this->render('status/users', array('base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'allClkSum' => $headerUser['allClkSum']));
+			echo $this->render('status/users', array('base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'thisTimeAllClkSum' => $headerUser['thisTimeAllClkSum']));
 		endforeach;
 	}
 ?>

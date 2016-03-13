@@ -14,6 +14,10 @@
 	<link rel="stylesheet" type="text/css" media="screen" href="<?php echo $base_url; ?>/../css/style.css">
 	<link href="<?php echo $base_url; ?>/../css/bootstrap.min.css" rel="stylesheet">
 
+	<script type="text/javascript">
+		var statuses;
+	</script>
+
 </head>
 <body>
 	<div id="header">
@@ -57,55 +61,45 @@
 		socket.onopen = function(msg){
 			$('#wsStatus').text('online');
 		};
-
-		// socket.onmessage = function(msg){
-		// 	$('#res').text( $('#res').text() + msg.data );
-		// };
+		socket.onclose = function(msg){
+			$('#wsStatus').text('offline');
+		};
 
 		// 受信したメッセージの加工とバルーン表示
 		socket.onmessage = function(msg){
 			var msg = msg.data;
 			var msg = JSON.parse(msg);
 
-			// 自分宛なら今の仕様で表示
+			// 自分宛の場合
 			if(msg.receiveNo == myUserNo && msg.sendUserNo != myUserNo) {
+				// 受信通知
 				toMeNewsPop(msg);
 				// グラフとクリック数の書き換え
-				ReplaceOtherClickInfo(msg);
-				console.log('誰か(自分)のグラフ（全クリック数と比率）を書き換えろ!');
+				var otherPercents = ReplaceOtherClickInfo(msg);
+				clickGraph ('otherClicks', otherPercents);
 
-			// 自分宛以外は全て簡易表示
+			// 自分宛以外
 			} else {
-
+				// 自分宛以外は全て簡易通知
 				toOhterNewsPop(msg);
-				console.log('簡易表示にしろ!');
 
 				// 自分がクリックした場合
 				if (msg.sendUserNo == myUserNo) {
-					// グラフとクリック数の書き換え
-					ReplaceOtherClickInfo(msg);
-					console.log('誰かと自分のグラフ（全クリック数と比率）を書き換えろ!');
+					var otherPercents = ReplaceOtherClickInfo(msg);
+					clickGraph ('otherClicks', otherPercents);
 
-				// 表示中のユーザーなら簡易表示とクリック数書き換え
+				// 表示中のユーザーか？
+				// ***ToDo*** 表示ユーザーが無い場合（statuses=nullページ）での処理
 				} else {
-					// 表示中の他のユーザーか？
 					for (var i = 0; i < Object.keys(statuses).length; i++) {
-						if (msg.receiveNo === statuses[i].usNo) {
-							// グラフとクリック数の書き換え
-							ReplaceOtherClickInfo(msg);
-							console.log('誰かのグラフ（全クリック数と比率）を書き換えろ!');
+						if (msg.receiveNo === statuses[i].usNo || msg.sendUserNo === statuses[i].usNo) {
+							var otherPercents = ReplaceOtherClickInfo(msg);
+							clickGraph ('otherClicks', otherPercents);
 						}
 					}
 				}
 			}
 		};
-
-		socket.onclose = function(msg){
-			$('#wsStatus').text('offline');
-		};
-		$('#wsButton').click(function(){
-			socket.send($('#mes').val());
-		});
 	});
 
 
@@ -121,8 +115,9 @@
 		$("#footer").css("top", hsize + "px");
 	});
 
+	// 簡易クリック受信通知
 	function toOhterNewsPop(mess){
-		var li = '<li><b>' + mess.sendUserName + '</b>から' + mess.receiveUserName + '<b>へクリックされました</b></li>';
+		var li = '<li><b>' + mess.sendUserName + '</b>から<b>' + mess.receiveUserName + '</b>へクリックされました</li>';
 		var jqdiv = $('<div>')
 		.appendTo($('#otherMsg'))
 		.html(li)
@@ -176,9 +171,9 @@
 	}
 
 
-	// クリックされたメッセージを表示
+	// 自分へのクリックメッセージを表示
 	function toMeNewsPop(mess){
-		var li = '<li><b>' + mess.sendUserName + '</b>から' + mess.receiveUserName + '<b>へクリックされました</b></li>';
+		var li = '<li><b>' + mess.sendUserName + '</b>から<b>' + mess.receiveUserName + '</b>へクリックされました</li>';
 
 		var jqdiv = $('<div>')
 		.appendTo($('#msg'))

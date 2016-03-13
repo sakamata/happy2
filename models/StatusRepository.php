@@ -41,8 +41,8 @@ class StatusRepository extends DbRepository
 				master.usName,
 				master.usImg,
 				master.nowPt,
-				IFNULL(gvnTable.allClkSum, 0) AS allClkSum,
-				IFNULL(gvnTable2.toMeClkSum, 0) AS toMeClkSum,
+				IFNULL(gvnTable.thisTimeAllClkSum, 0) AS thisTimeAllClkSum,
+				IFNULL(gvnTable2.thisTimeToMeClkSum, 0) AS thisTimeToMeClkSum,
 				IF(ifFollowing.followingNo > 0, 1, 0) AS ifFollowing,
 				IF(ifFollower.usNo > 0, 1, 0) AS ifFollower
 
@@ -51,7 +51,7 @@ class StatusRepository extends DbRepository
 			LEFT JOIN(
 				SELECT
 					usNo,
-					SUM(seClk) AS allClkSum
+					SUM(seClk) AS thisTimeAllClkSum
 					FROM tbgvn
 					WHERE
 						usNo = :viewUser
@@ -63,7 +63,7 @@ class StatusRepository extends DbRepository
 
 			LEFT JOIN(
 				SELECT usNo,
-					SUM(seClk) AS toMeClkSum
+					SUM(seClk) AS thisTimeToMeClkSum
 					FROM tbgvn
 					WHERE
 						usNo = :viewUser
@@ -137,8 +137,8 @@ class StatusRepository extends DbRepository
 				master.usName,
 				master.usImg,
 				master.nowPt,
-				IFNULL(gvnTable.allClkSum, 0) AS allClkSum,
-				IFNULL(gvnTable2.toMeClkSum, 0) AS toMeClkSum,
+				IFNULL(gvnTable.thisTimeAllClkSum, 0) AS thisTimeAllClkSum,
+				IFNULL(gvnTable2.thisTimeToMeClkSum, 0) AS thisTimeToMeClkSum,
 				IFNULL(gvnTable3.MySendClkSum, 0) AS MySendClkSum,
 				IF(ifFollowing.followingNo > 0, 1, 0) AS ifFollowing,
 				IF(ifFollower.usNo > 0, 1, 0) AS ifFollower
@@ -148,7 +148,7 @@ class StatusRepository extends DbRepository
 			LEFT JOIN(
 				SELECT
 					usNo,
-					sum(seClk) AS allClkSum
+					sum(seClk) AS thisTimeAllClkSum
 					FROM tbgvn
 					WHERE
 						dTm between :lastCalcTime
@@ -159,7 +159,7 @@ class StatusRepository extends DbRepository
 			ON master.usNo = gvnTable.usNo
 
 			LEFT JOIN(
-				SELECT usNo, SUM(seClk) AS toMeClkSum, dTm
+				SELECT usNo, SUM(seClk) AS thisTimeToMeClkSum, dTm
 					FROM tbgvn
 					WHERE seUs = :usNo
 						AND dTm between :lastCalcTime
@@ -218,8 +218,8 @@ class StatusRepository extends DbRepository
 				master.usName,
 				master.usImg,
 				master.nowPt,
-				gvnTable.allClkSum,
-				IFNULL(gvnTable2.toMeClkSum, 0) AS toMeClkSum,
+				gvnTable.thisTimeAllClkSum,
+				IFNULL(gvnTable2.thisTimeToMeClkSum, 0) AS thisTimeToMeClkSum,
 				IFNULL(gvnTable3.MySendClkSum, 0) AS MySendClkSum,
 				IF(ifFollowing.followingNo > 0, 1, 0) AS ifFollowing,
 				IF(ifFollower.usNo > 0, 1, 0) AS ifFollower
@@ -228,7 +228,7 @@ class StatusRepository extends DbRepository
 			LEFT JOIN(
 				SELECT
 					usNo,
-					sum(seClk) AS allClkSum
+					sum(seClk) AS thisTimeAllClkSum
 					FROM tbgvn
 					WHERE
 						tbgvn.usNo
@@ -238,12 +238,14 @@ class StatusRepository extends DbRepository
 								FROM tbfollow
 								WHERE usNo = :usNo
 						)
+					AND tbgvn.dTm between :lastCalcTime
+					AND now()
 					GROUP BY usNo
 			)
 			AS gvnTable
 			ON master.usNo = gvnTable.usNo
 			LEFT JOIN(
-				SELECT usNo, SUM(seClk) AS toMeClkSum
+				SELECT usNo, SUM(seClk) AS thisTimeToMeClkSum
 					FROM tbgvn
 					WHERE seUs = :usNo
 						AND dTm between :lastCalcTime
@@ -318,8 +320,8 @@ class StatusRepository extends DbRepository
 				master.usName,
 				master.usImg,
 				master.nowPt,
-				gvnTable.allClkSum,
-				IFNULL(gvnTable2.toMeClkSum, 0) AS toMeClkSum,
+				gvnTable.thisTimeAllClkSum,
+				IFNULL(gvnTable2.thisTimeToMeClkSum, 0) AS thisTimeToMeClkSum,
 				IFNULL(gvnTable3.MySendClkSum, 0) AS MySendClkSum,
 				IF(ifFollowing.followingNo > 0, 1, 0) AS ifFollowing,
 				IF(ifFollower.usNo > 0, 1, 0) AS ifFollower
@@ -328,7 +330,7 @@ class StatusRepository extends DbRepository
 			LEFT JOIN(
 				SELECT
 					usNo,
-					sum(seClk) AS allClkSum
+					sum(seClk) AS thisTimeAllClkSum
 					FROM tbgvn
 					WHERE
 						tbgvn.usNo
@@ -338,12 +340,14 @@ class StatusRepository extends DbRepository
 								FROM tbfollow
 								WHERE followingNo = :usNo
 						)
+					AND tbgvn.dTm between :lastCalcTime
+					AND now()
 					GROUP BY usNo
 			)
 			AS gvnTable
 			ON master.usNo = gvnTable.usNo
 			LEFT JOIN(
-				SELECT usNo, SUM(seClk) AS toMeClkSum
+				SELECT usNo, SUM(seClk) AS thisTimeToMeClkSum
 					FROM tbgvn
 					WHERE seUs = :usNo
 						AND dTm between :lastCalcTime

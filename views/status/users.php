@@ -27,11 +27,11 @@
 							</div><!-- userImageArea -->
 							<div class="userInfoArea">
 								<div class="userBalloon" id="userBalloon_<?php echo $this->escape($status['usNo']); ?>">
-									<p><?php echo $this->escape($status['toMeClkSum']); ?></p>
+									<p><?php echo $this->escape($status['thisTimeToMeClkSum']); ?></p>
 								</div>
 								<div class="clearBoth">	</div>
 								<div class="userInfoLeft">
-									<!-- <p>all: <?php echo $this->escape($status['allClkSum']); ?></p> -->
+									<!-- <p>all: <?php echo $this->escape($status['thisTimeAllClkSum']); ?></p> -->
 									<p><?php echo $this->escape($status['roundPt']); ?> Pt</p>
 								</div><!-- userInfoLeft -->
 							</div><!-- userInfoArea -->
@@ -52,7 +52,7 @@
 						<div class="userButton">
 							<button type="submit" id="clickAction_<?php echo $status['usNo']; ?>" class="clickAction" onclick="clickAction('post', '<?php echo $status['usNo']; ?>', '<?php echo $status['usId']; ?>', '<?php echo $status['usName']; ?>' )">
 							<span id="clickSum_<?php echo $status['usNo']; ?>" class="countNumber"><?php echo $this->escape($status['MySendClkSum']); ?></span><br>Happy!</button>
-							<!-- <?php echo $this->escape($allClkSum); ?> -->
+							<!-- <?php echo $this->escape($thisTimeAllClkSum); ?> -->
 						</div><!-- userButton -->
 						<div class="userGraph">
 							<canvas id="persentGraphCanvas_<?php echo $status['usNo']; ?>" class="myCikCanvas" width="290" height="40">Canvasに対応したブラウザが必要です。</canvas>
@@ -60,14 +60,6 @@
 					</div><!-- userButtonArea -->
 				</div><!-- col -->
 				<p class="clearBoth">.</p>
-	<!--
-				Id: <?php echo $this->escape($status['usId']); ?><br>
-				No: <?php echo $this->escape($status['usNo']); ?><br>
-				ThisTimeTheyClickPercent: <span id="clickPercent_<?php echo $status['usNo']; ?>">
-				<script type="text/javascript">
-					document.write(thisTimeTheyClickPercent[viewNo]);
-				</script>%</span>
-	 -->
 			</div><!-- viewUsers -->
 		</div><!-- row -->
 	</div><!-- container -->

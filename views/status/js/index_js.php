@@ -1,15 +1,17 @@
 <script type="text/javascript">
 
-
 // クリック率グラフの描画アニメーション
 window.onload = function () {
 	clickGraph('myClicks');
 	clickGraph('otherClicks');
 };
 
+// viewの制御のみ分岐、計算方法等分岐させない
 function clickGraph (area, argumentsPercents) {
 	var allUsersSendClkSum = <?php echo $clickStatus['allUsersSendClkSum']; ?>;
 	var clickSum = [];
+	var thisTimeToMeClkSum = [];
+	var thisTimeAllClkSum = [];
 	var numbers = [];
 	var cikCanvasId = [];
 	var percentId = [];
@@ -19,18 +21,31 @@ function clickGraph (area, argumentsPercents) {
 	var bar = [];
 	var percentText = [];
 
+	// 画面左のグラフは otherClicks headerUser（0番）も通知由来で描画処理
+	// 画面右のグラフは myClicks 自分クリック由来で描画処理
+	// 左右グラフで文字サイズ変更
+	// headerUser（0番）は色違い処理
+
 	for (var i = 0; i < Object.keys(statuses).length; i++) {
 		if (i == 0) {
+			clickSum[i] = statuses[i].thisTimeToMeClkSum;
 			var backColor = "#c8d6f0";
 			var barColor = "#3668c4";
-			clickSum[i] = statuses[i].toMeClkSum;
 		} else {
 			clickSum[i] = statuses[i].MySendClkSum;
 			var backColor = "#f9ddb5";
 			var barColor = "#f0ad4e";
 		}
-		percent[i] = clickSum[i] / allUsersSendClkSum;
+		thisTimeToMeClkSum[i] = statuses[i].thisTimeToMeClkSum;
+		thisTimeAllClkSum[i] = statuses[i].thisTimeAllClkSum;
+
+		if (area == 'myClicks') {
+			percent[i] = clickSum[i] / allUsersSendClkSum;
+		} else if (area == 'otherClicks'){
+			percent[i] = thisTimeToMeClkSum[i] / thisTimeAllClkSum[i];
+		}
 		percent[i] = percent[i] * 10000;
+
 		if (!argumentsPercents) {
 			percent[i] = Math.round(percent[i]) / 100;
 		} else {
@@ -76,6 +91,7 @@ function clickGraph (area, argumentsPercents) {
 		percentText[i].fillStyle = "#000";
 		percentText[i].fillText(percent[i], canvas[i].width/2, canvas[i].height/2 + height*0.2);
 	}
+
 };
 
 // -----------------------------
@@ -217,7 +233,6 @@ function clickPost(posts) {
 		data: data,
 		success: function(res) {
 			console.log('clickPost success!');
-			console.log(data);
 			clickPool('reset');
 		},
 		error: function() {
@@ -248,16 +263,16 @@ var clickAction = function(action, usNo, usId, usName) {
 		sendUserName : '<?php echo $this->escape($user['usName']); ?>',
 		sendUserImage : '<?php echo $this->escape($user['usImg']); ?>'
 	};
-	var msg = JSON.stringify(msg);
 
-	// WebSocket送信
+	var msg = JSON.stringify(msg);
 	ID = '#clickAction_' + usNo;
-	$(document).on('click', ID, function(){
-		socket.send(msg);
-	});
+	// WebSocket送信
+	socket.send(msg);
 
 	if (action == 'post') {
 		// POST用のオブジェクト生成とその他の処理
+
+		// 返り値percentsは0番を含み配列されている
 		var percents = ReplaceMyClickInfo(usNo);
 		var post = clickObjct(usNo);
 		var posts = clickPool(post);

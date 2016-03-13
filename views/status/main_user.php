@@ -32,7 +32,7 @@
 					<div class="userInfoArea">
 						<div id="headerUserBalloon">
 							<p>
-								<span class="myCountBalloon"><?php echo $this->escape($headerUser['toMeClkSum']); ?></span>
+								<span class="myCountBalloon"><?php echo $this->escape($headerUser['thisTimeToMeClkSum']); ?></span>
 							</p>
 						</div>
 						<div class="clearBoth">	</div>
@@ -54,7 +54,7 @@
 		<div class="col-sm-6 col-md-6 col-lg-6">
 			<div class="userButtonArea">
 				<div class="userButton">
-					<button type="submit" id="clickAction_<?php echo $headerUser['usNo']; ?>" class="myClickAction" onclick="clickAction('post', '<?php echo $headerUser['usNo']; ?>', '<?php echo $headerUser['usId']; ?>', '<?php echo $headerUser['usName']; ?>' )"><span id="clickSum_<?php echo $headerUser['usNo']; ?>" class="countNumber"><?php echo $this->escape($headerUser['toMeClkSum']); ?></span><br>My Happy!</button>
+					<button type="submit" id="clickAction_<?php echo $headerUser['usNo']; ?>" class="myClickAction" onclick="clickAction('post', '<?php echo $headerUser['usNo']; ?>', '<?php echo $headerUser['usId']; ?>', '<?php echo $headerUser['usName']; ?>' )"><span id="clickSum_<?php echo $headerUser['usNo']; ?>" class="countNumber"><?php echo $this->escape($headerUser['thisTimeToMeClkSum']); ?></span><br>My Happy!</button>
 				</div><!-- userButton -->
 				<div class="userGraph">
 					<canvas id="persentGraphCanvas_<?php echo $headerUser['usNo']; ?>" class="myCikCanvas" width="290" height="40">
@@ -68,16 +68,11 @@
 </div><!-- container -->
 
 <script type="text/javascript">
-// document.write(thisTimeTheyClickPercent[viewNo]);
 viewNo++;
 </script>
 
 <!--
-	TodayClick  ForYou / All: <?php echo $this->escape($headerUser['toMeClkSum']); ?> / <?php echo $this->escape($headerUser['allClkSum']); ?><br>
+	TodayClick  ForYou / All: <?php echo $this->escape($headerUser['thisTimeToMeClkSum']); ?> / <?php echo $this->escape($headerUser['thisTimeAllClkSum']); ?><br>
 
-
-	ThisTimeTheyClickPercent: <span id="clickPercent_<?php echo $headerUser['usNo']; ?>">%</span>
-
-
-	MySendClkSum: <span id="clickSum_<?php echo $headerUser['usNo']; ?>"><?php echo $this->escape($headerUser['toMeClkSum']); ?></span> / <?php echo $this->escape($headerUser['allClkSum']); ?>
+	MySendClkSum: <span id="clickSum_<?php echo $headerUser['usNo']; ?>"><?php echo $this->escape($headerUser['thisTimeToMeClkSum']); ?></span> / <?php echo $this->escape($headerUser['thisTimeAllClkSum']); ?>
 -->
