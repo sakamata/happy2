@@ -13,8 +13,8 @@ $jsonStatuses = json_encode($headAndStatuses);
 ?>
 
 <script type="text/javascript">
-var socket;
-socket = new WebSocket('ws://127.0.0.1:80/happy2');
+// var socket;
+// socket = new WebSocket('ws://127.0.0.1:80/happy2');
 
 var myUserNo = <?php echo $user['usNo']; ?>;
 var viewNo = 0;

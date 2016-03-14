@@ -266,6 +266,7 @@ var clickAction = function(action, usNo, usId, usName) {
 
 	var msg = JSON.stringify(msg);
 	ID = '#clickAction_' + usNo;
+
 	// WebSocket送信
 	socket.send(msg);
 

@@ -16,6 +16,7 @@ $classLoader->register();
 // $server = new \WebSocket\Server('127.0.0.1', 8000, false);
 // $server = new \WebSocket\Server('192.168.11.5', 80, false);
 $server = new \WebSocket\Server('127.0.0.1', 80, false);
+$server = new \WebSocket\Server('192.168.11.8', 80, false);
 // $server = new \WebSocket\Server('happy-project.org', 80, false);
 
 // server settings:

@@ -16,6 +16,9 @@
 
 	<script type="text/javascript">
 		var statuses;
+		var socket;
+		// socket = new WebSocket('ws://127.0.0.1:80/happy2');
+		socket = new WebSocket('ws://192.168.11.8:80/happy2');
 	</script>
 
 </head>
@@ -48,23 +51,15 @@
 	</div>
 
 	<script>
+	socket.onopen = function(){
+		$('#wsStatus').html('online');
+	};
+	socket.onclose = function(){
+		$('#wsStatus').html('offline');
+	};
+
+
 	jQuery(function($) {
-		var socket;
-		// if ( $.browser.mozilla ){
-		// 	socket = new MozWebSocket('ws://127.0.0.1:80/echo');
-		// }else{
-		// 	socket = new WebSocket('ws://127.0.0.1:80/echo');
-		// }
-		socket = new WebSocket('ws://127.0.0.1:80/happy2');
-		// socket = new WebSocket('ws://192.168.11.5/echo');
-
-		socket.onopen = function(msg){
-			$('#wsStatus').text('online');
-		};
-		socket.onclose = function(msg){
-			$('#wsStatus').text('offline');
-		};
-
 		// 受信したメッセージの加工とバルーン表示
 		socket.onmessage = function(msg){
 			var msg = msg.data;
