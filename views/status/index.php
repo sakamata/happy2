@@ -13,8 +13,13 @@ $jsonStatuses = json_encode($headAndStatuses);
 ?>
 
 <script type="text/javascript">
-var socket;
-socket = new WebSocket('ws://127.0.0.1:80/happy2');
+// WebSocket Statusの表示
+socket.onopen = function(msg){
+	$('#wsStatus').text('online');
+};
+socket.onclose = function(msg){
+	$('#wsStatus').text('offline');
+};
 
 var myUserNo = <?php echo $user['usNo']; ?>;
 var viewNo = 0;

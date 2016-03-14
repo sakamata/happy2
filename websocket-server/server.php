@@ -15,8 +15,10 @@ $classLoader->register();
 
 // $server = new \WebSocket\Server('127.0.0.1', 8000, false);
 // $server = new \WebSocket\Server('192.168.11.5', 80, false);
-$server = new \WebSocket\Server('127.0.0.1', 80, false);
 // $server = new \WebSocket\Server('happy-project.org', 80, false);
+
+// Server('127.0.0.1', 80, false) で動作確認level1 ローカル環境のみ動く
+$server = new \WebSocket\Server('127.0.0.1', 80, false);
 
 // server settings:
 $server->setMaxClients(100);
@@ -25,8 +27,10 @@ $server->setCheckOrigin(true);
 // $server->setAllowedOrigin('foo.lh');
 // $server->setAllowedOrigin('192.168.11.5');
 // $server->setAllowedOrigin('happy-project.org');
+// $server->setAllowedOrigin('localhost2');
+
+// Server('localhost') で動作確認level1 ローカル環境のみ動く
 $server->setAllowedOrigin('localhost');
-$server->setAllowedOrigin('localhost2');
 
 $server->setMaxConnectionsPerIp(100);
 $server->setMaxRequestsPerMinute(2000);

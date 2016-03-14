@@ -16,6 +16,9 @@
 
 	<script type="text/javascript">
 		var statuses;
+		var socket;
+		// 'ws://127.0.0.1:80/happy2' でlevel1 local環境のみ動く
+		socket = new WebSocket('ws://127.0.0.1:80/happy2');
 	</script>
 
 </head>
@@ -49,21 +52,9 @@
 
 	<script>
 	jQuery(function($) {
-		var socket;
-		// if ( $.browser.mozilla ){
-		// 	socket = new MozWebSocket('ws://127.0.0.1:80/echo');
-		// }else{
-		// 	socket = new WebSocket('ws://127.0.0.1:80/echo');
-		// }
-		socket = new WebSocket('ws://127.0.0.1:80/happy2');
-		// socket = new WebSocket('ws://192.168.11.5/echo');
+		// var socket;
+		// socket = new WebSocket('ws://127.0.0.1:80/happy2');
 
-		socket.onopen = function(msg){
-			$('#wsStatus').text('online');
-		};
-		socket.onclose = function(msg){
-			$('#wsStatus').text('offline');
-		};
 
 		// 受信したメッセージの加工とバルーン表示
 		socket.onmessage = function(msg){

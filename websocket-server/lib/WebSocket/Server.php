@@ -22,6 +22,8 @@ class Server extends Socket
 	private $_maxRequestsPerMinute = 50;
 
     // public function __construct($host = 'localhost', $port = 8000, $ssl = false)
+
+	// ($host = 'localhost', $port = 80, $ssl = false) でlevel1 ローカル環境で動作確認
     public function __construct($host = 'localhost', $port = 80, $ssl = false)
     {
         parent::__construct($host, $port, $ssl);
