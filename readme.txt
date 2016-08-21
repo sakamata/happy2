@@ -1,4 +1,4 @@
-
+test
 設定関連
 
 ひとまず最低限動かすための設定項目
@@ -85,16 +85,6 @@ php.iniファイルのTimezoneをmysqlやサーバーの時刻基準と合わせ
 
 websocket-server設定---------------------------------
 
-client/coffee/client.coffee
-	5行目あたり
-	serverUrl = 'ws://127.0.0.1:80/demo'
-
-
-client/coffee/status.coffee
-	5行目あたり
-	serverUrl = 'ws://127.0.0.1:80/status'
-
-
 server/server.php
 	18行目あたり
 	$server = new \WebSocket\Server('127.0.0.1', 80, false);
@@ -117,6 +107,17 @@ server/lib/WebSocket/Server.php
 server/lib/WebSocket/Socket.php
 	31行目あたり host port 設定
 	public function __construct($host = 'localhost', $port = 80, $ssl = false)
+
+
+デモ画面用設定
+client/coffee/client.coffee
+	5行目あたり
+	serverUrl = 'ws://127.0.0.1:80/demo'
+
+デモ画面用設定
+client/coffee/status.coffee
+	5行目あたり
+	serverUrl = 'ws://127.0.0.1:80/status'
 
 ------------------------------------------------------
 
