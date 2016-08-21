@@ -19,6 +19,9 @@
 		var socket;
 		// 'ws://127.0.0.1:80/happy2' でlevel1 local環境のみ動く
 		socket = new WebSocket('ws://127.0.0.1:80/happy2');
+
+		// test ローカルサーバーとして設定
+		// socket = new WebSocket('ws://192.168.11.8:80/happy2');
 	</script>
 
 </head>

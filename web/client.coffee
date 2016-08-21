@@ -3,7 +3,8 @@ $(document).ready ->
 	# MEMO $_SERVER で確認取得を試みてない！
 	# serverUrl = 'ws://127.0.0.1:8000/demo'
 	# serverUrl = 'ws://127.0.0.1:80/demo'
-	serverUrl = 'ws://127.0.0.1:80/websocket-server'
+	# serverUrl = 'ws://127.0.0.1:80/websocket-server'
+	serverUrl = 'ws://192.168.11.8:80/websocket-server'
 	if window.MozWebSocket
 		socket = new MozWebSocket serverUrl
 	else if window.WebSocket
