@@ -48,15 +48,15 @@ class HappyApplication extends Application
 				break;
 
 			case "160.16.57.194":
-				$path = './info.php';
+				$path = dirname(__FILE__) . '/../info.php';
 				break;
 
 			case "happy-project.org":
-				$path = './info.php';
+				$path =  dirname(__FILE__) . '/../info.php';
 				break;
 
 			default:
-				$path = './info.php';
+				$path = 'C:xampp/htdocs/hidden/info.php';
 		};
 
 		require $path;
