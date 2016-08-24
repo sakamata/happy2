@@ -29,7 +29,9 @@ $server->setCheckOrigin(true);
 
 
 // 以下はXAMPP 環境で可動確認
-$server->setAllowedOrigin('localhost');
+// $server->setAllowedOrigin('localhost');
+
+$server->setAllowedOrigin('160.16.57.194');
 
 // $server->setAllowedOrigin('foo.lh');
 // $server->setAllowedOrigin('192.168.11.5');
