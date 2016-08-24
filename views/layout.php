@@ -55,8 +55,11 @@
 		// }else{
 		// 	socket = new WebSocket('ws://127.0.0.1:80/echo');
 		// }
-		socket = new WebSocket('ws://127.0.0.1:80/happy2');
-		// socket = new WebSocket('ws://192.168.11.5/echo');
+
+		// 以下はXAMPP環境で可動を確認
+		// socket = new WebSocket('ws://127.0.0.1:80/happy2');
+
+		socket = new WebSocket('ws://http://160.16.57.194:80/happy2');
 
 		socket.onopen = function(msg){
 			$('#wsStatus').text('online');
