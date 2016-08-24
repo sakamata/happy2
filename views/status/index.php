@@ -14,7 +14,10 @@ $jsonStatuses = json_encode($headAndStatuses);
 
 <script type="text/javascript">
 var socket;
-socket = new WebSocket('ws://127.0.0.1:80/happy2');
+
+// 以下の設定はXAMPP 環境で可動確認
+// socket = new WebSocket('ws://127.0.0.1:80/happy2');
+socket = new WebSocket('ws://160.16.57.194:8000/happy2');
 
 var myUserNo = <?php echo $user['usNo']; ?>;
 var viewNo = 0;
