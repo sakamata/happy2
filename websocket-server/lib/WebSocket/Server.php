@@ -22,6 +22,10 @@ class Server extends Socket
 	private $_maxRequestsPerMinute = 50;
 
     // public function __construct($host = 'localhost', $port = 8000, $ssl = false)
+
+	// 以下の設定はXAMPP 環境で可動確認
+	// public function __construct($host = 'localhost', $port = 80, $ssl = false)
+
     public function __construct($host = 'localhost', $port = 80, $ssl = false)
     {
         parent::__construct($host, $port, $ssl);
