@@ -16,7 +16,7 @@ $classLoader->register();
 // 以下はXAMPP 環境で可動確認
 // $server = new \WebSocket\Server('127.0.0.1', 80, false);
 
-$server = new \WebSocket\Server('160.16.57.194', 80, false);
+$server = new \WebSocket\Server('160.16.57.194', 8000, false);
 
 
 // $server = new \WebSocket\Server('127.0.0.1', 8000, false);
