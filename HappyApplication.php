@@ -49,12 +49,10 @@ class HappyApplication extends Application
 
 			case "160.16.57.194":
 				$path = dirname(__FILE__) . '/../info.php';
-				$path = './info.php';
 				break;
 
 			case "happy-project.org":
 				$path =  dirname(__FILE__) . '/../info.php';
-				$path =  './info.php';
 				break;
 
 			default:
