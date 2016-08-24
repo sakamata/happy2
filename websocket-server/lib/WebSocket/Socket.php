@@ -34,7 +34,7 @@ class Socket
 	// public function __construct($host = 'localhost', $port = 80, $ssl = false)
 	// public function __construct($host = 'localhost2', $port = 80, $ssl = false)
 
-	public function __construct($host = 'localhost', $port = 80, $ssl = false)
+	public function __construct($host = '160.16.57.194', $port = 80, $ssl = false)
     {
         ob_implicit_flush(true);
 		$this->ssl = $ssl;
