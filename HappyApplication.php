@@ -42,25 +42,8 @@ class HappyApplication extends Application
 
 	protected function configure()
 	{
-		switch($_SERVER["HTTP_HOST"]){
-			case "localhost":
-				$path = 'C:xampp/htdocs/hidden/info.php';
-				break;
-
-			case "160.16.57.194":
-				$path = dirname(__FILE__) . '/../info.php';
-				break;
-
-			case "happy-project.org":
-				$path =  dirname(__FILE__) . '/../info.php';
-				break;
-
-			default:
-				$path = 'C:xampp/htdocs/hidden/info.php';
-		};
-
+		$path = dirname(__FILE__) . '/../../hidden/info.php';
 		require $path;
-
 		$this->db_manager->connect('master', array(
 			'dsn' => $dsn,
 			'user' => $user,

@@ -56,10 +56,31 @@
 		// 	socket = new WebSocket('ws://127.0.0.1:80/echo');
 		// }
 
+		var host = '<?php echo $_SERVER["HTTP_HOST"]; ?>';
+
+		switch (host) {
+			case 'localhost':
+				var port = '80';
+				var host = '127.0.0.1';
+				break;
+			case '160.16.57.194':
+				var port = '8000';
+				break;
+			case 'happy-project.org':
+				var port = '8000';
+				break;
+			default:
+				var port = '80';
+		}
+
+		var wsHostPort = 'ws://' + host + ':' + port + '/happy2';
+		socket = new WebSocket(wsHostPort);
+
 		// 以下はXAMPP環境で可動を確認
 		// socket = new WebSocket('ws://127.0.0.1:80/happy2');
 
-		socket = new WebSocket('ws://160.16.57.194:8000/happy2');
+		// 以下は本番環境ドメイン設定無し状態で可動確認
+		// socket = new WebSocket('ws://160.16.57.194:8000/happy2');
 
 		socket.onopen = function(msg){
 			$('#wsStatus').text('online');
@@ -170,7 +191,7 @@
 				});
 			});
 		});
-		(new Audio(window.newsPopSound)).play();
+		(new Audio(window.newsPopOther)).play();
 	}
 
 
@@ -223,7 +244,7 @@
 				});
 			});
 		});
-		(new Audio(window.newsPopSound)).play();
+		(new Audio(window.newsPopToMe)).play();
 	}
 
 	</script>

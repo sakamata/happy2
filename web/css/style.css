@@ -297,11 +297,20 @@ a {
 	background-color: #f7cb24;
 }
 
+.clickAction:active {
+	/*border: 2px solid #e3b508;*/
+	background-color: #f4d563;
+}
+
 .myClickAction {
 	border: 2px solid #3668c4;
 	background-color: #7096de;
 }
 
+.myClickAction:active {
+	/*border: 2px solid #3668c4;*/
+	background-color: #89a8e7;
+}
 
 .countNumber{
 	color: #333;

@@ -85,40 +85,77 @@ php.iniファイルのTimezoneをmysqlやサーバーの時刻基準と合わせ
 
 websocket-server設定---------------------------------
 
-client/coffee/client.coffee
-	5行目あたり
-	serverUrl = 'ws://127.0.0.1:80/demo'
-
-
-client/coffee/status.coffee
-	5行目あたり
-	serverUrl = 'ws://127.0.0.1:80/status'
-
-
 server/server.php
-	18行目あたり
+
+	16行目あたり
+
+	// 以下はXAMPP 環境で可動確認
 	$server = new \WebSocket\Server('127.0.0.1', 80, false);
 
+	// 以下は本番環境ドメイン設定無し状態で可動確認
+	$server = new \WebSocket\Server('160.16.57.194', 8000, false);
+
+
 	27行目あたり
+
 	複数設定可能?らしい
+	// 以下はXAMPP 環境で可動確認
 	$server->setAllowedOrigin('localhost');
-	$server->setAllowedOrigin('happy-project.org');
+
+	// 以下は本番環境ドメイン設定無し状態で可動確認
+	$server->setAllowedOrigin('160.16.57.194');
+
 
 	37行目あたり
+
 	//個別のアプリケーションの登録
 	$server->registerApplication('hoge', \WebSocket\Application\HogeApplication::getInstance());
 
 
 server/lib/WebSocket/Server.php
+
 	25行目あたり host port 設定
+
+	// 以下の設定はXAMPP 環境で可動確認
 	public function __construct($host = 'localhost', $port = 80, $ssl = false)
+
+	// 以下は本番環境ドメイン設定無し状態で可動確認
+	public function __construct($host = '160.16.57.194', $port = 8000, $ssl = false)
 
 
 server/lib/WebSocket/Socket.php
+
 	31行目あたり host port 設定
+
+	// 以下の設定はいずれもXAMPP 環境で可動確認
 	public function __construct($host = 'localhost', $port = 80, $ssl = false)
+	public function __construct($host = 'localhost2', $port = 80, $ssl = false)
+
+	// 以下は本番環境ドメイン設定無し状態で可動確認
+	public function __construct($host = '160.16.57.194', $port = 8000, $ssl = false)
 
 ------------------------------------------------------
+
+websocket-クライアント設定---------------------------------
+
+	views/layout.php
+	59行目あたり
+
+	// 以下はXAMPP環境で可動を確認
+	socket = new WebSocket('ws://127.0.0.1:80/happy2');
+
+	// 以下は本番環境ドメイン設定無し状態で可動確認
+	socket = new WebSocket('ws://160.16.57.194:8000/happy2');
+
+
+	views/status/index.php
+	18行目あたり
+
+	// 以下の設定はXAMPP 環境で可動確認
+	// socket = new WebSocket('ws://127.0.0.1:80/happy2');
+
+	// 以下は本番環境ドメイン設定無し状態で可動確認
+	socket = new WebSocket('ws://160.16.57.194:8000/happy2');
 
 
 ------------------------------------------------------
