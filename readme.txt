@@ -7,9 +7,8 @@
 フレームワークルートURL(暫定)
 http://localhost/happy2/web/
 
-
 web-socket起動コマンド
-ApacheのShellで以下のコマンドで起動させる
+Shellで以下のファイルをコマンドで起動させるか、サーバー内でデーモンで可動させる
 
 php htdocs/happy2/websocket-server/server.php
 
@@ -22,6 +21,20 @@ http://localhost/happy2/web/index.php/
 ***ToDo***
 コンソールlogエラー文言でソース検索し原因究明
 http headerが無いためか？
+
+--------------------------------------------------------------
+
+Happy2アプリの環境変数類---------------------------------------
+環境変数はwev公開フォルダの兄弟フォルダに hidden を設け、その中に
+info.php にて以下の様に変数を設定する。
+
+$hostName = 'hoge.com';		// ドメインを指定 開発環境では'127.0.0.1'
+$permitDomain = 'localhost';	// websocket $server->setAllowedOrigin($permitDomain) にて使用、基本はドメイン、開発環境では'localhost'と指定
+
+$wsPort = 80; //websocket通信に使用するPort番号を指定
+$pass = 'hoge'; //databaseのpasswordを指定
+$dsn = 'mysql:dbname=happy2;host=localhost'; // database PDOでのdsn設定
+$user = 'root';	//databaseのログインユーザー名
 
 --------------------------------------------------------------
 
@@ -231,3 +244,10 @@ http://stackoverflow.com/questions/5129624/convert-js-date-time-to-mysql-datetim
 
 画面サイズに合わせて高さを指定する3つの方法
 http://weboook.blog22.fc2.com/blog-entry-411.html
+
+
+Sound
+無料効果音で遊ぼう！
+http://taira-komori.jpn.org/index.html
+魔王魂
+http://maoudamashii.jokersounds.com/

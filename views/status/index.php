@@ -13,50 +13,19 @@ $jsonStatuses = json_encode($headAndStatuses);
 ?>
 
 <script type="text/javascript">
-var socket;
-
-// 以下の設定はXAMPP 環境で可動確認
-// socket = new WebSocket('ws://127.0.0.1:80/happy2');
-
-// 以下は本番環境ドメイン設定無し状態で可動確認
-// socket = new WebSocket('ws://160.16.57.194:8000/happy2');
-
-var host = '<?php echo $_SERVER["HTTP_HOST"]; ?>';
-
-switch (host) {
-	case 'localhost':
-		var port = '80';
-		var host = '127.0.0.1';
-		break;
-	case '160.16.57.194':
-		var port = '8000';
-		break;
-	case 'happy-project.org':
-		var port = '8000';
-		break;
-	default:
-		var port = '80';
-}
-
-var wsHostPort = 'ws://' + host + ':' + port + '/happy2';
-socket = new WebSocket(wsHostPort);
-
 var myUserNo = <?php echo $user['usNo']; ?>;
 var viewNo = 0;
 var statuses = JSON.parse('<?php echo $jsonStatuses; ?>');
-// console.log(statuses);
-
 
 // soundの準備
 window.clkSoundMy = "<?php echo $base_url; ?>/../sound/puyon1.mp3";
 window.clkSound = "<?php echo $base_url; ?>/../sound/touch1.mp3";
-window.newsPopToMe = "<?php echo $base_url; ?>/../sound/voice_of_light.mp3";
+window.newsPopToMe = "<?php echo $base_url; ?>/../sound/coin05.mp3";
 window.newsPopOther = "<?php echo $base_url; ?>/../sound/se_maoudamashii_onepoint26.mp3";
 (new Audio(window.clkSoundMy)).load();
 (new Audio(window.clkSound)).load();
 (new Audio(window.newsPopToMe)).load();
 (new Audio(window.newsPopOther)).load();
-
 
 // ボタン押下によるクリック数の保持と書き換え
 var myClickCountIncrement = function (){
@@ -145,7 +114,6 @@ var otherClickCountIncrement = function (){
 	}
 };
 var ReplaceOtherClickInfo = otherClickCountIncrement();
-
 
 </script>
 <div class="container">

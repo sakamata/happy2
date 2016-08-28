@@ -15,7 +15,22 @@
 	<link href="<?php echo $base_url; ?>/../css/bootstrap.min.css" rel="stylesheet">
 
 	<script type="text/javascript">
-		var statuses;
+	var statuses;
+	var host = '<?php echo $_SERVER["HTTP_HOST"]; ?>';
+	switch (host) {
+		case 'localhost':
+			wsHostPort = 'ws://127.0.0.1:80/happy2';
+			break;
+		case '160.16.57.194':
+			wsHostPort = 'ws://160.16.57.194:8000/happy2';
+			break;
+		case 'happy-project.org':
+			wsHostPort = 'ws://happy-project.org:8000/happy2';
+			break;
+		default:
+			wsHostPort = 'ws://happy-project.org:8000/happy2';
+	}
+	socket = new WebSocket(wsHostPort);
 	</script>
 
 </head>
@@ -49,39 +64,7 @@
 
 	<script>
 	jQuery(function($) {
-		var socket;
-		// if ( $.browser.mozilla ){
-		// 	socket = new MozWebSocket('ws://127.0.0.1:80/echo');
-		// }else{
-		// 	socket = new WebSocket('ws://127.0.0.1:80/echo');
-		// }
-
-		var host = '<?php echo $_SERVER["HTTP_HOST"]; ?>';
-
-		switch (host) {
-			case 'localhost':
-				var port = '80';
-				var host = '127.0.0.1';
-				break;
-			case '160.16.57.194':
-				var port = '8000';
-				break;
-			case 'happy-project.org':
-				var port = '8000';
-				break;
-			default:
-				var port = '80';
-		}
-
-		var wsHostPort = 'ws://' + host + ':' + port + '/happy2';
-		socket = new WebSocket(wsHostPort);
-
-		// 以下はXAMPP環境で可動を確認
-		// socket = new WebSocket('ws://127.0.0.1:80/happy2');
-
-		// 以下は本番環境ドメイン設定無し状態で可動確認
-		// socket = new WebSocket('ws://160.16.57.194:8000/happy2');
-
+		// socket  グローバル変数
 		socket.onopen = function(msg){
 			$('#wsStatus').text('online');
 		};
