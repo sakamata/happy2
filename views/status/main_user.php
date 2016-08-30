@@ -26,7 +26,7 @@
 				</div><!-- simpleStatus -->
 				<div class="userCenterArea">
 					<div class="userImageArea">
-						<img src="<?php echo $base_url .'/../user/img/'. $headerUser['usImg']; ?>" alt="user_photo">
+						<img src="<?php echo $base_url .'/../user/img/'. $headerUser['usImg']; ?>" alt="user_photo" width="100" height="100">
 						<p>ID:<?php echo $this->escape($headerUser['usId']); ?></p>
 					</div><!-- userImageArea -->
 					<div class="userInfoArea">

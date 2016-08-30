@@ -40,7 +40,7 @@
 		<div id="header_menu">
 
 <?php if($session->isAuthenticated()): ?>
-				<a href="<?php echo $base_url; ?>/account/profile">編集</a>
+				<a href="<?php echo $base_url; ?>/account/editProfile">編集</a>
 				<a href="">ヘルプ</a>
 				<a href="<?php echo $base_url; ?>/account/signout">ログアウト</a>
 <?php else: ?>

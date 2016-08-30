@@ -289,7 +289,7 @@ class AdminRepository extends DbRepository
 				:usId,
 				:usName,
 				'7599fcea685786ffa4f9314259a155301ed24f5d',
-				'dummy.png',
+				'default/dummy.png',
 				100,
 				now()
 			);

@@ -199,6 +199,17 @@ HogeController内 generateCsrfTokenについて
 			'B_token' => $this->generateCsrfToken('fuga/fugaBBB'),
 		));
 
+HogeController内 rerutn $this->render() について
+
+	return $this->render(array(
+		'usName' => $usName,
+		'usId' => $usId,
+		'usImg' => $usImg,
+		'errors' => $errors,
+		'_token' => $this->generateCsrfToken('account/editProfile'),
+	), 'editProfile');	// ←この引数はViewに使用するfile名がHogeControllerの名称Hogeと異なる場合に指定
+
+
 
 Viewファイル内 renderメソッドについて
 view中にif,foreach等でさらに別ファイルでrender処理を行う際は、
