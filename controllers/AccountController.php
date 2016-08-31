@@ -138,38 +138,87 @@ class AccountController extends Controller
 			$usImg = $user['usImg'];
 		} else {
 			if ($imageFile['size'] > 1024*1024*5) {
-				$errors[] = 'アップロードできる画像サイズは5Mまでです';
-				$usImg = $user['usImg'];
+				$errors[] = 'アップロードできる画像サイズは5MBまでです';
 			}
 			switch ($imageFile['type']) {
 				case 'image/jpeg':
 					$extension = '.jpg';
-					$usImg = $user['usId'] . $extension;
 					break;
 				case 'image/gif':
 					$extension = '.gif';
-					$usImg = $user['usId'] . $extension;
 					break;
 				case 'image/png':
 					$extension = '.png';
-					$usImg = $user['usId'] . $extension;
 					break;
 				default:
 					$errors[] = 'アップロードできるのはJPEG,GIF,PNGのみです';
-					$usImg = $user['usImg'];
 					break;
 			}
 		}
 
 		if (count($errors) === 0) {
-			$this->db_manager->get('User')->profileEdit($usId, $usName, $usImg);
-
-			// ToDo リサイズ処理 最大100pxに
-			// 縦、横、大きい方をトリミング、正方形に
-			// リサイズ、100*100に
+			$this->db_manager->get('User')->profileEdit($usId, $usName, $usId.'.jpg');
 
 			if ($imageFile['tmp_name']) {
-				move_uploaded_file($imageFile['tmp_name'], '../web/user/img/'. $user['usId']. $extension);
+				// 画像を.jpgとして一時保存
+				$path_name = '../web/user/img/'. $user['usId']. $extension;
+				move_uploaded_file($imageFile['tmp_name'], $path_name);
+
+				// png画像を .jpg に変換
+				if ($imageFile['type'] == 'image/png') {
+					$img = imagecreatefrompng($path_name);
+					imagejpeg($img,'../web/user/img/'. $user['usId'].'.jpg');
+					sleep(1);
+					// 元画像を削除
+					unlink($path_name);
+				}
+
+				// gif画像を .jpg に変換
+				if ($imageFile['type'] == 'image/gif') {
+					$img = imagecreatefromgif($path_name);
+					imagegif($img,'../web/user/img/'. $user['usId'].'.jpg');
+					sleep(1);
+					// 元画像を削除
+					unlink($path_name);
+				}
+				sleep(1);
+
+				$largeFile = '../web/user/img/'. $user['usId']. '.jpg';
+
+				// 縦、横、大きい方をトリミング、正方形に
+				//元画像の縦横の大きさを比べてどちらかにあわせる
+				// なおかつ縦横の差をコピー開始位置として使えるようセット
+				list($w, $h) = getimagesize($largeFile);
+				if ($w > $h) {
+					$diff = ($w - $h) * 0.5;
+					$diffW = $h;
+					$diffH = $h;
+					$diffY = 0;
+					$diffX = $diff;
+				}elseif($w < $h){
+					$diff  = ($h - $w) * 0.5;
+					$diffW = $w;
+					$diffH = $w;
+					$diffY = $diff;
+					$diffX = 0;
+				}elseif($w === $h){
+					$diffW = $w;
+					$diffH = $h;
+					$diffY = 0;
+					$diffX = 0;
+				}
+				// サムネイルサイズを指定
+				$thumbW = 200;
+				$thumbH = 200;
+
+				//サムネイルになる土台の画像を作る
+				$thumbnail = imagecreatetruecolor($thumbW, $thumbH);
+				//元の画像を読み込む
+				$baseImage = imagecreatefromjpeg($largeFile);
+				//サムネイルになる土台の画像に合わせて元の画像を縮小しコピーペーストする
+				imagecopyresampled($thumbnail, $baseImage, 0, 0, $diffX, $diffY, $thumbW, $thumbH, $diffW, $diffH);
+				//圧縮率60で保存する
+				imagejpeg($thumbnail, '../web/user/img/'. $user['usId'] .'.jpg', 60);
 			}
 
 			$user = $this->db_manager->get('User')->fetchByUserName($usId);

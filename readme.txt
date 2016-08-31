@@ -256,6 +256,8 @@ http://stackoverflow.com/questions/5129624/convert-js-date-time-to-mysql-datetim
 画面サイズに合わせて高さを指定する3つの方法
 http://weboook.blog22.fc2.com/blog-entry-411.html
 
+PHPでGDライブラリを使って画像リサイズ（サムネイル画像を作る）をやってみる
+http://unskilled.site/php%E3%81%A7gd%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E7%94%BB%E5%83%8F%E3%83%AA%E3%82%B5%E3%82%A4%E3%82%BA%EF%BC%88%E3%82%B5%E3%83%A0%E3%83%8D%E3%82%A4/
 
 Sound
 無料効果音で遊ぼう！
