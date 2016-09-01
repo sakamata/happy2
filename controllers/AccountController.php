@@ -130,16 +130,21 @@ class AccountController extends Controller
 */
 		// 画像チェック処理
 		$imageFile = $this->request->getPostFile('imageFile');
-		if (!isset($imageFile['error']) || !is_int($imageFile['error'])) {
-			$errors[] ='パラメータが不正です';
-		}
+		// 画像がセットされていれば画像チェック
+		if ($imageFile['tmp_name']) {
 
-		if (!$imageFile['name'] || $imageFile['size'] == 0) {
-			$usImg = $user['usImg'];
-		} else {
+			if (!isset($imageFile['error']) || !is_int($imageFile['error'])) {
+				$errors[] ='パラメータが不正です';
+			}
+
+			if (!$imageFile['name'] || $imageFile['size'] == 0) {
+				$errors[] ='この画像ファイルは使用できません';
+			}
+
 			if ($imageFile['size'] > 1024*1024*5) {
 				$errors[] = 'アップロードできる画像サイズは5MBまでです';
 			}
+
 			switch ($imageFile['type']) {
 				case 'image/jpeg':
 					$extension = '.jpg';
@@ -152,84 +157,94 @@ class AccountController extends Controller
 					break;
 				default:
 					$errors[] = 'アップロードできるのはJPEG,GIF,PNGのみです';
+					// imagedestroy($imageFile);
+					$extension = '';
 					break;
 			}
+
+			if ($imageFile['tmp_name'] && count($errors) === 0) {
+				// 画像を一時保存
+				$path_name = '../web/user/img/'. $user['usId']. $extension;
+				$check = move_uploaded_file($imageFile['tmp_name'], $path_name);
+				if(!$check) {
+					$errors[] ='この画像ファイルは使用できません';
+					unlink($path_name);
+				}
+
+				if (count($errors) === 0) {
+
+					// png画像を .jpg に変換
+					if ($imageFile['type'] == 'image/png') {
+						$img= imagecreatefromstring(file_get_contents($path_name));
+						imagejpeg($img,'../web/user/img/'. $user['usId'].'.jpg');
+						// sleep(2);
+						imagedestroy($img);
+						// png元画像を削除
+						unlink($path_name);
+					}
+
+					// gif画像を .jpg に変換
+					if ($imageFile['type'] == 'image/gif') {
+						$img= imagecreatefromstring(file_get_contents($path_name));
+						imagejpeg($img,'../web/user/img/'. $user['usId'].'.jpg');
+						// sleep(2);
+						imagedestroy($img);
+						// gif元画像を削除
+						unlink($path_name);
+					}
+					// sleep(1);
+					$largeFile = '../web/user/img/'. $user['usId']. '.jpg';
+
+					// 縦、横、大きい方をトリミング、正方形に
+					//元画像の縦横の大きさを比べてどちらかにあわせる
+					// なおかつ縦横の差をコピー開始位置として使えるようセット
+					list($w, $h) = getimagesize($largeFile);
+					if ($w > $h) {
+						$diff = ($w - $h) * 0.5;
+						$diffW = $h;
+						$diffH = $h;
+						$diffY = 0;
+						$diffX = $diff;
+					}elseif($w < $h){
+						$diff  = ($h - $w) * 0.5;
+						$diffW = $w;
+						$diffH = $w;
+						$diffY = $diff;
+						$diffX = 0;
+					}elseif($w === $h){
+						$diffW = $w;
+						$diffH = $h;
+						$diffY = 0;
+						$diffX = 0;
+					}
+					//サムネイルサイズ指定、土台の画像を作る
+					$thumbW = 200;
+					$thumbH = 200;
+					$thumbnail = imagecreatetruecolor($thumbW, $thumbH);
+
+					//元画像を読み込む
+					$baseImage = imagecreatefromjpeg($largeFile);
+
+					//土台の画像に合わせて元の画像を縮小しコピーペーストする
+					imagecopyresampled($thumbnail, $baseImage, 0, 0, $diffX, $diffY, $thumbW, $thumbH, $diffW, $diffH);
+
+					//圧縮率を設定して保存
+					imagejpeg($thumbnail, '../web/user/img/' . $user['usId'] . '.jpg', 60);
+					imagedestroy($thumbnail);
+					imagedestroy($baseImage);
+				} // error count 0
+			}
 		}
+		$user = $this->db_manager->get('User')->fetchByUserName($usId);
+		$this->session->set('user', $user);
 
 		if (count($errors) === 0) {
 			$this->db_manager->get('User')->profileEdit($usId, $usName, $usId.'.jpg');
-
-			if ($imageFile['tmp_name']) {
-				// 画像を.jpgとして一時保存
-				$path_name = '../web/user/img/'. $user['usId']. $extension;
-				move_uploaded_file($imageFile['tmp_name'], $path_name);
-
-				// png画像を .jpg に変換
-				if ($imageFile['type'] == 'image/png') {
-					$img = imagecreatefrompng($path_name);
-					imagejpeg($img,'../web/user/img/'. $user['usId'].'.jpg');
-					sleep(1);
-					// 元画像を削除
-					unlink($path_name);
-				}
-
-				// gif画像を .jpg に変換
-				if ($imageFile['type'] == 'image/gif') {
-					$img = imagecreatefromgif($path_name);
-					imagegif($img,'../web/user/img/'. $user['usId'].'.jpg');
-					sleep(1);
-					// 元画像を削除
-					unlink($path_name);
-				}
-				sleep(1);
-
-				$largeFile = '../web/user/img/'. $user['usId']. '.jpg';
-
-				// 縦、横、大きい方をトリミング、正方形に
-				//元画像の縦横の大きさを比べてどちらかにあわせる
-				// なおかつ縦横の差をコピー開始位置として使えるようセット
-				list($w, $h) = getimagesize($largeFile);
-				if ($w > $h) {
-					$diff = ($w - $h) * 0.5;
-					$diffW = $h;
-					$diffH = $h;
-					$diffY = 0;
-					$diffX = $diff;
-				}elseif($w < $h){
-					$diff  = ($h - $w) * 0.5;
-					$diffW = $w;
-					$diffH = $w;
-					$diffY = $diff;
-					$diffX = 0;
-				}elseif($w === $h){
-					$diffW = $w;
-					$diffH = $h;
-					$diffY = 0;
-					$diffX = 0;
-				}
-				// サムネイルサイズを指定
-				$thumbW = 200;
-				$thumbH = 200;
-
-				//サムネイルになる土台の画像を作る
-				$thumbnail = imagecreatetruecolor($thumbW, $thumbH);
-				//元の画像を読み込む
-				$baseImage = imagecreatefromjpeg($largeFile);
-				//サムネイルになる土台の画像に合わせて元の画像を縮小しコピーペーストする
-				imagecopyresampled($thumbnail, $baseImage, 0, 0, $diffX, $diffY, $thumbW, $thumbH, $diffW, $diffH);
-				//圧縮率60で保存する
-				imagejpeg($thumbnail, '../web/user/img/'. $user['usId'] .'.jpg', 60);
-			}
-
-			$user = $this->db_manager->get('User')->fetchByUserName($usId);
-			$this->session->set('user', $user);
 			return $this->redirect('/');
 		}
 
 		return $this->render(array(
 			'user' => $user,
-			'usImg' => $usImg,
-			'imageFile' => $imageFile,
 			'errors' => $errors,
 			'_token' => $this->generateCsrfToken('account/editProfile'),
 		), 'editProfile');
