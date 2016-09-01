@@ -36,7 +36,7 @@
 </head>
 <body>
 	<div id="header">
-		<h1><a href="<?php echo $base_url; ?>/">Happy</a></h1>
+		<h1><a href="<?php echo $base_url; ?>">Happy</a></h1>
 		<div id="header_menu">
 
 <?php if($session->isAuthenticated()): ?>
@@ -66,10 +66,10 @@
 	jQuery(function($) {
 		// socket  グローバル変数
 		socket.onopen = function(msg){
-			$('#wsStatus').text('online');
+			$('#wsStatus').text('通知:ON');
 		};
 		socket.onclose = function(msg){
-			$('#wsStatus').text('offline');
+			$('#wsStatus').text('通知:OFF');
 		};
 
 		// 受信したメッセージの加工とバルーン表示
@@ -136,9 +136,9 @@
 			'heigth': '30px',
 			'margin-right': 'auto',
 			'margin-left': 'auto',
-			'background':'-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #fcfcfc), color-stop(1, #cccccc))',
-			'background':'linear-gradient(top, #fcfcfc 5%, #cccccc 100%)',
-			'background':'-webkit-linear-gradient(top, #fcfcfc 5%, #cccccc 100%)',
+			// 'background':'-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #fcfcfc), color-stop(1, #cccccc))',
+			// 'background':'linear-gradient(top, #fcfcfc 5%, #cccccc 100%)',
+			// 'background':'-webkit-linear-gradient(top, #fcfcfc 5%, #cccccc 100%)',
 			'background-color':'#fcfcfc',
 			'border-radius':'5px',
 			'border':'1px solid #ccc',
@@ -190,12 +190,12 @@
 			'margin-right': 'auto',
 			'margin-left': 'auto',
 			'top': '10px',
-			'background':'-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffec64), color-stop(1, #ffab23))',
-			'background':'linear-gradient(top, #ffec64 5%, #ffab23 100%)',
-			'background':'-webkit-linear-gradient(top, #ffec64 5%, #ffab23 100%)',
+			// 'background':'-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffec64), color-stop(1, #ffab23))',
+			// 'background':'linear-gradient(top, #ffec64 5%, #ffab23 100%)',
+			// 'background':'-webkit-linear-gradient(top, #ffec64 5%, #ffab23 100%)',
 			'background-color':'#ffec64',
 			'border-radius':'12px',
-			'border':'1px solid #ffaa22',
+			'border':'2px solid #ffaa22',
 			'cursor':'pointer',
 			'color':'#333',
 			'padding':'15px',

@@ -177,9 +177,7 @@ class AccountController extends Controller
 					if ($imageFile['type'] == 'image/png') {
 						$img= imagecreatefromstring(file_get_contents($path_name));
 						imagejpeg($img,'../web/user/img/'. $user['usId'].'.jpg');
-						// sleep(2);
 						imagedestroy($img);
-						// png元画像を削除
 						unlink($path_name);
 					}
 
@@ -187,12 +185,9 @@ class AccountController extends Controller
 					if ($imageFile['type'] == 'image/gif') {
 						$img= imagecreatefromstring(file_get_contents($path_name));
 						imagejpeg($img,'../web/user/img/'. $user['usId'].'.jpg');
-						// sleep(2);
 						imagedestroy($img);
-						// gif元画像を削除
 						unlink($path_name);
 					}
-					// sleep(1);
 					$largeFile = '../web/user/img/'. $user['usId']. '.jpg';
 
 					// 縦、横、大きい方をトリミング、正方形に
@@ -240,6 +235,7 @@ class AccountController extends Controller
 
 		if (count($errors) === 0) {
 			$this->db_manager->get('User')->profileEdit($usId, $usName, $usId.'.jpg');
+			sleep(2);
 			return $this->redirect('/');
 		}
 

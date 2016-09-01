@@ -123,10 +123,10 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 	<div class="form-group">
 		<div class="form-inline">
 			<div class="col-xs-5 col-sm-4 col-md-4 col-lg-4">
-				<input type="text" class="form-control input-sm" id="InputText" placeholder="ユーザー検索">
+				<input type="text" class="form-control input-sm" disabled="disabled" id="InputText" placeholder="検索(未実装)">
 			</div>
 			<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-				<button type="submit" class="btn btn-warning btn-sm">send</button>
+				<button type="submit" class="btn btn-warning btn-sm"  disabled="disabled">send</button>
 			</div>
 			<div class="hidden-xs col-sm-2 col-md-2 col-lg-2">
 				<lavel for="InputSelect">並び替え</lavel>

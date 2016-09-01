@@ -8,9 +8,11 @@
 			<div class="viewUsers">
 				<div class="col-sm-6 col-md-6 col-lg-6">
 					<div class="mainStatus">
-						<div class="simpleStatus">
-							<a href="#">?</a><br>
-							<span>ON/OFF</span><br>
+						<div class="simpleStatus text-center">
+							<!-- <a href="#">?</a><br>
+							<span>ON/OFF</span><br> -->
+							<img src="<?php echo $base_url; ?>/../img/more_Info_icon.png" alt="more_info_button" alt="more_info_button" width="54" height="54">							<img src="<?php echo $base_url; ?>/../img/on_off_icon.png" alt="login_status" width="36" height="41">
+
 							<!-- <span>Following: <?php echo $this->escape($status['ifFollowing']); ?></span> -->
 				<?php
 							echo $this->render('status/follow_status', array('base_url' => $base_url, 'status' => $status,));
@@ -20,7 +22,7 @@
 							<p>No:<?php echo $this->escape($status['usNo']); ?></p>
 						</div><!-- simpleStatus -->
 
-						<div class="userCenterArea">
+						<div class="centerArea">
 							<div class="userImageArea">
 								<img src="<?php echo $base_url .'/../user/img/'. $status['usImg']; ?>" alt="user_photo" width="100" height="100">
 								<p>ID:<?php echo $this->escape($status['usId']); ?></p>
