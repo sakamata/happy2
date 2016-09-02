@@ -84,6 +84,7 @@ class StatusController extends Controller
 			'selected' => $selected,
 			'usersNullMessage' => $usersNullMessage,
 			'usersArrayMessage' => $usersArrayMessage,
+			'calcCount' => $this->calcCount,
 		));
 	}
 

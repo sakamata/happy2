@@ -156,7 +156,7 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 		</div><!--  -->
 		<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
 			<div id="calcStatusArea">
-				<p>集計回数　XX回  <span id="wsStatus"></span></p>
+				<p>集計<b><?php echo $calcCount; ?></b>回　<span id="wsStatus"></span></p>
 			</div>
 		</div>
 	</div><!-- row -->

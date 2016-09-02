@@ -63,10 +63,10 @@
 	jQuery(function($) {
 		// socket  グローバル変数
 		socket.onopen = function(msg){
-			$('#wsStatus').text('通知:ON');
+			$('#wsStatus').html('通知:<b>ON</b>');
 		};
 		socket.onclose = function(msg){
-			$('#wsStatus').text('通知:OFF');
+			$('#wsStatus').html('通知:<b>OFF</b>');
 		};
 
 		// 受信したメッセージの加工とバルーン表示
