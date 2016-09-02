@@ -156,6 +156,15 @@ a {
 	width: 60px;
 	border-radius: 5px;
 	border: 1px solid #aaa;
+	-moz-box-shadow:
+		0px 1px 3px rgba(005,005,005,0.5),
+		inset 0px -1px 0px rgba(255,255,255,0.7);
+	-webkit-box-shadow:
+		0px 1px 3px rgba(005,005,005,0.5),
+		inset 0px -1px 0px rgba(255,255,255,0.7);
+	box-shadow:
+		0px 1px 3px rgba(005,005,005,0.5),
+		inset 0px -1px 0px rgba(255,255,255,0.7);
 }
 
 .viewUsers {
@@ -493,13 +502,25 @@ button.css3button {
 	height: 46px;
 }
 
-.pagerArea form, .orderChangerArea form {
+.pagerArea_footer {
+	text-align: center;
+	display: block;
+	border-radius: 5px;
+	background-color: #e2fee5;
+	font-size: 1em;
+	padding: 10px 0px;
+	margin: 15px 0;
+	height: 46px;
+}
+
+
+.pagerArea form, .pagerArea_footer form, .orderChangerArea form {
 	text-align: center;
 	display: inline;
 	font-size: 1em;
 }
 
-.pagerArea img {
+.pagerArea img, .pagerArea_footer img {
 	width: 22px;
 	height: 29px;
 }

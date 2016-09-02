@@ -149,14 +149,14 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 
 <div class="container">
 	<div class="row">
-		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+		<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
 			<div id="pageTitle">
 				<h2>ホーム</h2>
 			</div><!-- pageTitle -->
 		</div><!--  -->
-		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+		<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
 			<div id="calcStatusArea">
-				<p>集計回数　XX回	<span id="wsStatus"></span></p>
+				<p>集計回数　XX回  <span id="wsStatus"></span></p>
 			</div>
 		</div>
 	</div><!-- row -->
@@ -203,6 +203,16 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 	}
 ?>
 </div>
+<div class="container">
+	<div class="row">
+<?php
+if ($page * $limit < $userCount ) :
+	echo $this->render('status/pager_footer', array('page' => $page, 'limit' => $limit, 'userCount' => $userCount, 'order' => $order, 'usersArray' => $usersArray));
+endif;
+?>
+	</div><!-- row -->
+</div><!-- container -->
+
 
 <?php
 	echo $this->render('status/js/index_js', array('base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'postSecond'=> $postSecond, 'clickStatus'=> $clickStatus, 'headerUser' => $headerUser, 'user' => $user,));

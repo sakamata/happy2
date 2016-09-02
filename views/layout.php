@@ -13,26 +13,6 @@
 	href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="<?php echo $base_url; ?>/../css/style.css">
 	<link href="<?php echo $base_url; ?>/../css/bootstrap.min.css" rel="stylesheet">
-
-	<script type="text/javascript">
-	var statuses;
-	var host = '<?php echo $_SERVER["HTTP_HOST"]; ?>';
-	switch (host) {
-		case 'localhost':
-			wsHostPort = 'ws://127.0.0.1:80/happy2';
-			break;
-		case '160.16.57.194':
-			wsHostPort = 'ws://160.16.57.194:8000/happy2';
-			break;
-		case 'happy-project.org':
-			wsHostPort = 'ws://happy-project.org:8000/happy2';
-			break;
-		default:
-			wsHostPort = 'ws://happy-project.org:8000/happy2';
-	}
-	socket = new WebSocket(wsHostPort);
-	</script>
-
 </head>
 <body>
 	<div id="header">
@@ -40,9 +20,9 @@
 		<div id="header_menu">
 
 <?php if($session->isAuthenticated()): ?>
-				<a href="<?php echo $base_url; ?>/account/editProfile">編集</a>
-				<a href="">ヘルプ</a>
-				<a href="<?php echo $base_url; ?>/account/signout">ログアウト</a>
+				<a href="<?php echo $base_url; ?>/account/editProfile">編集 </a>
+				<!-- <a href="">ヘルプ</a> -->
+				<a href="<?php echo $base_url; ?>/account/signout"> ログアウト</a>
 <?php else: ?>
 				<a href="<?php echo $base_url; ?>/account/signin">ログイン</a>
 				<a href="<?php echo $base_url; ?>/account/signup">アカウント登録</a>
@@ -63,6 +43,23 @@
 	</div>
 
 	<script>
+	var statuses;
+	var host = '<?php echo $_SERVER["HTTP_HOST"]; ?>';
+	switch (host) {
+		case 'localhost':
+			wsHostPort = 'ws://127.0.0.1:80/happy2';
+			break;
+		case '160.16.57.194':
+			wsHostPort = 'ws://160.16.57.194:8000/happy2';
+			break;
+		case 'happy-project.org':
+			wsHostPort = 'ws://happy-project.org:8000/happy2';
+			break;
+		default:
+			wsHostPort = 'ws://happy-project.org:8000/happy2';
+	}
+	socket = new WebSocket(wsHostPort);
+
 	jQuery(function($) {
 		// socket  グローバル変数
 		socket.onopen = function(msg){
@@ -86,10 +83,10 @@
 				clickGraph ('otherClicks', otherPercents);
 
 			// 自分宛以外
-			} else {
+			} else if (msg.sendUserNo != myUserNo) {
 				// 自分宛以外は全て簡易通知
 				toOhterNewsPop(msg);
-
+			} else {
 				// 自分がクリックした場合
 				if (msg.sendUserNo == myUserNo) {
 					var otherPercents = ReplaceOtherClickInfo(msg);
@@ -174,7 +171,11 @@
 				});
 			});
 		});
-		(new Audio(window.newsPopOther)).play();
+		if (mess.sendUserNo == mess.receiveNo) {
+			(new Audio(window.clkSoundMy)).play();
+		} else {
+			(new Audio(window.newsPopOther)).play();
+		}
 	}
 
 

@@ -22,7 +22,7 @@
 					<!-- <a href="#">?</a><br>
 					<span>ON/OFF</span><br> -->
 					<img src="<?php echo $base_url; ?>/../img/more_Info_icon.png" alt="more_info_button" alt="login_status" width="54" height="54">
-					<img src="<?php echo $base_url; ?>/../img/on_off_icon.png" alt="login_status" width="36" height="41">
+					<img src="<?php echo $base_url; ?>/../img/online_icon.png" alt="login_status" width="36" height="41">
 					<!-- ***ToDo*** follow status & followButton -->
 					No: <?php echo $this->escape($headerUser['usNo']); ?>
 				</div><!-- simpleStatus -->
