@@ -26,6 +26,14 @@ class Request
 		return $default;
 	}
 
+	public function getPostFile($name, $default = null)
+	{
+		if (isset($_FILES[$name])) {
+			return $_FILES[$name];
+		}
+		return $default;
+	}
+
 	// サーバーホスト名 の文字列を確実に取得 要はlocalhost
 	public function getHost()
 	{

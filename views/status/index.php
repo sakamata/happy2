@@ -13,50 +13,19 @@ $jsonStatuses = json_encode($headAndStatuses);
 ?>
 
 <script type="text/javascript">
-var socket;
-
-// 以下の設定はXAMPP 環境で可動確認
-// socket = new WebSocket('ws://127.0.0.1:80/happy2');
-
-// 以下は本番環境ドメイン設定無し状態で可動確認
-// socket = new WebSocket('ws://160.16.57.194:8000/happy2');
-
-var host = '<?php echo $_SERVER["HTTP_HOST"]; ?>';
-
-switch (host) {
-	case 'localhost':
-		var port = '80';
-		var host = '127.0.0.1';
-		break;
-	case '160.16.57.194':
-		var port = '8000';
-		break;
-	case 'happy-project.org':
-		var port = '8000';
-		break;
-	default:
-		var port = '80';
-}
-
-var wsHostPort = 'ws://' + host + ':' + port + '/happy2';
-socket = new WebSocket(wsHostPort);
-
 var myUserNo = <?php echo $user['usNo']; ?>;
 var viewNo = 0;
 var statuses = JSON.parse('<?php echo $jsonStatuses; ?>');
-// console.log(statuses);
-
 
 // soundの準備
 window.clkSoundMy = "<?php echo $base_url; ?>/../sound/puyon1.mp3";
 window.clkSound = "<?php echo $base_url; ?>/../sound/touch1.mp3";
-window.newsPopToMe = "<?php echo $base_url; ?>/../sound/voice_of_light.mp3";
+window.newsPopToMe = "<?php echo $base_url; ?>/../sound/coin05.mp3";
 window.newsPopOther = "<?php echo $base_url; ?>/../sound/se_maoudamashii_onepoint26.mp3";
 (new Audio(window.clkSoundMy)).load();
 (new Audio(window.clkSound)).load();
 (new Audio(window.newsPopToMe)).load();
 (new Audio(window.newsPopOther)).load();
-
 
 // ボタン押下によるクリック数の保持と書き換え
 var myClickCountIncrement = function (){
@@ -146,7 +115,6 @@ var otherClickCountIncrement = function (){
 };
 var ReplaceOtherClickInfo = otherClickCountIncrement();
 
-
 </script>
 <div class="container">
 <div class="row">
@@ -155,10 +123,10 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 	<div class="form-group">
 		<div class="form-inline">
 			<div class="col-xs-5 col-sm-4 col-md-4 col-lg-4">
-				<input type="text" class="form-control input-sm" id="InputText" placeholder="ユーザー検索">
+				<input type="text" class="form-control input-sm" disabled="disabled" id="InputText" placeholder="検索(未実装)">
 			</div>
 			<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-				<button type="submit" class="btn btn-warning btn-sm">send</button>
+				<button type="submit" class="btn btn-warning btn-sm"  disabled="disabled">send</button>
 			</div>
 			<div class="hidden-xs col-sm-2 col-md-2 col-lg-2">
 				<lavel for="InputSelect">並び替え</lavel>
@@ -181,14 +149,14 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 
 <div class="container">
 	<div class="row">
-		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+		<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
 			<div id="pageTitle">
 				<h2>ホーム</h2>
 			</div><!-- pageTitle -->
 		</div><!--  -->
-		<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+		<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
 			<div id="calcStatusArea">
-				<p>集計回数　XX回	<span id="wsStatus"></span></p>
+				<p>集計<b><?php echo $calcCount; ?></b>回　<span id="wsStatus"></span></p>
 			</div>
 		</div>
 	</div><!-- row -->
@@ -235,6 +203,16 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 	}
 ?>
 </div>
+<div class="container">
+	<div class="row">
+<?php
+if ($page * $limit < $userCount ) :
+	echo $this->render('status/pager_footer', array('page' => $page, 'limit' => $limit, 'userCount' => $userCount, 'order' => $order, 'usersArray' => $usersArray));
+endif;
+?>
+	</div><!-- row -->
+</div><!-- container -->
+
 
 <?php
 	echo $this->render('status/js/index_js', array('base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'postSecond'=> $postSecond, 'clickStatus'=> $clickStatus, 'headerUser' => $headerUser, 'user' => $user,));

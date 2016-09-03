@@ -27,14 +27,7 @@ class Socket
 	protected $context = null;
 	protected $ssl = false;
 
-
-	// public function __construct($host = 'localhost', $port = 8000, $ssl = false)
-
-	// 以下の設定はいずれもXAMPP 環境で可動確認
-	// public function __construct($host = 'localhost', $port = 80, $ssl = false)
-	// public function __construct($host = 'localhost2', $port = 80, $ssl = false)
-
-	public function __construct($host = '160.16.57.194', $port = 8000, $ssl = false)
+	public function __construct($host, $port, $ssl = false)
     {
         ob_implicit_flush(true);
 		$this->ssl = $ssl;

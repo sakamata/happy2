@@ -7,9 +7,8 @@
 フレームワークルートURL(暫定)
 http://localhost/happy2/web/
 
-
 web-socket起動コマンド
-ApacheのShellで以下のコマンドで起動させる
+Shellで以下のファイルをコマンドで起動させるか、サーバー内でデーモンで可動させる
 
 php htdocs/happy2/websocket-server/server.php
 
@@ -22,6 +21,20 @@ http://localhost/happy2/web/index.php/
 ***ToDo***
 コンソールlogエラー文言でソース検索し原因究明
 http headerが無いためか？
+
+--------------------------------------------------------------
+
+Happy2アプリの環境変数類---------------------------------------
+環境変数はwev公開フォルダの兄弟フォルダに hidden を設け、その中に
+info.php にて以下の様に変数を設定する。
+
+$hostName = 'hoge.com';		// ドメインを指定 開発環境では'127.0.0.1'
+$permitDomain = 'localhost';	// websocket $server->setAllowedOrigin($permitDomain) にて使用、基本はドメイン、開発環境では'localhost'と指定
+
+$wsPort = 80; //websocket通信に使用するPort番号を指定
+$pass = 'hoge'; //databaseのpasswordを指定
+$dsn = 'mysql:dbname=happy2;host=localhost'; // database PDOでのdsn設定
+$user = 'root';	//databaseのログインユーザー名
 
 --------------------------------------------------------------
 
@@ -186,6 +199,17 @@ HogeController内 generateCsrfTokenについて
 			'B_token' => $this->generateCsrfToken('fuga/fugaBBB'),
 		));
 
+HogeController内 rerutn $this->render() について
+
+	return $this->render(array(
+		'usName' => $usName,
+		'usId' => $usId,
+		'usImg' => $usImg,
+		'errors' => $errors,
+		'_token' => $this->generateCsrfToken('account/editProfile'),
+	), 'editProfile');	// ←この引数はViewに使用するfile名がHogeControllerの名称Hogeと異なる場合に指定
+
+
 
 Viewファイル内 renderメソッドについて
 view中にif,foreach等でさらに別ファイルでrender処理を行う際は、
@@ -231,3 +255,15 @@ http://stackoverflow.com/questions/5129624/convert-js-date-time-to-mysql-datetim
 
 画面サイズに合わせて高さを指定する3つの方法
 http://weboook.blog22.fc2.com/blog-entry-411.html
+
+PHPでGDライブラリを使って画像リサイズ（サムネイル画像を作る）をやってみる
+http://unskilled.site/php%E3%81%A7gd%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%A6%E7%94%BB%E5%83%8F%E3%83%AA%E3%82%B5%E3%82%A4%E3%82%BA%EF%BC%88%E3%82%B5%E3%83%A0%E3%83%8D%E3%82%A4/
+
+Sound
+無料効果音で遊ぼう！
+http://taira-komori.jpn.org/index.html
+魔王魂
+http://maoudamashii.jokersounds.com/
+
+css3 Button Generator
+http://css3button.net/

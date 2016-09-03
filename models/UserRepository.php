@@ -7,7 +7,7 @@ class UserRepository extends DbRepository
 	{
 		$usPs = $this->hashPassword($usPs);
 		$now = new DateTime();
-		$img =  "dummy.png";
+		$img =  "default/dummy.png";
 		$nowPt = AdminSettingRepository::userDefaultPoint;
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$host = gethostbyaddr($ip);
@@ -133,6 +133,26 @@ class UserRepository extends DbRepository
 		";
 
 		return $this->fetchAll($sql, array(':usId' => $usId));
+	}
+
+	public function profileEdit($usId, $usName, $usImg)
+	{
+		if ($usId == '') {	// nullだとデータ全替わりになる、怖い！
+			return;
+		}
+
+		$sql = "
+			UPDATE tbus SET
+				usName = :usName,
+				usImg = :usImg
+			WHERE usId = :usId
+		";
+
+		$stmt = $this->execute($sql, array(
+			':usId' => $usId,
+			':usName' => $usName,
+			':usImg' => $usImg,
+		));
 	}
 
 }

@@ -13,21 +13,16 @@
 	href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="<?php echo $base_url; ?>/../css/style.css">
 	<link href="<?php echo $base_url; ?>/../css/bootstrap.min.css" rel="stylesheet">
-
-	<script type="text/javascript">
-		var statuses;
-	</script>
-
 </head>
 <body>
 	<div id="header">
-		<h1><a href="<?php echo $base_url; ?>/">Happy</a></h1>
+		<h1><a href="<?php echo $base_url; ?>">Happy</a></h1>
 		<div id="header_menu">
 
 <?php if($session->isAuthenticated()): ?>
-				<a href="<?php echo $base_url; ?>/account/profile">編集</a>
-				<a href="">ヘルプ</a>
-				<a href="<?php echo $base_url; ?>/account/signout">ログアウト</a>
+				<a href="<?php echo $base_url; ?>/account/editProfile">編集 </a>
+				<!-- <a href="">ヘルプ</a> -->
+				<a href="<?php echo $base_url; ?>/account/signout"> ログアウト</a>
 <?php else: ?>
 				<a href="<?php echo $base_url; ?>/account/signin">ログイン</a>
 				<a href="<?php echo $base_url; ?>/account/signup">アカウント登録</a>
@@ -48,45 +43,30 @@
 	</div>
 
 	<script>
+	var statuses;
+	var host = '<?php echo $_SERVER["HTTP_HOST"]; ?>';
+	switch (host) {
+		case 'localhost':
+			wsHostPort = 'ws://127.0.0.1:80/happy2';
+			break;
+		case '160.16.57.194':
+			wsHostPort = 'ws://160.16.57.194:8000/happy2';
+			break;
+		case 'happy-project.org':
+			wsHostPort = 'ws://happy-project.org:8000/happy2';
+			break;
+		default:
+			wsHostPort = 'ws://happy-project.org:8000/happy2';
+	}
+	socket = new WebSocket(wsHostPort);
+
 	jQuery(function($) {
-		var socket;
-		// if ( $.browser.mozilla ){
-		// 	socket = new MozWebSocket('ws://127.0.0.1:80/echo');
-		// }else{
-		// 	socket = new WebSocket('ws://127.0.0.1:80/echo');
-		// }
-
-		var host = '<?php echo $_SERVER["HTTP_HOST"]; ?>';
-
-		switch (host) {
-			case 'localhost':
-				var port = '80';
-				var host = '127.0.0.1';
-				break;
-			case '160.16.57.194':
-				var port = '8000';
-				break;
-			case 'happy-project.org':
-				var port = '8000';
-				break;
-			default:
-				var port = '80';
-		}
-
-		var wsHostPort = 'ws://' + host + ':' + port + '/happy2';
-		socket = new WebSocket(wsHostPort);
-
-		// 以下はXAMPP環境で可動を確認
-		// socket = new WebSocket('ws://127.0.0.1:80/happy2');
-
-		// 以下は本番環境ドメイン設定無し状態で可動確認
-		// socket = new WebSocket('ws://160.16.57.194:8000/happy2');
-
+		// socket  グローバル変数
 		socket.onopen = function(msg){
-			$('#wsStatus').text('online');
+			$('#wsStatus').html('通知:<b>ON</b>');
 		};
 		socket.onclose = function(msg){
-			$('#wsStatus').text('offline');
+			$('#wsStatus').html('通知:<b>OFF</b>');
 		};
 
 		// 受信したメッセージの加工とバルーン表示
@@ -103,10 +83,10 @@
 				clickGraph ('otherClicks', otherPercents);
 
 			// 自分宛以外
-			} else {
+			} else if (msg.sendUserNo != myUserNo) {
 				// 自分宛以外は全て簡易通知
 				toOhterNewsPop(msg);
-
+			} else {
 				// 自分がクリックした場合
 				if (msg.sendUserNo == myUserNo) {
 					var otherPercents = ReplaceOtherClickInfo(msg);
@@ -153,9 +133,9 @@
 			'heigth': '30px',
 			'margin-right': 'auto',
 			'margin-left': 'auto',
-			'background':'-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #fcfcfc), color-stop(1, #cccccc))',
-			'background':'linear-gradient(top, #fcfcfc 5%, #cccccc 100%)',
-			'background':'-webkit-linear-gradient(top, #fcfcfc 5%, #cccccc 100%)',
+			// 'background':'-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #fcfcfc), color-stop(1, #cccccc))',
+			// 'background':'linear-gradient(top, #fcfcfc 5%, #cccccc 100%)',
+			// 'background':'-webkit-linear-gradient(top, #fcfcfc 5%, #cccccc 100%)',
 			'background-color':'#fcfcfc',
 			'border-radius':'5px',
 			'border':'1px solid #ccc',
@@ -191,7 +171,11 @@
 				});
 			});
 		});
-		(new Audio(window.newsPopOther)).play();
+		if (mess.sendUserNo == mess.receiveNo) {
+			(new Audio(window.clkSoundMy)).play();
+		} else {
+			(new Audio(window.newsPopOther)).play();
+		}
 	}
 
 
@@ -207,12 +191,12 @@
 			'margin-right': 'auto',
 			'margin-left': 'auto',
 			'top': '10px',
-			'background':'-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffec64), color-stop(1, #ffab23))',
-			'background':'linear-gradient(top, #ffec64 5%, #ffab23 100%)',
-			'background':'-webkit-linear-gradient(top, #ffec64 5%, #ffab23 100%)',
+			// 'background':'-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffec64), color-stop(1, #ffab23))',
+			// 'background':'linear-gradient(top, #ffec64 5%, #ffab23 100%)',
+			// 'background':'-webkit-linear-gradient(top, #ffec64 5%, #ffab23 100%)',
 			'background-color':'#ffec64',
 			'border-radius':'12px',
-			'border':'1px solid #ffaa22',
+			'border':'2px solid #ffaa22',
 			'cursor':'pointer',
 			'color':'#333',
 			'padding':'15px',
