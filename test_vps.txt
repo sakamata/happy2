@@ -1,4 +1,0 @@
-test
-from surface commit test
-さくらVPSからのテキスト追加
-test ローカル環境で編集
