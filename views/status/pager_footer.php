@@ -33,4 +33,7 @@ if ($userCount !== 0) {
 <?php endif; ?>
 
 	</div><!-- pager -->
+	<p class="lead text-center">
+		<a href="http://happy-project.org" target="_blank">Happy-Project.org</a>
+	</p>
 </div>
