@@ -191,7 +191,7 @@ class StatusRepository extends DbRepository
 			LEFT JOIN(
 				SELECT usNo, followingNo
 					FROM tbfollow
-					WHERE followingNo = 10
+					WHERE followingNo = :usNo
 			)
 			AS ifFollower
 			ON master.usNo = ifFollower.usNo
@@ -284,7 +284,7 @@ class StatusRepository extends DbRepository
 			LEFT JOIN(
 				SELECT usNo, followingNo
 					FROM tbfollow
-					WHERE followingNo = 10
+					WHERE followingNo = :usNo
 			)
 			AS ifFollower
 			ON master.usNo = ifFollower.usNo
@@ -386,7 +386,7 @@ class StatusRepository extends DbRepository
 			LEFT JOIN(
 				SELECT usNo, followingNo
 					FROM tbfollow
-					WHERE followingNo = 10
+					WHERE followingNo = :usNo
 			)
 			AS ifFollower
 			ON master.usNo = ifFollower.usNo
