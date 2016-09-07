@@ -86,6 +86,7 @@ class AccountController extends Controller
 	}
 
 
+	//プロフィール編集画面表示
 	public function editProfileAction()
 	{
 		$user = $this->session->get('user');
@@ -163,6 +164,8 @@ class AccountController extends Controller
 			}
 
 			if ($imageFile['tmp_name'] && count($errors) === 0) {
+				// DBに入れる画像Pathを発行
+				$usImgPath = $user['usId'] . '.jpg';
 				// 画像を一時保存
 				$path_name = '../web/user/img/'. $user['usId']. $extension;
 				$check = move_uploaded_file($imageFile['tmp_name'], $path_name);
@@ -225,19 +228,26 @@ class AccountController extends Controller
 
 					//圧縮率を設定して保存
 					imagejpeg($thumbnail, '../web/user/img/' . $user['usId'] . '.jpg', 60);
+					sleep(2);
 					imagedestroy($thumbnail);
 					imagedestroy($baseImage);
 				} // error count 0
 			}
+		// 画像がセットされていない場合
+		} else {
+			// 画像Pathは従来のまま
+			$usImgPath = $user['usImg'];
+			$imageFile = '';
 		}
-		$user = $this->db_manager->get('User')->fetchByUserName($usId);
-		$this->session->set('user', $user);
 
-		if (count($errors) === 0) {
-			$this->db_manager->get('User')->profileEdit($usId, $usName, $usId.'.jpg');
-			sleep(2);
-			return $this->redirect('/');
+		// プロフィール編集があった場合はDBに名前と画像Pathを収納
+		// エラーが無い、かつ　名前の変更か、画像がセットされているか？
+		if (count($errors) === 0 && ( $user['usName'] != $usName || $imageFile)) {
+			$this->db_manager->get('User')->profileEdit($usId, $usName, $usImgPath);
+			$user = $this->db_manager->get('User')->fetchByUserName($usId);
+			$this->session->set('user', $user);
 		}
+		return $this->redirect('/');
 
 		return $this->render(array(
 			'user' => $user,
