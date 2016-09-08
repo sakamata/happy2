@@ -289,4 +289,199 @@ var clickAction = function(action, usNo, usId, usName) {
 
 setInterval( "clickAction('intervalPost')" , <?php echo $postSecond; ?> *1000 );
 
+
+// from layout.php
+var statuses;
+var host = '<?php echo $_SERVER["HTTP_HOST"]; ?>';
+// switch (host) {
+// 	case 'localhost':
+// 		wsHostPort = 'ws://127.0.0.1:80/happy2';
+// 		break;
+// 	case '160.16.57.194':
+// 		wsHostPort = 'ws://160.16.57.194:8000/happy2';
+// 		break;
+// 	case 'happy-project.org':
+// 		wsHostPort = 'ws://happy-project.org:8000/happy2';
+// 		break;
+// 	default:
+// 		wsHostPort = 'ws://happy-project.org:8000/happy2';
+// }
+// socket = new WebSocket(wsHostPort);
+
+socket = new WebSocket('ws://<?php echo $hostName; ?>:<?php echo $wsPort; ?>/happy2');
+
+console.log(socket);
+console.log(socket.readyState);
+
+jQuery(function($) {
+	// socket  グローバル変数
+	socket.onopen = function(msg){
+		$('#wsStatus').html('通知:<b>ON</b>');
+	};
+	socket.onclose = function(msg){
+		$('#wsStatus').html('通知:<b>OFF</b>');
+	};
+
+	// 受信したメッセージの加工とバルーン表示
+	socket.onmessage = function(msg){
+		var msg = msg.data;
+		var msg = JSON.parse(msg);
+
+		// 自分宛の場合
+		if(msg.receiveNo == myUserNo && msg.sendUserNo != myUserNo) {
+			// 受信通知
+			toMeNewsPop(msg);
+			// グラフとクリック数の書き換え
+			var otherPercents = ReplaceOtherClickInfo(msg);
+			clickGraph ('otherClicks', otherPercents);
+
+		// 自分宛以外
+		} else if (msg.sendUserNo != myUserNo) {
+			// 自分宛以外は全て簡易通知
+			toOhterNewsPop(msg);
+		} else {
+			// 自分がクリックした場合
+			if (msg.sendUserNo == myUserNo) {
+				var otherPercents = ReplaceOtherClickInfo(msg);
+				clickGraph ('otherClicks', otherPercents);
+
+			// 表示中のユーザーか？
+			// ***ToDo*** 表示ユーザーが無い場合（statuses=nullページ）での処理
+			} else {
+				for (var i = 0; i < Object.keys(statuses).length; i++) {
+					if (msg.receiveNo === statuses[i].usNo || msg.sendUserNo === statuses[i].usNo) {
+						var otherPercents = ReplaceOtherClickInfo(msg);
+						clickGraph ('otherClicks', otherPercents);
+					}
+				}
+			}
+		}
+	};
+});
+
+
+// 画面下にmassageスペースを固定
+$(document).ready(function () {
+	hsize = $(window).height();
+	hsize = hsize - 50;
+	$("#footer").css("top", hsize + "px");
+});
+$(window).resize(function () {
+	hsize = $(window).height();
+	hsize = hsize - 50;
+	$("#footer").css("top", hsize + "px");
+});
+
+// 簡易クリック受信通知
+function toOhterNewsPop(mess){
+	var li = '<li><b>' + mess.sendUserName + '</b>から<b>' + mess.receiveUserName + '</b>へクリックされました</li>';
+	var jqdiv = $('<div>')
+	.appendTo($('#otherMsg'))
+	.html(li)
+	.css({
+		'position': 'fixed',
+		'left': '0',
+		'bottom': '0',
+		'z-index': '15',
+		'heigth': '30px',
+		'margin-right': 'auto',
+		'margin-left': 'auto',
+		// 'background':'-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #fcfcfc), color-stop(1, #cccccc))',
+		// 'background':'linear-gradient(top, #fcfcfc 5%, #cccccc 100%)',
+		// 'background':'-webkit-linear-gradient(top, #fcfcfc 5%, #cccccc 100%)',
+		'background-color':'#fcfcfc',
+		'border-radius':'5px',
+		'border':'1px solid #ccc',
+		'cursor':'pointer',
+		'color':'#888',
+		'padding':'15px',
+		'text-decoration':'none',
+		'list-style-type': 'none'
+	})
+	.fadeIn(500)
+	.bind('click' , function(){
+		$(this).stop(true,false)
+		.fadeOut(500,function(){
+			jqdiv.remove();
+			// next();
+		});
+	});
+
+	$('<div>').queue(function(next){
+		jqdiv
+		.animate({left: '5%'},1000)
+		.delay(500)
+		.animate({left: '30%'},2000)
+		.fadeOut(1000,function(){
+			jqdiv.remove();
+			next();
+		})
+		.bind('click' , function(){
+			$(this).stop(true,false)
+			.fadeOut(500,function(){
+				jqdiv.remove();
+				next();
+			});
+		});
+	});
+	if (mess.sendUserNo == mess.receiveNo) {
+		(new Audio(window.clkSoundMy)).play();
+	} else {
+		(new Audio(window.newsPopOther)).play();
+	}
+}
+
+
+// 自分へのクリックメッセージを表示
+function toMeNewsPop(mess){
+	var li = '<li><b>' + mess.sendUserName + '</b>から<b>' + mess.receiveUserName + '</b>へクリックされました</li>';
+
+	var jqdiv = $('<div>')
+	.appendTo($('#msg'))
+	.html(li)
+	.css({
+		'position': 'fixed',
+		'margin-right': 'auto',
+		'margin-left': 'auto',
+		'top': '10px',
+		// 'background':'-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #ffec64), color-stop(1, #ffab23))',
+		// 'background':'linear-gradient(top, #ffec64 5%, #ffab23 100%)',
+		// 'background':'-webkit-linear-gradient(top, #ffec64 5%, #ffab23 100%)',
+		'background-color':'#ffec64',
+		'border-radius':'12px',
+		'border':'2px solid #ffaa22',
+		'cursor':'pointer',
+		'color':'#333',
+		'padding':'15px',
+		'text-decoration':'none',
+		'list-style-type': 'none'
+	})
+	.fadeIn(500)
+	.bind('click' , function(){
+		$(this).stop(true,false)
+		.fadeOut(500,function(){
+			jqdiv.remove();
+			// next();
+		});
+	});
+
+	$('<div>').queue(function(next){
+		jqdiv
+		.animate({top: '200px'},1500)
+		.delay(1000)
+		.fadeOut(500,function(){
+			jqdiv.remove();
+			next();
+		})
+		.bind('click' , function(){
+			$(this).stop(true,false)
+			.fadeOut(500,function(){
+				jqdiv.remove();
+				next();
+			});
+		});
+	});
+	(new Audio(window.newsPopToMe)).play();
+}
+
 </script>
