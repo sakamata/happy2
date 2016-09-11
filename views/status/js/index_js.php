@@ -293,71 +293,59 @@ setInterval( "clickAction('intervalPost')" , <?php echo $postSecond; ?> *1000 );
 // from layout.php
 var statuses;
 var host = '<?php echo $_SERVER["HTTP_HOST"]; ?>';
-// switch (host) {
-// 	case 'localhost':
-// 		wsHostPort = 'ws://127.0.0.1:80/happy2';
-// 		break;
-// 	case '160.16.57.194':
-// 		wsHostPort = 'ws://160.16.57.194:8000/happy2';
-// 		break;
-// 	case 'happy-project.org':
-// 		wsHostPort = 'ws://happy-project.org:8000/happy2';
-// 		break;
-// 	default:
-// 		wsHostPort = 'ws://happy-project.org:8000/happy2';
-// }
-// socket = new WebSocket(wsHostPort);
 
 socket = new WebSocket('ws://<?php echo $hostName; ?>:<?php echo $wsPort; ?>/happy2');
+
+socket.onclose = function(msg){
+	$('#wsStatus').html('通知:<b>OFF</b>');
+};
+socket.onerror = function(msg){
+	$('#wsStatus').html('通知:<b>ERROR</b>');
+};
 
 console.log(socket);
 console.log(socket.readyState);
 
-jQuery(function($) {
-	// socket  グローバル変数
-	socket.onopen = function(msg){
-		$('#wsStatus').html('通知:<b>ON</b>');
-	};
-	socket.onclose = function(msg){
-		$('#wsStatus').html('通知:<b>OFF</b>');
-	};
+socket.onopen = function(msg){
+	$('#wsStatus').html('通知:<b>ON</b>');
+	jQuery(function($) {
+		// 受信したメッセージの加工とバルーン表示
+		socket.onmessage = function(msg){
+			var msg = msg.data;
+			var msg = JSON.parse(msg);
 
-	// 受信したメッセージの加工とバルーン表示
-	socket.onmessage = function(msg){
-		var msg = msg.data;
-		var msg = JSON.parse(msg);
-
-		// 自分宛の場合
-		if(msg.receiveNo == myUserNo && msg.sendUserNo != myUserNo) {
-			// 受信通知
-			toMeNewsPop(msg);
-			// グラフとクリック数の書き換え
-			var otherPercents = ReplaceOtherClickInfo(msg);
-			clickGraph ('otherClicks', otherPercents);
-
-		// 自分宛以外
-		} else if (msg.sendUserNo != myUserNo) {
-			// 自分宛以外は全て簡易通知
-			toOhterNewsPop(msg);
-		} else {
-			// 自分がクリックした場合
-			if (msg.sendUserNo == myUserNo) {
+			// 自分宛の場合
+			if(msg.receiveNo == myUserNo && msg.sendUserNo != myUserNo) {
+				// 受信通知
+				toMeNewsPop(msg);
+				// グラフとクリック数の書き換え
 				var otherPercents = ReplaceOtherClickInfo(msg);
 				clickGraph ('otherClicks', otherPercents);
 
-			// 表示中のユーザーか？
-			// ***ToDo*** 表示ユーザーが無い場合（statuses=nullページ）での処理
+			// 自分宛以外
+			} else if (msg.sendUserNo != myUserNo) {
+				// 自分宛以外は全て簡易通知
+				toOhterNewsPop(msg);
 			} else {
-				for (var i = 0; i < Object.keys(statuses).length; i++) {
-					if (msg.receiveNo === statuses[i].usNo || msg.sendUserNo === statuses[i].usNo) {
-						var otherPercents = ReplaceOtherClickInfo(msg);
-						clickGraph ('otherClicks', otherPercents);
+				// 自分がクリックした場合
+				if (msg.sendUserNo == myUserNo) {
+					var otherPercents = ReplaceOtherClickInfo(msg);
+					clickGraph ('otherClicks', otherPercents);
+
+				// 表示中のユーザーか？
+				// ***ToDo*** 表示ユーザーが無い場合（statuses=nullページ）での処理
+				} else {
+					for (var i = 0; i < Object.keys(statuses).length; i++) {
+						if (msg.receiveNo === statuses[i].usNo || msg.sendUserNo === statuses[i].usNo) {
+							var otherPercents = ReplaceOtherClickInfo(msg);
+							clickGraph ('otherClicks', otherPercents);
+						}
 					}
 				}
 			}
-		}
-	};
-});
+		};
+	});
+};
 
 
 // 画面下にmassageスペースを固定
