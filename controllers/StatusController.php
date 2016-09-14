@@ -69,6 +69,14 @@ class StatusController extends Controller
 			$statuses = $this->pointRounder($statuses);
 		}
 
+		// Cookieの値による画面表示切り替え
+		$viewType = null;
+		if (isset($_COOKIE["viewType"])) {
+			if (htmlspecialchars($_COOKIE["viewType"]) == 'small') {
+				$viewType = 'index_small';
+			}
+		}
+
 		return $this->render(array(
 			'hostName' => $hostName,
 			'wsPort' => $wsPort,
@@ -90,7 +98,7 @@ class StatusController extends Controller
 			'usersNullMessage' => $usersNullMessage,
 			'usersArrayMessage' => $usersArrayMessage,
 			'calcCount' => $this->calcCount,
-		));
+		),$viewType);
 	}
 
 	// 自分のアカウントを元に、自分に関する情報を生成

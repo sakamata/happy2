@@ -79,8 +79,12 @@ function clickGraph (area, argumentsPercents) {
 		bar[i].fillRect(0, height*0.1, width*percent[i] / 100, height*0.8);
 		percent[i] = percent[i] + "%";
 
+		var viewType = $.cookie("viewType");
 		if (area === 'myClicks') {
 			percentText[i].font =  "bold 20px 'Meiryo'";
+			if (viewType === 'small') {
+				percentText[i].font =  "bold 12px 'Meiryo'";
+			}
 		} else if (area === 'otherClicks') {
 			percentText[i].font =  "bold 12px 'Meiryo'";
 		}

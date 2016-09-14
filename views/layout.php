@@ -5,6 +5,7 @@
 	<script type="text/javascript"
 		src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="<?php echo $base_url; ?>/../js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="<?php echo $base_url; ?>/../js/jquery.cookie.js"></script>
 	<title>Happy<?php if (isset($title)):echo "-" . $this->escape($title) ; endif; ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta charset="utf-8">
@@ -12,6 +13,7 @@
 	<link type="text/css" rel="stylesheet"
 	href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="<?php echo $base_url; ?>/../css/style.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="<?php echo $base_url; ?>/../css/style_small.css">
 	<link href="<?php echo $base_url; ?>/../css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -43,7 +45,12 @@
 	</div>
 
 	<script>
-	// for index_js.php
+	// Cookie無しでかつ画面幅800以下ならスマホ用画面 small に設定
+	var screenWidth = screen.width;
+	if (screenWidth <= 800 && !$.cookie("viewType")) {
+		$.cookie("viewType", "small", { expires: 30, path: '/' });
+	}
+
 	</script>
 </body>
 </html>

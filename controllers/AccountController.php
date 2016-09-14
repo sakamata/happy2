@@ -85,7 +85,6 @@ class AccountController extends Controller
 		), 'signup');
 	}
 
-
 	//プロフィール編集画面表示
 	public function editProfileAction()
 	{
@@ -247,6 +246,14 @@ class AccountController extends Controller
 			$user = $this->db_manager->get('User')->fetchByUserName($usId);
 			$this->session->set('user', $user);
 		}
+
+		// 画面表示設定をCookieに保存
+		$viewType = $this->request->getPost('viewType');
+		if ($viewType === 'large' || $viewType === 'small') {
+			setcookie("viewType", $viewType, time() + 60*60*24*30,'/');
+		}
+
+		// ToDo Cookieの値でリダイレクト先切り替え
 		return $this->redirect('/');
 
 		return $this->render(array(

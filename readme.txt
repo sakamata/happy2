@@ -207,7 +207,7 @@ HogeController内 rerutn $this->render() について
 		'usImg' => $usImg,
 		'errors' => $errors,
 		'_token' => $this->generateCsrfToken('account/editProfile'),
-	), 'editProfile');	// ←この引数はViewに使用するfile名がHogeControllerの名称Hogeと異なる場合に指定
+	), 'editProfile');	// ←この引数は通常はnull, HogeControllerの名称Hogeと異なる場合に設定, Viewに使用するfile名を指定
 
 
 

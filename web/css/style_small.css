@@ -1,0 +1,304 @@
+@charset "UTF-8";
+
+.mainUserArea_small {
+	background-color: #e2fee5;
+	padding:5px;
+	border-radius: 10px;
+	margin-bottom: 5px;
+
+}
+.mainUserStatus_small {
+	margin: 0 auto;
+	width: 320px;
+	height: auto;
+	min-height:180px;
+	height:auto !important;
+	height:180px;
+}
+
+.mainUserInfo_small {
+	float: left;
+	width: 155px;
+	height: 170px;
+	padding: 5px;
+	border-radius: 10px;
+	margin-right: 5px;
+	background-color: #fff;
+}
+
+.viewUsers_small li {
+	display: inline-block;
+}
+
+
+/* main_user_small */
+
+.MainUserInfoArea_small {
+	height: auto;
+	float: right;
+	word-wrap: break-word;
+}
+
+.userImageArea_small {
+	margin: 5px 5px 0 5px;
+
+}
+
+.userImageArea_small {
+	float: left;
+	text-align: center;
+}
+
+.userImageArea_small p {
+	margin-bottom: 0px;
+	line-height: 1em;
+}
+
+.userImageArea_small img {
+	border-radius: 5px;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+/* userBallon */
+
+.userBalloon_small {
+	float: right;
+	height: auto;
+	font-size: 1.2em;
+	width: 60px;
+	height: 28px;
+	margin: 5px 5px 5px 0;
+	border-radius: 8px;
+	border: 2px solid #888;
+	background-color: #fff;
+}
+
+#headerUserBalloon_small {
+	float: left;
+	height: auto;
+	font-size: 1.2em;
+	width: 60px;
+	height: 28px;
+	border-radius: 8px;
+	border: 2px solid #3668c4;
+	background-color: #7096de;
+}
+
+.userBalloon_small p, #headerUserBalloon_small p {
+	text-align: center;
+	margin: 0px;
+	padding: 0px;
+}
+
+#headerUserBalloon_small p {
+	color: #fff;
+}
+
+
+/* USER NAME and ID */
+
+.user_no {
+	text-align: right;
+	padding-right: 5px;
+	font-size: 1em;
+}
+
+.user_id  {
+	height: 40px;
+	text-align: left;
+	font-size: 1em;
+	word-wrap: break-word;
+}
+
+.user_name {
+	height: 40px;
+	text-align: center;
+	color: #000;
+	font-weight: bold;
+	word-wrap: break-word;
+}
+
+.mainUser_name {
+	height: 40px;
+	text-align: center;
+	font-size: 1.2em;
+	color: #000;
+	font-weight: bold;
+	word-wrap: break-word;
+}
+
+
+/* Happy!Button */
+
+.userInfoBottom_small {
+	text-align: center;
+}
+
+.userInfoBottom_small p {
+	margin-bottom: 0px;
+	padding: 0 5px 5px 5px;
+}
+
+.userButton_small {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 1.4em;
+	font-weight: bold;
+	text-align: center;
+	margin-right : auto;
+	margin-left : auto;
+	width: 150px;
+}
+
+.mainUserButton_small {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 1.4em;
+	font-weight: bold;
+	text-align: center;
+	margin-right : auto;
+	margin-left : auto;
+	width: 150px;
+	float: left;
+}
+
+.clickAction_small, .myClickAction_small {
+	width: 146px;
+	height: 110px;
+	border-radius: 10px;
+	line-height: 1.2em;
+	color: #fff;
+	font-size: 1em;
+	text-shadow: 2px 2px 1px rgba(0,0,0,0.2);
+	outline:none;
+	padding: 0 5px;
+	margin: 0 2px 2px 2px;
+}
+
+.clickAction_small {
+	background-color: #f7cb24;
+	-moz-box-shadow:
+		0px 1px 3px rgba(005,005,005,0.5),
+		inset 0px -1px 0px rgba(255,255,255,0.7);
+	-webkit-box-shadow:
+		0px 1px 3px rgba(005,005,005,0.5),
+		inset 0px -1px 0px rgba(255,255,255,0.7);
+	box-shadow:
+		0px 1px 3px rgba(005,005,005,0.5),
+		inset 0px -1px 0px rgba(255,255,255,0.7);
+}
+
+.clickAction:active {
+	background-color: #fcffc6;
+}
+
+.myClickAction_small {
+	background-color: #7096de;
+	-moz-box-shadow:
+		0px 1px 3px rgba(005,005,005,0.5),
+		inset 0px -1px 0px rgba(255,255,255,0.7);
+	-webkit-box-shadow:
+		0px 1px 3px rgba(005,005,005,0.5),
+		inset 0px -1px 0px rgba(255,255,255,0.7);
+	box-shadow:
+		0px 1px 3px rgba(005,005,005,0.5),
+		inset 0px -1px 0px rgba(255,255,255,0.7);
+}
+
+.myClickAction:active {
+	background-color: #89a8e7;
+}
+
+.happy_button_word {
+	margin-bottom: 5px;
+}
+
+
+/* Users */
+
+.viewUsers_small {
+	width: 100%;
+	text-align: center;
+	padding: 10px 0;
+	background-color: #fff;
+	border-radius: 10px;
+	border-bottom: 2px solid #CCCCCC;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 5px;
+	min-height:300px;
+	height:auto !important;
+	height:300px;
+}
+
+.mainStatus_small {
+	float: left;
+	list-style: none;
+	width: 150px;
+	margin: 0 0 8px 5px;
+	border-radius: 10px;
+	background-color: #b2fcc4;
+	min-height:220px;
+	height:auto !important;
+	height:220px;
+}
+
+.countNumber_small {
+	color: #333;
+	font-size: 1.3em;
+	font-weight: bold;
+}
+
+
+/* ○○px 以下の時の指定～*/
+@media only screen and (max-width: 320px) {
+
+}
+
+/* ○○px 以上の時の指定～*/
+@media only screen and (min-width: 360px) {
+	.viewUsers_small {
+		padding-left: 25px;
+	}
+}
+@media only screen and (min-width: 375px) {
+	.viewUsers_small {
+		padding-left: 30px;
+	}
+}
+@media only screen and (min-width: 414px) {
+	.viewUsers_small {
+		padding-left: 50px;
+	}
+}
+@media only screen and (min-width: 480px) {
+	.viewUsers_small {
+		padding-left: 6px;
+	}
+}
+@media only screen and (min-width: 667px) {
+	.viewUsers_small {
+		padding-left: 20px;
+	}
+}
+@media only screen and (min-width: 720px) {
+	.viewUsers_small {
+		padding-left: 45px;
+	}
+}
+@media only screen and (min-width: 768px) {
+	.viewUsers_small {
+		padding-left: 65px;
+	}
+}
+@media only screen and (min-width: 1024px) {
+	.viewUsers_small {
+		padding-left: 15px;
+	}
+}
+@media only screen and (min-width: 1200px) {
+	.viewUsers_small {
+		padding-left: 38px;
+	}
+}

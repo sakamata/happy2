@@ -10,6 +10,7 @@
 	<?php if (isset($errors) && count($errors) > 0): ?>
 	<?php echo $this->render('errors', array('errors' => $errors)); ?>
 	<?php endif; ?>
+
 	<div class="form-group">
 		<label class="col-sm-2 control-label">ユーザーID</label>
 		<div class="col-sm-10">
@@ -39,11 +40,34 @@
 		</div>
 	</div>
 
-<div class="form-group">
-	<div class="col-sm-offset-2 col-sm-10">
-		<input type="submit" class="btn btn-warning btn-lg" value="変更">
+	<div class="form-group">
+		<label class="col-sm-2 control-label">表示</label>
+		<div class="col-sm-4">
+			<label class="radio-inline">
+				<input type="radio" name="viewType" value="large"
+				<?php
+				if (!isset($_COOKIE["viewType"])) {
+					print 'checked="checked"';
+				} else {
+					if($_COOKIE["viewType"] === "large") {
+						print 'checked="checked"';
+					}
+				}
+				?>>通常（PC向き）
+			</label>
+			<label class="radio-inline">
+				<input type="radio" name="viewType" value="small" <?php
+				if (isset($_COOKIE["viewType"])) { $_COOKIE["viewType"] === "small" ? print 'checked="checked"' : "";};?>>縮小（スマホ向き）
+			</label>
+		</div>
 	</div>
-</div>
+
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<input type="submit" class="btn btn-warning btn-lg" value="変更">
+		</div>
+	</div>
+
 </form>
 </div><!-- row -->
 </div><!-- container -->
