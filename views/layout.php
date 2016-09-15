@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script type="text/javascript"
-		src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
+		src="//code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="<?php echo $base_url; ?>/../js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="<?php echo $base_url; ?>/../js/jquery.cookie.js"></script>
 	<title>Happy<?php if (isset($title)):echo "-" . $this->escape($title) ; endif; ?></title>
@@ -11,7 +11,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" content="ja">
 	<link type="text/css" rel="stylesheet"
-	href="http://code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
+	href="//code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="<?php echo $base_url; ?>/../css/style.css">
 	<link rel="stylesheet" type="text/css" media="screen" href="<?php echo $base_url; ?>/../css/style_small.css">
 	<link href="<?php echo $base_url; ?>/../css/bootstrap.min.css" rel="stylesheet">

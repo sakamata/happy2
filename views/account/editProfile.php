@@ -12,28 +12,28 @@
 	<?php endif; ?>
 
 	<div class="form-group">
-		<label class="col-sm-2 control-label">ユーザーID</label>
-		<div class="col-sm-10">
+		<label class="col-sm-3 control-label">ユーザーID</label>
+		<div class="col-sm-9">
 			<p class="lead"><?php echo $this->escape($user['usId']); ?></p>
 		</div>
 	</div>
 
 	<div class="form-group">
-		<label class="col-sm-2 control-label">名前</label>
-		<div class="col-sm-4">
+		<label class="col-xs-3 col-sm-3 control-label">名前</label>
+		<div class="col-xs-12 col-sm-6 col-md-4">
 			<input type="text" name="usName" class="form-control" id="InputText" placeholder="2～16文字まで" value="<?php echo $this->escape($user['usName']); ?>">
 		</div>
 	</div>
 	<div class="form-group">
-		<label class="col-sm-2 control-label">今の画像</label>
-		<div class="col-sm-10">
+		<label class="col-sm-3 control-label">今の画像</label>
+		<div class="col-sm-9">
 			<img class="profile_img" src="<?php echo $base_url .'/../user/img/'. $user['usImg']; ?>" alt="user_photo" width="100" height="100">
 		</div>
 
 	</div>
 	<div class="form-group">
-		<label class="col-sm-2 control-label">画像変更</label>
-		<div class="col-sm-10">
+		<label class="col-sm-3 control-label">画像変更</label>
+		<div class="col-sm-9">
 			<input type='file' name='imageFile'>
 			<input type="hidden" name="imageName" value="<?php echo $this->escape($user['usImg']); ?>">
 			<p>5MBまで<br>画像形式: JPEG,GIF,PNG</p>
@@ -41,8 +41,8 @@
 	</div>
 
 	<div class="form-group">
-		<label class="col-sm-2 control-label">表示</label>
-		<div class="col-sm-4">
+		<label class="col-sm-3 control-label">表示</label>
+		<div class="col-sm-9">
 			<label class="radio-inline">
 				<input type="radio" name="viewType" value="large"
 				<?php
@@ -63,7 +63,7 @@
 	</div>
 
 	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-10">
+		<div class="col-sm-offset-3 col-sm-9">
 			<input type="submit" class="btn btn-warning btn-lg" value="変更">
 		</div>
 	</div>

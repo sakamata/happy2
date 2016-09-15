@@ -1,7 +1,7 @@
 <div class="form-group">
 	<label class="col-sm-2 control-label">ユーザーID</label>
 	<div class="col-sm-4">
-		<input type="text" name="usId" class="form-control" id="InputText" placeholder="半角英数字20文字まで" value="<?php echo $this->escape($usId); ?>">
+		<input type="text" name="usId" class="form-control" id="InputText" placeholder="半角英数字20文字まで" style="ime-mode:disabled;" value="<?php echo $this->escape($usId); ?>">
 	</div>
 </div>
 <div class="form-group">

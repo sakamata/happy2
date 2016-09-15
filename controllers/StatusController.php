@@ -80,6 +80,7 @@ class StatusController extends Controller
 		return $this->render(array(
 			'hostName' => $hostName,
 			'wsPort' => $wsPort,
+			'wsProtocol' => $wsProtocol,
 			'body' => '',
 			'_token' => $this->generateCsrfToken('status/post'),
 			'follow_token' => $this->generateCsrfToken('ajaxPost/follow'),

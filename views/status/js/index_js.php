@@ -298,7 +298,7 @@ setInterval( "clickAction('intervalPost')" , <?php echo $postSecond; ?> *1000 );
 var statuses;
 var host = '<?php echo $_SERVER["HTTP_HOST"]; ?>';
 
-socket = new WebSocket('ws://<?php echo $hostName; ?>:<?php echo $wsPort; ?>/happy2');
+socket = new WebSocket('<?php echo $wsProtocol; ?>://<?php echo $hostName; ?>:<?php echo $wsPort; ?>/happy2');
 
 socket.onclose = function(msg){
 	$('#wsStatus').html('通知:<b>OFF</b>');

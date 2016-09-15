@@ -25,16 +25,30 @@ http headerが無いためか？
 --------------------------------------------------------------
 
 Happy2アプリの環境変数類---------------------------------------
-環境変数はwev公開フォルダの兄弟フォルダに hidden を設け、その中に
+環境変数はweb公開フォルダの兄弟フォルダに hidden フォルダを設け、その中に
 info.php にて以下の様に変数を設定する。
 
-$hostName = 'hoge.com';		// ドメインを指定 開発環境では'127.0.0.1'
-$permitDomain = 'localhost';	// websocket $server->setAllowedOrigin($permitDomain) にて使用、基本はドメイン、開発環境では'localhost'と指定
-
-$wsPort = 80; //websocket通信に使用するPort番号を指定
 $pass = 'hoge'; //databaseのpasswordを指定
 $dsn = 'mysql:dbname=happy2;host=localhost'; // database PDOでのdsn設定
 $user = 'root';	//databaseのログインユーザー名
+
+$hostName = 'hoge.com';		// ドメインを指定 開発環境では'127.0.0.1'
+
+$wsPort = 80; //websocket通信に使用するPort番号を指定
+$permitDomain = 'localhost';	// websocket用 $server->setAllowedOrigin($permitDomain) にて使用、基本はドメイン、開発環境では'localhost'と指定
+$wsSSL =  true or false // サーバー側のWebSocket設定におけるSSL通信かを判断
+$wsProtocol = 'ws' or 'wss' //クライアント側のWebSocket設定におけるSSL通信かを切り替え
+
+// HTTPS通信状態かを判定
+if (filter_input(INPUT_SERVER, 'HTTPS', FILTER_VALIDATE_BOOLEAN)) {
+	/* HTTPS */
+	$wsSSL = true;
+	$wsProtocol = 'wss';
+} else {
+	/* HTTP */
+	$wsSSL = false;
+	$wsProtocol = 'ws';
+}
 
 --------------------------------------------------------------
 

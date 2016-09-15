@@ -222,4 +222,4 @@ endif;
 
 
 <?php
-	echo $this->render('status/js/index_js', array('hostName'=> $hostName, 'wsPort'=> $wsPort, 'base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'postSecond'=> $postSecond, 'clickStatus'=> $clickStatus, 'headerUser' => $headerUser, 'user' => $user,));
+	echo $this->render('status/js/index_js', array('hostName'=> $hostName, 'wsProtocol'=> $wsProtocol, 'wsPort'=> $wsPort, 'base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'postSecond'=> $postSecond, 'clickStatus'=> $clickStatus, 'headerUser' => $headerUser, 'user' => $user,));
