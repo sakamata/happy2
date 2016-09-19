@@ -13,20 +13,22 @@ require(__DIR__ . '/lib/SplClassLoader.php');
 $classLoader = new SplClassLoader('WebSocket', __DIR__ . '/lib');
 $classLoader->register();
 
-
+// require $hostName, $permitDomain, $wsPort, $wsSSL
 $infoPath = dirname(__FILE__) .'/../../../hidden/info.php';
 require $infoPath;
-$server = new \WebSocket\Server($hostName, $wsPort, false);
+
+// TEST SSL対応の為 第3引数 false を true に変更
+$server = new \WebSocket\Server($hostName, $wsPort, $wsSSL);
 
 // server settings:
-$server->setMaxClients(100);
+$server->setMaxClients(200);
 $server->setCheckOrigin(true);
 
 // 通信を許可するドメイン 複数指定可能
 $server->setAllowedOrigin($permitDomain);
 
-$server->setMaxConnectionsPerIp(100);
-$server->setMaxRequestsPerMinute(2000);
+$server->setMaxConnectionsPerIp(400);
+$server->setMaxRequestsPerMinute(4000);
 
 // Hint: Status application should not be removed as it displays usefull server informations:
 
