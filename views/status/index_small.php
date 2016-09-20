@@ -13,6 +13,10 @@ $jsonStatuses = json_encode($headAndStatuses);
 ?>
 
 <script type="text/javascript">
+// change not ssl protocol
+if (document.location.protocol==="https:")
+{location.replace('http://'+window.location.host+window.location.pathname);}
+
 var myUserNo = <?php echo $user['usNo']; ?>;
 var viewNo = 0;
 var statuses = JSON.parse('<?php echo $jsonStatuses; ?>');

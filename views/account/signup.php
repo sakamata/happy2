@@ -1,3 +1,9 @@
+<script>
+	// change ssl protocol
+	if (document.location.protocol==="http:")
+	{location.replace('https://'+window.location.host+window.location.pathname);}
+</script>
+
 <?php $this->setLayoutVar('title', 'アカウント登録') ?>
 <div class="container">
 <div class="row">
@@ -9,10 +15,11 @@
 </p>
 
 <p>現在はプレリリース中の為、登録前に以下の点をご了承ください。</p>
+<li>SSL通信を導入しました</li>
+<p>入力したパスワードは保護されます</p>
 
 <ul class="warning_list">
-	<li>入力した情報は第三者に受信される恐れがあります。</li>
-	<p>SSL通信が未導入の為、入力したパスワードや名前、ID等の情報は第三者に受信される可能性があります。</p>
+	<li>ユーザー,ID,名前,プロフィール画像,クリック記録,等の情報は登録者以外にも公開されます</li>
 	<li>現在パスワードの再設定ができません。</li>
 	<p>パスワードを忘れると再度ログインができなくなるのでご注意ください。</p>
 	<li>データがリセットされる場合があります</li>

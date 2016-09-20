@@ -1,3 +1,9 @@
+<script>
+// change not ssl protocol
+if (document.location.protocol==="https:")
+{location.replace('http://'+window.location.host+window.location.pathname);}
+</script>
+
 <?php $this->setLayoutVar('title', 'プロフィール編集') ?>
 <div class="container">
 <div class="row">
@@ -27,14 +33,14 @@
 	<div class="form-group">
 		<label class="col-sm-3 control-label">今の画像</label>
 		<div class="col-sm-9">
-			<img class="profile_img" src="<?php echo $href_base .'/user/img/'. $user['usImg']; ?>" alt="user_photo" width="100" height="100">
+			<img class="profile_img" src="<?php echo $href_base .'/user/img/'. $user['usImg']; ?>?<?php echo date(His); ?>" alt="user_photo" width="100" height="100">
 		</div>
 
 	</div>
 	<div class="form-group">
 		<label class="col-sm-3 control-label">画像変更</label>
 		<div class="col-sm-9">
-			<input type='file' name='imageFile'>
+			<input type='file' name='imageFile' accept='image/*'>
 			<input type="hidden" name="imageName" value="<?php echo $this->escape($user['usImg']); ?>">
 			<p>5MBまで<br>画像形式: JPEG,GIF,PNG</p>
 		</div>
