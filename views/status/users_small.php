@@ -5,7 +5,7 @@
 
 <li class="mainStatus_small">
 	<div class="userImageArea_small">
-		<img src="<?php echo $base_url .'/../user/img/'. $status['usImg']; ?>" alt="user_photo" width="60" height="60">
+		<img src="<?php echo $href_base .'/user/img/'. $status['usImg']; ?>" alt="user_photo" width="60" height="60">
 	</div><!-- userImageArea -->
 	<div class="userInfoArea_small">
 		<div class="userBalloon_small" id="userBalloon_<?php echo $this->escape($status['usNo']); ?>">

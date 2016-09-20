@@ -18,10 +18,10 @@ var viewNo = 0;
 var statuses = JSON.parse('<?php echo $jsonStatuses; ?>');
 
 // soundの準備
-window.clkSoundMy = "<?php echo $base_url; ?>/../sound/puyon1.mp3";
-window.clkSound = "<?php echo $base_url; ?>/../sound/touch1.mp3";
-window.newsPopToMe = "<?php echo $base_url; ?>/../sound/coin05.mp3";
-window.newsPopOther = "<?php echo $base_url; ?>/../sound/se_maoudamashii_onepoint26.mp3";
+window.clkSoundMy = "<?php echo $href_base; ?>/sound/puyon1.mp3";
+window.clkSound = "<?php echo $href_base; ?>/sound/touch1.mp3";
+window.newsPopToMe = "<?php echo $href_base; ?>/sound/coin05.mp3";
+window.newsPopOther = "<?php echo $href_base; ?>/sound/se_maoudamashii_onepoint26.mp3";
 (new Audio(window.clkSoundMy)).load();
 (new Audio(window.clkSound)).load();
 (new Audio(window.newsPopToMe)).load();
@@ -118,7 +118,7 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 </script>
 <div class="container">
 <div class="row">
-<form class="indexFrom" action="<?php echo $this->escape($base_url); ?>"  method="post">
+<form class="indexFrom" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>"  method="post">
 	<input type='hidden' name='order' value='<?php echo $this->escape($order); ?>'>
 	<div class="form-group">
 		<div class="form-inline">
@@ -177,7 +177,7 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 		echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray));
 	endif;
 ?>
-	<form action="<?php echo $base_url; ?>/status/post" method="post" accept-charset="utf-8">
+	<form action="<?php echo $href_base; ?>/status/post" method="post" accept-charset="utf-8">
 		<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 	</form>
 
@@ -200,7 +200,7 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 		echo $this->render('status/users_null', array('usersNullMessage' => $usersNullMessage));
 	} else {
 		foreach ($statuses as $status):
-			echo $this->render('status/users_small', array('base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'thisTimeAllClkSum' => $headerUser['thisTimeAllClkSum']));
+			echo $this->render('status/users_small', array('status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'thisTimeAllClkSum' => $headerUser['thisTimeAllClkSum']));
 		endforeach;
 	}
 ?>
@@ -222,4 +222,4 @@ endif;
 
 
 <?php
-	echo $this->render('status/js/index_js', array('hostName'=> $hostName, 'wsProtocol'=> $wsProtocol, 'wsPort'=> $wsPort, 'base_url'=> $base_url, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'postSecond'=> $postSecond, 'clickStatus'=> $clickStatus, 'headerUser' => $headerUser, 'user' => $user,));
+	echo $this->render('status/js/index_js', array('hostName'=> $hostName, 'wsProtocol'=> $wsProtocol, 'wsPort'=> $wsPort, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'postSecond'=> $postSecond, 'clickStatus'=> $clickStatus, 'headerUser' => $headerUser, 'user' => $user,));

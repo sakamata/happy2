@@ -117,7 +117,7 @@ function followPost(followingNo, followAction, ifFollowing, f_token) {
 	};
 	$.ajax({
 		type: 'POST',
-		url: '<?php echo $base_url; ?>/ajaxPost/follow',
+		url: '<?php echo $href_base; ?>/ajaxPost/follow',
 		data: contact_form_contents,
 		success: function(res) {
 			var formId = '#follow_form_' + followingNo;
@@ -130,23 +130,23 @@ function followPost(followingNo, followAction, ifFollowing, f_token) {
 			}
 
 			if (followAction === 'unFollow') {
-				$(formId).html('<input type="hidden" name="followAction" value="follow"><input type="image" class="follow_button" src="<?php echo $base_url; ?>/../img/unfollowed_icon.png" alt="unfollow_button" value="follow">');
+				$(formId).html('<input type="hidden" name="followAction" value="follow"><input type="image" class="follow_button" src="<?php echo $href_base; ?>/img/unfollowed_icon.png" alt="unfollow_button" value="follow">');
 				if(ifFollowerUser == 0) {
 					// 無関係アイコンに
-					$(iconId).html('<img src="<?php echo $base_url; ?>/../img/no_follow_each_other_icon.png" alt="no_follow_each_other_icon">');
+					$(iconId).html('<img src="<?php echo $href_base; ?>/img/no_follow_each_other_icon.png" alt="no_follow_each_other_icon">');
 				} else {
 					// 片思われアイコンに
-					$(iconId).html('<img src="<?php echo $base_url; ?>/../img/follower_icon.png" alt="follower_icon">');
+					$(iconId).html('<img src="<?php echo $href_base; ?>/img/follower_icon.png" alt="follower_icon">');
 				}
 
 			} else if (followAction === 'doFollow') {
-				$(formId).html('<input type="hidden" name="followAction" value="follow"><input type="image" class="follow_button" src="<?php echo $base_url; ?>/../img/followed_icon.png" alt="unfollow_button" value="follow">');
+				$(formId).html('<input type="hidden" name="followAction" value="follow"><input type="image" class="follow_button" src="<?php echo $href_base; ?>/img/followed_icon.png" alt="unfollow_button" value="follow">');
 				if(ifFollowerUser == 0) {
 					// 片思いアイコンに
-					$(iconId).html('<img src="<?php echo $base_url; ?>/../img/following_icon.png" alt="following_icon">');
+					$(iconId).html('<img src="<?php echo $href_base; ?>/img/following_icon.png" alt="following_icon">');
 				} else {
 					// 両想いアイコンに
-					$(iconId).html('<img src="<?php echo $base_url; ?>/../img/follow_each_other_icon.png" alt="follow_each_other_icon">');
+					$(iconId).html('<img src="<?php echo $href_base; ?>/img/follow_each_other_icon.png" alt="follow_each_other_icon">');
 				}
 			};
 		},
@@ -233,7 +233,7 @@ function clickPost(posts) {
 	data["postDateTime"] = DateTime;
 	$.ajax({
 		type: 'POST',
-		url: '<?php echo $base_url; ?>/ajaxPost/clickPost',
+		url: '<?php echo $href_base; ?>/ajaxPost/clickPost',
 		data: data,
 		success: function(res) {
 			console.log('clickPost success!');

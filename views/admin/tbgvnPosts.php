@@ -1,4 +1,4 @@
-<form class="form-inline" action="<?php echo $this->escape($base_url); ?>/admin/tbgvnPosts" method="post" accept-charset="utf-8">
+<form class="form-inline" action="<?php echo $this->escape($href_base); ?>/admin/tbgvnPosts" method="post" accept-charset="utf-8">
 	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 		<label>tbgvnPosts:</label>
 	<div class="form-group" class="col-xs-1">

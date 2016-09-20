@@ -6,12 +6,12 @@
 		<?php if ($status['ifFollowing'] === '1'){ ?>
 
 			<input type="hidden" name="followAction" value="follow">
-			<input type="image" class="follow_button" src="<?php echo $base_url; ?>/../img/unfollow_icon.png" alt="unfollow_button" value="follow">
+			<input type="image" class="follow_button" src="<?php echo $href_base; ?>/img/unfollow_icon.png" alt="unfollow_button" value="follow">
 
 		<?php } else { ; ?>
 
 			<input type="hidden" name="followAction" value="unfollow">
-			<input type="image" class="unfollow_button" src="<?php echo $base_url; ?>/../img/follow_plus_icon.png" alt="follow_button" value="unfollow">
+			<input type="image" class="unfollow_button" src="<?php echo $href_base; ?>/img/follow_plus_icon.png" alt="follow_button" value="unfollow">
 
 		<?php }; ?>
 	</div>

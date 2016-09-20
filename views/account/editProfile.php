@@ -4,7 +4,7 @@
 
 <h2>プロフィール編集</h2>
 
-<form class="form-horizontal" action="<?php echo $base_url; ?>/account/profileConfirm" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+<form class="form-horizontal" action="<?php echo $href_base; ?>/account/profileConfirm" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 
 	<?php if (isset($errors) && count($errors) > 0): ?>
@@ -27,7 +27,7 @@
 	<div class="form-group">
 		<label class="col-sm-3 control-label">今の画像</label>
 		<div class="col-sm-9">
-			<img class="profile_img" src="<?php echo $base_url .'/../user/img/'. $user['usImg']; ?>" alt="user_photo" width="100" height="100">
+			<img class="profile_img" src="<?php echo $href_base .'/user/img/'. $user['usImg']; ?>" alt="user_photo" width="100" height="100">
 		</div>
 
 	</div>

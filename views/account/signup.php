@@ -5,7 +5,7 @@
 <h2>新規アカウント登録</h2>
 
 <p class="lead text-right">
-	<a href="<?php echo $base_url; ?>/account/signin">ログインはこちら</a>
+	<a href="<?php echo $href_base; ?>/account/signin">ログインはこちら</a>
 </p>
 
 <p>現在はプレリリース中の為、登録前に以下の点をご了承ください。</p>
@@ -19,7 +19,7 @@
 	<p>運用の都合上、やむなくデータを削除させていただく場合があります。</p>
 </ul>
 
-<form class="form-horizontal" action="<?php echo $base_url; ?>/account/register" method="post" accept-charset="utf-8">
+<form class="form-horizontal" action="<?php echo $href_base; ?>/account/register" method="post" accept-charset="utf-8">
 	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 
 	<?php if (isset($errors) && count($errors) > 0): ?>

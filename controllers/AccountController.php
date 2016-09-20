@@ -239,28 +239,31 @@ class AccountController extends Controller
 			$imageFile = '';
 		}
 
+		$viewType = $this->request->getPost('viewType');
+
 		// プロフィール編集があった場合はDBに名前と画像Pathを収納
 		// エラーが無い、かつ　名前の変更か、画像がセットされているか？
-		if (count($errors) === 0 && ( $user['usName'] != $usName || $imageFile)) {
+		// かつ　現在のCookieの表示設定値と異なっているか?
+		if (count($errors) === 0 && ( $user['usName'] != $usName || $imageFile || $_COOKIE["viewType"] != $viewType)) {
 			$this->db_manager->get('User')->profileEdit($usId, $usName, $usImgPath);
 			$user = $this->db_manager->get('User')->fetchByUserName($usId);
 			$this->session->set('user', $user);
+
+			// 画面表示設定をCookieに保存
+			if ($viewType === 'large' || $viewType === 'small') {
+				setcookie("viewType", $viewType, time() + 60*60*24*30,'/');
+			}
 		}
 
-		// 画面表示設定をCookieに保存
-		$viewType = $this->request->getPost('viewType');
-		if ($viewType === 'large' || $viewType === 'small') {
-			setcookie("viewType", $viewType, time() + 60*60*24*30,'/');
+		if (count($errors) === 0) {
+			return $this->redirect('/');
+		} else {
+			return $this->render(array(
+				'user' => $user,
+				'errors' => $errors,
+				'_token' => $this->generateCsrfToken('account/editProfile'),
+			), 'editProfile');
 		}
-
-		// ToDo Cookieの値でリダイレクト先切り替え
-		return $this->redirect('/');
-
-		return $this->render(array(
-			'user' => $user,
-			'errors' => $errors,
-			'_token' => $this->generateCsrfToken('account/editProfile'),
-		), 'editProfile');
 	}
 
 /*

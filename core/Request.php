@@ -71,6 +71,13 @@ class Request
 		return '';
 	}
 
+	public function getHrefBase()
+	{
+		// ToDo 一時妥協した $_SERVER から生成されるようにしたい
+		$href_base = '/happy2/web';
+		return $href_base;
+	}
+
 	public function getPathInfo()
 	{
 		$base_url = $this->getBaseUrl();

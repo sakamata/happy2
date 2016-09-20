@@ -23,7 +23,6 @@ abstract class DbRepository
 		$stmt = $this->con->prepare($sql);
 		$stmt->execute($params);
 
-		// var_dump($stmt);
 		return $stmt;
 	}
 

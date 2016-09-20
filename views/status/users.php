@@ -11,12 +11,12 @@
 						<div class="simpleStatus text-center">
 							<!-- <a href="#">?</a><br>
 							<span>ON/OFF</span><br> -->
-							<img src="<?php echo $base_url; ?>/../img/more_Info_icon.png" alt="more_info_button" alt="more_info_button" width="54" height="54">							<img src="<?php echo $base_url; ?>/../img/on_off_icon.png" alt="login_status" width="36" height="41">
+							<img src="<?php echo $href_base; ?>/img/more_Info_icon.png" alt="more_info_button" alt="more_info_button" width="54" height="54">							<img src="<?php echo $href_base; ?>/img/on_off_icon.png" alt="login_status" width="36" height="41">
 
 							<!-- <span>Following: <?php echo $this->escape($status['ifFollowing']); ?></span> -->
 				<?php
-							echo $this->render('status/follow_status', array('base_url' => $base_url, 'status' => $status,));
-							echo $this->render('status/follow_button', array('base_url' => $base_url, 'status' => $status, 'follow_token'=> $follow_token,));
+							echo $this->render('status/follow_status', array('status' => $status,));
+							echo $this->render('status/follow_button', array('status' => $status, 'follow_token'=> $follow_token,));
 				?>
 							<!-- <span>Follower: <?php echo $this->escape($status['ifFollower']); ?></span><br> -->
 							<p>No:<?php echo $this->escape($status['usNo']); ?></p>
@@ -24,7 +24,7 @@
 
 						<div class="centerArea">
 							<div class="userImageArea">
-								<img src="<?php echo $base_url .'/../user/img/'. $status['usImg']; ?>" alt="user_photo" width="100" height="100">
+								<img src="<?php echo $href_base .'/user/img/'. $status['usImg']; ?>" alt="user_photo" width="100" height="100">
 								<p>ID:<?php echo $this->escape($status['usId']); ?></p>
 							</div><!-- userImageArea -->
 							<div class="userInfoArea">

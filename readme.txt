@@ -236,11 +236,20 @@ view中にif,foreach等でさらに別ファイルでrender処理を行う際は
 	$this->render('account/inputs', array('usName' => $usName, 'usPs' => $usPs,));
 
 ------------------------------------------------------
-
+【変更前】
 ■Viewファイル内 form等の actionの値について
 	base_url に続き、使用するcontrollerのActionをpathで指定する
 
+
 	<form action="<?php echo $base_url; ?>/admin/tableDummyInsert" method="post" accept-charset="utf-8">
+
+
+【変更後 暫定】
+■Viewファイル内 form等の actionの値について
+	href_base に続き、使用するcontrollerのActionをpathで指定する
+
+	<form action="<?php echo $href_base; ?>/admin/tableDummyInsert" method="post" accept-charset="utf-8">
+
 
 ■Viewファイルで他のViewを読み込む際は、使用する変数を読み込み先に渡す必要がある
 例:

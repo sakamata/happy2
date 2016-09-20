@@ -55,6 +55,7 @@ abstract class Controller
 		$defaults = array(
 			'request' => $this->request,
 			'base_url' => $this->request->getBaseUrl(),
+			'href_base' => $this->request->getHrefBase(),
 			'session' => $this->session,
 		);
 
