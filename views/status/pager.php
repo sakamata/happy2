@@ -2,7 +2,7 @@
 	<div class="pagerArea">
 		<span>ページ</span>
 <?php if ($page != 0 ): ?>
-			<form name='page_prev' action='<?php echo $_SERVER['SCRIPT_NAME']; ?>'  method='post'>
+			<form name='page_prev' action='<?php echo $action; ?>'  method='<?php echo $method; ?>'>
 				<input type='hidden' name='order' value='<?php echo $order; ?>'>
 				<input type='hidden' name='usersArray' value='<?php echo $usersArray; ?>'>
 				<input type='hidden' name='pager' value="<?php echo  $page - 1 ; ?>">
@@ -12,19 +12,19 @@
 
 <span>
 <?php
-if ($userCount !== 0) {
+if ($tableCount !== 0) {
 	echo $page + 1 .' / ';
-	if(ceil($userCount / $limit) > 99) {
+	if(ceil($tableCount / $limit) > 99) {
 		echo '99+';
 	} else {
-		echo ceil($userCount / $limit);
+		echo ceil($tableCount / $limit);
 	}
 }
 ?>
 </span>
 
-<?php if ($page * $limit + $limit < $userCount ): ?>
-			<form name='page_next' action='<?php echo $_SERVER['SCRIPT_NAME']; ?>' method='post'>
+<?php if ($page * $limit + $limit < $tableCount ): ?>
+			<form name='page_next' action='<?php echo $action; ?>' method='<?php echo $method; ?>'>
 				<input type='hidden' name='order' value='<?php echo $order; ?>'>
 				<input type='hidden' name='usersArray' value='<?php echo $usersArray; ?>'>
 				<input type='hidden' name='pager' value='<?php echo  $page + 1 ; ?>'>

@@ -3,30 +3,8 @@
 class StatusController extends Controller
 {
 
-	// ログインが必要なActionを記述
+	// // ログインが必要なActionを記述
 	protected $auth_actions = array('index', 'post');
-	protected $lastCalcTime;	// 最終集計時間
-	protected $allUserCount;	// 全ユーザー数
-	protected $userViewLimit; // ユーザー表示数
-	protected $postSecond; // クリック情報の定期POST秒
-	protected $calcCount; // 集計回数
-	protected $myUser; // tbusステータス
-
-	// サービス全体で必要な情報を生成
-	public function serviceStatus()
-	{
-		$allUserCount = $this->db_manager->get('Admin')->tableCount('tbus');
-		$this->allUserCount = $allUserCount['tbus'];
-		$adsetting = $this->db_manager->get('AdminSetting')->fetchSettingValue();
-		$limit = $adsetting['userViewLimitClients'];
-		$this->userViewLimit = intval($limit);
-		$postSecond = $adsetting['userClickPostIntervalSecond'];
-		$this->postSecond = intval($postSecond);
-
-		$calcStatus = $this->db_manager->get('Status')->calcStatus();
-		$this->calcCount = $calcStatus['calcCount'];
-		$this->lastCalcTime = $calcStatus['lastCalcTime'];
-	}
 
 	public function indexAction()
 	{
@@ -41,7 +19,7 @@ class StatusController extends Controller
 		$clickStatus = $this->db_manager->get('Status')->fetchClickStatus($usNo, $this->lastCalcTime);
 		$array = [];
 		$headerUser = $this->headerUserPerson($viewUser, $usNo, $this->lastCalcTime);
-		$headerUser = $this->pointRounder($headerUser);
+		$headerUser = $this->pointRounder($headerUser, $action = 'index');
 
 		$usersArray = strval($this->request->getPost('usersArray'));
 		if (empty($usersArray)) {
@@ -57,16 +35,16 @@ class StatusController extends Controller
 		}
 
 		// ユーザー画面の並べ方に基づき 該当表示件数、optionタグ内selected、null時文言を返す
-		list($userCount, $selected, $usersNullMessage, $usersArrayMessage) = $this->usersArrayInfo($usersArray, $usNo);
+		list($tableCount, $selected, $usersNullMessage, $usersArrayMessage) = $this->usersArrayInfo($usersArray, $usNo);
 
-		if ($userCount == 0) {
+		if ($tableCount == 0) {
 			$page = null;
 			$order = null;
 			$statuses = null;
 		} else {
-			$offset = $this->pager($page, $userCount);
+			$offset = $this->pager($page);
 			$statuses = $this->switchUsersArray($usersArray, $usNo, $offset, $order);
-			$statuses = $this->pointRounder($statuses);
+			$statuses = $this->pointRounder($statuses, $action = 'index');
 		}
 
 		// Cookieの値による画面表示切り替え
@@ -90,7 +68,7 @@ class StatusController extends Controller
 			'usersArray' => $usersArray,
 			'statuses' => $statuses,
 			'clickStatus' => $clickStatus,
-			'userCount' => $userCount,
+			'tableCount' => $tableCount,
 			'page' => $page,
 			'limit' => $this->userViewLimit,
 			'postSecond' => $this->postSecond,
@@ -143,42 +121,42 @@ class StatusController extends Controller
 
 		switch ($usersArray) {
 			case 'following':
-				$userCount = $this->db_manager->get('Status')->countFollowing($usNo);
-				$userCount = $userCount['userCount'];
+				$tableCount = $this->db_manager->get('Status')->countFollowing($usNo);
+				$tableCount = $tableCount['tableCount'];
 
 				$selected['following'] = 'selected';
 				$usersNullMessage = "フォロー中のユーザーはまだいません。";
 				$usersArrayMessage = "フォロー中の";
-				return array($userCount, $selected, $usersNullMessage, $usersArrayMessage);
+				return array($tableCount, $selected, $usersNullMessage, $usersArrayMessage);
 				break;
 
 			case 'followers':
-				$userCount = $this->db_manager->get('Status')->countFollowers($usNo);
-				$userCount = $userCount['userCount'];
+				$tableCount = $this->db_manager->get('Status')->countFollowers($usNo);
+				$tableCount = $tableCount['tableCount'];
 
 				$selected['followers'] = 'selected';
 				$usersNullMessage = "フォローされているユーザーはまだいません。";
 				$usersArrayMessage = "フォローされている";
-				return array($userCount, $selected, $usersNullMessage, $usersArrayMessage);
+				return array($tableCount, $selected, $usersNullMessage, $usersArrayMessage);
 				break;
 
 			case 'test':
 				$selected['test'] = 'selected';
-				$userCount = 0;
+				$tableCount = 0;
 				$usersNullMessage = "testメッセージ　ユーザーはまだいません。";
 				$usersArrayMessage = "testをしているユーザー";
-				return array($userCount, $selected, $usersNullMessage, $usersArrayMessage);
+				return array($tableCount, $selected, $usersNullMessage, $usersArrayMessage);
 				break;
 
 			default:
 				// newUsers 新規ユーザー順 user数を返す
 				$tableName = 'tbus';
-				$userCount = $this->db_manager->get('Admin')->tableCount($tableName);
-				$userCount = $userCount['tbus'];
+				$tableCount = $this->db_manager->get('Admin')->tableCount($tableName);
+				$tableCount = $tableCount['tbus'];
 				$selected['newUsers'] = 'selected';
 				$usersNullMessage = "他のユーザーはまだいません。";
 				$usersArrayMessage = "登録順";
-				return array($userCount, $selected, $usersNullMessage, $usersArrayMessage);
+				return array($tableCount, $selected, $usersNullMessage, $usersArrayMessage);
 				break;
 		}
 	}
@@ -205,33 +183,6 @@ class StatusController extends Controller
 				return $statuses;
 				break;
 		}
-	}
-
-	public function pager($page, $userCount)
-	{
-		$limit = $this->userViewLimit;
-		$offset = $page * $limit;
-		return $offset;
-	}
-
-	public function pointRounder($users)
-	{
-		if(array_key_exists('nowPt', $users)) {
-			$nowPt = $users['nowPt'];
-			$nowPt = floatval($nowPt);
-			$nowPt = round($nowPt, 2);
-			$users['roundPt'] = strval($nowPt);
-		} else {
-			$i = 0;
-			foreach ($users as $user) {
-				$nowPt = $user['nowPt'];
-				$nowPt = floatval($nowPt);
-				$nowPt = round($nowPt, 2);
-				$users[$i]['roundPt'] = strval($nowPt);
-				$i++;
-			}
-		}
-		return $users;
 	}
 
 }

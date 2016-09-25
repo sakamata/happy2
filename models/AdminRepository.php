@@ -149,6 +149,7 @@ class AdminRepository extends DbRepository
 			DROP TABLE tbset;
 			CREATE TABLE IF NOT EXISTS `happy2`.`tbset` (
 				`setNo` INT(11) NOT NULL AUTO_INCREMENT,
+				`setGvnNo` INT NULL,
 				`usNo` INT(11) NULL,
 				`seUs` INT(11) NULL,
 				`getPt` DECIMAL(18,9) NULL,
@@ -425,17 +426,18 @@ class AdminRepository extends DbRepository
 	public function clkUsersClkSumAndPts($lastCalcTime, $now)
 	{
 		$sql = "
-			SELECT gvn.usNo, gvn.clk_sum, user.nowPt
+			SELECT gvn.gvnNo, gvn.usNo, gvn.clk_sum, user.nowPt
 			FROM tbus
 			AS user
 			JOIN(
-				SELECT usNo, sum(seClk) AS clk_sum
+				SELECT gvnNo, usNo, sum(seClk) AS clk_sum
 				FROM tbgvn
 				WHERE tbgvn.dTm BETWEEN :lastCalcTime AND :now
-				GROUp BY usNo
+				GROUP BY usNo
 			)
 			AS gvn
 			ON user.usNo = gvn.usNo
+			ORDER BY user.usNo DESC
 		";
 
 		return $stmt = $this->fetchall($sql, array(
@@ -447,7 +449,7 @@ class AdminRepository extends DbRepository
 	public function sendClksSumToUser($lastCalcTime, $now, $usNo)
 	{
 		$sql = "
-			SELECT usNo, seUs, seClk, dTm
+			SELECT gvnNo, usNo, seUs, seClk, dTm
 			FROM tbgvn
 			WHERE
 					usNo = :usNo
@@ -455,7 +457,7 @@ class AdminRepository extends DbRepository
 					dTm BETWEEN :lastCalcTime
 				AND
 					:now
-					ORDER BY gvnNo
+				ORDER BY gvnNo ASC
 		";
 
 		return $this->fetchall($sql, array(
@@ -477,15 +479,16 @@ class AdminRepository extends DbRepository
 		$stmt = $this->execute($sql, array());
 	}
 
-	public function clkUsersPts_tbsetInsert($usNo, $seUs, $getPt, $dTm)
+	public function clkUsersPts_tbsetInsert($setGvnNo, $usNo, $seUs, $getPt, $dTm)
 	{
 		$sql = "
 			INSERT INTO
-				tbset(usNo, seUs, getPt, dTm)
-				VALUE(:usNo, :seUs, :getPt, :dTm);
+				tbset(setGvnNo, usNo, seUs, getPt, dTm)
+				VALUE(:setGvnNo, :usNo, :seUs, :getPt, :dTm);
 		";
 
 		$stmt = $this->execute($sql, array(
+			':setGvnNo' => $setGvnNo,
 			':usNo' => $usNo,
 			':seUs' => $seUs,
 			':getPt' => $getPt,

@@ -20,14 +20,15 @@
 	<div id="header">
 		<h1><a href="<?php echo $href_base; ?>">Happy</a></h1>
 		<div id="header_menu">
+			<a href="<?php echo $href_base; ?>/history/general">履歴</a> |
 
 <?php if($session->isAuthenticated()): ?>
-				<a href="<?php echo $href_base; ?>/account/editProfile">編集 </a>
+				<a href="<?php echo $href_base; ?>/account/editProfile"> 編集 </a>|
 				<!-- <a href="">ヘルプ</a> -->
 				<a href="<?php echo $href_base; ?>/account/signout"> ログアウト</a>
 <?php else: ?>
-				<a href="<?php echo $href_base; ?>/account/signin">ログイン</a>
-				<a href="<?php echo $href_base; ?>/account/signup">アカウント登録</a>
+				<a href="<?php echo $href_base; ?>/account/signin"> ログイン</a> |
+				<a href="<?php echo $href_base; ?>/account/signup"> アカウント登録</a>
 <?php endif; ?>
 
 		</div><!-- header_menu -->

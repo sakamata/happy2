@@ -5,7 +5,7 @@
 		<div class="mainUserInfo_small">
 
 			<div class="userImageArea_small">
-				<img src="<?php echo $href_base .'/user/img/'. $headerUser['usImg']; ?>?<?php echo date(His); ?>" alt="user_photo" width="60" height="60">
+				<img src="<?php echo $href_base .'/user/img/'. $headerUser['usImg']; ?>?<?php echo time(); ?>" alt="user_photo" width="60" height="60">
 				<!-- <canvas id="otherPersentGraphCanvas_<?php echo $headerUser['usNo']; ?>" class="otherCikCanvas" width="50" height="20">Canvasに対応したブラウザが必要です。</canvas> -->
 			</div><!-- userImageArea -->
 			<div class="MainUserInfoArea_small">

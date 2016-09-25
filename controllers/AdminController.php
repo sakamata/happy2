@@ -366,15 +366,16 @@ class AdminController extends Controller
 		// clkしたユーザーの合計クリック数とnowPt
 		$clkUsersStatus = $admin_repository->clkUsersClkSumAndPts($lastCalcTime, $now);
 		$N = 0;
+		$admin_repository->startTransaction();
 		// ClkをしたuserNのPtを全クリック数に従い分配,tbsetにinsert
 		foreach ($clkUsersStatus as $noUse) {
 			$userNo = $clkUsersStatus[$N]['usNo'];
 			$nowPts = $clkUsersStatus[$N]['nowPt'];
 			// ユーザーiがレコード毎にクリックした数を算出
 			$sendClksSumToUser = $admin_repository->sendClksSumToUser($lastCalcTime, $now, $userNo);
-			$admin_repository->startTransaction();
 			$i = 0;
 			foreach ($sendClksSumToUser as $noUse) {
+				$setGvnNo = $sendClksSumToUser[$i]['gvnNo'];
 				$usNo = $sendClksSumToUser[$i]['usNo'];
 				$seUs = $sendClksSumToUser[$i]['seUs'];
 				$seClk = $sendClksSumToUser[$i]['seClk'];
@@ -382,12 +383,12 @@ class AdminController extends Controller
 				// clkしたユーザーの1クリックあたりのPt計算
 				// ユーザーNへのクリック数 / 全ユーザーへのクリック数 ＊ 現在のポイント
 				$getPt = $seClk / $clkUsersStatus[$N]['clk_sum'] * $clkUsersStatus[$N]['nowPt'];
-				$admin_repository->clkUsersPts_tbsetInsert($usNo, $seUs, $getPt, $dTm);
+				$admin_repository->clkUsersPts_tbsetInsert($setGvnNo, $usNo, $seUs, $getPt, $dTm);
 				$i++;
 			}
-			$admin_repository->TransactionCommit();
 			$N++;
 		}
+		$admin_repository->TransactionCommit();
 
 		// ***集計第二段階 nowPtのベーシックインカム的な補正計算***
 
@@ -404,14 +405,14 @@ class AdminController extends Controller
 		$PtsSum = floatval($getPtsSum['userPts']);
 		$AllPtsTolerance = round($AlluserCount * $DefaultPt - $PtsSum , 9);
 
-		echo '集計結果合計 getPtsSum<br>';
-		var_dump($PtsSum);
-		echo '最終的な補正値<br>';
-		var_dump($AllPtsTolerance);
-		echo '全ユーザー数<br>';
-		var_dump($AlluserCount);
-		echo '初期値<br>';
-		var_dump($DefaultPt);
+		// echo '集計結果合計 getPtsSum<br>';
+		// var_dump($PtsSum);
+		// echo '最終的な補正値<br>';
+		// var_dump($AllPtsTolerance);
+		// echo '全ユーザー数<br>';
+		// var_dump($AlluserCount);
+		// echo '初期値<br>';
+		// var_dump($DefaultPt);
 
 		$userPts = [];
 		$sendUsersNo = [];	//対象のusNo
@@ -461,24 +462,24 @@ class AdminController extends Controller
 			}
 		}
 
-		echo '$sendUsersNo Ptを送られたユーザーNo一覧<br>';
-		var_dump($sendUsersNo);
-		echo '<br>$userPts Ptを送られたユーザーの取得Pt<br>';
-		var_dump($userPts);
-		echo '<br>$differencePts 差分Pt<br>';
-		var_dump($differencePts);
-		echo '<br>$shortPts 不足Pt<br>';
-		var_dump($shortPts);
-		echo '<br>$surplusPts 余剰分Pt<br>';
-		var_dump($surplusPts);
-		echo '<br>$shortPtsSum 不足Pt合計<br>';
-		var_dump($shortPtsSum);
-		echo '<br>$surplusPtsSum 余剰Pt合計<br>';
-		var_dump($surplusPtsSum);
-		echo '<br>$sendUsersNo Ptを送られたユーザーNo一覧<br>';
-		var_dump($sendUsersNo);
-		echo '<br>$rivisePts Ptを送られたユーザーの補正Pt算出<br>';
-		var_dump($rivisePts);
+		// echo '$sendUsersNo Ptを送られたユーザーNo一覧<br>';
+		// var_dump($sendUsersNo);
+		// echo '<br>$userPts Ptを送られたユーザーの取得Pt<br>';
+		// var_dump($userPts);
+		// echo '<br>$differencePts 差分Pt<br>';
+		// var_dump($differencePts);
+		// echo '<br>$shortPts 不足Pt<br>';
+		// var_dump($shortPts);
+		// echo '<br>$surplusPts 余剰分Pt<br>';
+		// var_dump($surplusPts);
+		// echo '<br>$shortPtsSum 不足Pt合計<br>';
+		// var_dump($shortPtsSum);
+		// echo '<br>$surplusPtsSum 余剰Pt合計<br>';
+		// var_dump($surplusPtsSum);
+		// echo '<br>$sendUsersNo Ptを送られたユーザーNo一覧<br>';
+		// var_dump($sendUsersNo);
+		// echo '<br>$rivisePts Ptを送られたユーザーの補正Pt算出<br>';
+		// var_dump($rivisePts);
 
 		// 補正PtのDB INSERT userNo=0 からのPtとして1ユーザーに全誤差を付与
 		// ***ToDo*** 誤差が大きい場合は他のユーザーにもPtの補正負荷分散を

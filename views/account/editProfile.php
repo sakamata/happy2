@@ -33,7 +33,7 @@ if (document.location.protocol==="https:")
 	<div class="form-group">
 		<label class="col-sm-3 control-label">今の画像</label>
 		<div class="col-sm-9">
-			<img class="profile_img" src="<?php echo $href_base .'/user/img/'. $user['usImg']; ?>?<?php echo date(His); ?>" alt="user_photo" width="100" height="100">
+			<img class="profile_img" src="<?php echo $href_base .'/user/img/'. $user['usImg']; ?>?<?php echo time(); ?>" alt="user_photo" width="100" height="100">
 		</div>
 
 	</div>

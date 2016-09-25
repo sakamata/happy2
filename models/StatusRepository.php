@@ -105,7 +105,7 @@ class StatusRepository extends DbRepository
 	public function countFollowing($usNo)
 	{
 		$sql = "
-			SELECT count(followingNo) AS userCount
+			SELECT count(followingNo) AS tableCount
 				FROM tbfollow
 				WHERE usNo = :usNo
 		";
@@ -118,7 +118,7 @@ class StatusRepository extends DbRepository
 	public function countFollowers($usNo)
 	{
 		$sql = "
-			SELECT count(usNo) AS userCount
+			SELECT count(usNo) AS tableCount
 				FROM tbfollow
 				WHERE followingNo = :usNo
 		";

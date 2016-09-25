@@ -10,6 +10,30 @@ abstract class Controller
 	protected $db_manager;
 	protected $auth_actions = array();
 
+	protected $lastCalcTime;	// 最終集計時間
+	protected $allUserCount;	// 全ユーザー数
+	protected $userViewLimit; // ユーザー表示数
+	protected $postSecond; // クリック情報の定期POST秒
+	protected $calcCount; // 集計回数
+	protected $myUser; // tbusステータス
+
+	// サービス全体で必要な情報を生成
+	public function serviceStatus()
+	{
+		$allUserCount = $this->db_manager->get('Admin')->tableCount('tbus');
+		$this->allUserCount = $allUserCount['tbus'];
+		$adsetting = $this->db_manager->get('AdminSetting')->fetchSettingValue();
+		$limit = $adsetting['userViewLimitClients'];
+		$this->userViewLimit = intval($limit);
+		$postSecond = $adsetting['userClickPostIntervalSecond'];
+		$this->postSecond = intval($postSecond);
+
+		$calcStatus = $this->db_manager->get('Status')->calcStatus();
+		$this->calcCount = $calcStatus['calcCount'];
+		$this->lastCalcTime = $calcStatus['lastCalcTime'];
+	}
+
+
 	public function __construct($application)
 	{
 		$this->controller_name = strtolower(substr(get_class($this), 0, -10));
@@ -132,6 +156,55 @@ abstract class Controller
 		}
 
 		return false;
+	}
+
+	public function pager($page)
+	{
+		$limit = $this->userViewLimit;
+		$offset = $page * $limit;
+		return $offset;
+	}
+
+	public function pointRounder($users, $action)
+	{
+		switch ($action) {
+			case 'index':
+				$key = 'nowPt';
+				break;
+
+			case 'general':
+				$key = 'getPt';
+				break;
+
+			default:
+			$key = 'nowPt';
+				break;
+		}
+
+		if(array_key_exists($key, $users)) {
+			$nowPt = $users[$key];
+			if ($nowPt == 'undecided') {
+				$users['roundPt'] = '未定';
+			} else {
+				$nowPt = floatval($nowPt);
+				$nowPt = round($nowPt, 2);
+				$users['roundPt'] = strval($nowPt);
+			}
+		} else {
+			$i = 0;
+			foreach ($users as $user) {
+				$nowPt = $user[$key];
+				if ($nowPt == 'undecided') {
+					$users[$i]['roundPt'] = '未定';
+				} else {
+					$nowPt = floatval($nowPt);
+					$nowPt = round($nowPt, 2);
+					$users[$i]['roundPt'] = strval($nowPt);
+				}
+				$i++;
+			}
+		}
+		return $users;
 	}
 
 }

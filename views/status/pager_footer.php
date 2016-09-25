@@ -1,8 +1,8 @@
-<div class="col-xs-12" class="col-sm-12" class="col-md-12" class="col-lg-12">
+<div class="footer_wrapper col-xs-12 col-sm-12 col-md-12 col-lg-12">
 	<div class="pagerArea_footer">
 		<span>ページ</span>
 <?php if ($page != 0 ): ?>
-			<form name='page_prev_footer' action='<?php echo $_SERVER['SCRIPT_NAME']; ?>'  method='post'>
+			<form name='page_prev_footer' action='<?php echo $action; ?>'  method='<?php echo $method; ?>'>
 				<input type='hidden' name='order' value='<?php echo $order; ?>'>
 				<input type='hidden' name='usersArray' value='<?php echo $usersArray; ?>'>
 				<input type='hidden' name='pager' value="<?php echo  $page - 1 ; ?>">
@@ -12,19 +12,19 @@
 
 <span>
 <?php
-if ($userCount !== 0) {
+if ($tableCount !== 0) {
 	echo $page + 1 .' / ';
-	if(ceil($userCount / $limit) > 99) {
+	if(ceil($tableCount / $limit) > 99) {
 		echo '99+';
 	} else {
-		echo ceil($userCount / $limit);
+		echo ceil($tableCount / $limit);
 	}
 }
 ?>
 </span>
 
-<?php if ($page * $limit + $limit < $userCount ): ?>
-			<form name='page_next_footer' action='<?php echo $_SERVER['SCRIPT_NAME']; ?>'  method='post'>
+<?php if ($page * $limit + $limit < $tableCount ): ?>
+			<form name='page_next_footer' action='<?php echo $action; ?>'  method='<?php echo $method; ?>'>
 				<input type='hidden' name='order' value='<?php echo $order; ?>'>
 				<input type='hidden' name='usersArray' value='<?php echo $usersArray; ?>'>
 				<input type='hidden' name='pager' value='<?php echo  $page + 1 ; ?>'>
