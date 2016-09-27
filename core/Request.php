@@ -73,9 +73,30 @@ class Request
 
 	public function getHrefBase()
 	{
-		// ToDo 一時妥協した $_SERVER から生成されるようにしたい
 		$href_base = '/happy2/web';
 		return $href_base;
+	}
+
+	public function getRequestBase()
+	{
+		// $_SERVER['REQUEST_URI']　にindex*.php があればそこまで出力
+		// 無ければ /happy2/web まで出力
+		$uri = $_SERVER['REQUEST_URI'];
+		if(0 < strpos($uri, 'index_dev.php')) {
+			$req_base = strstr($uri, 'index_dev.php',TRUE);
+			$req_base = $req_base.'index_dev.php';
+			return $req_base;
+		}
+
+		if(0 < strpos($uri, 'index.php')) {
+			$req_base = strstr($uri, 'index.php',TRUE);
+			$req_base = $req_base.'index.php';
+			return $req_base;
+		}
+
+		$req_base = '/happy2/web';
+		return $req_base;
+
 	}
 
 	public function getPathInfo()

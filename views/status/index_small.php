@@ -122,7 +122,7 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 </script>
 <div class="container">
 <div class="row">
-<form class="indexFrom" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>"  method="post">
+<form class="indexFrom" action="<?php echo $req_base; ?>"  method="post">
 	<input type='hidden' name='order' value='<?php echo $this->escape($order); ?>'>
 	<div class="form-group">
 		<div class="form-inline">
@@ -175,10 +175,10 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 	<div class="row">
 		<div id="orderInfoArea">
 <?php
-	echo $this->render('status/pager', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI'], 'method' => 'post'));
+	echo $this->render('status/pager', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post'));
 
 	if ($order !== null) :
-		echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI'], 'method' => 'post'));
+		echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post'));
 	endif;
 ?>
 	<form action="<?php echo $href_base; ?>/status/post" method="post" accept-charset="utf-8">
@@ -218,7 +218,7 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 	<div class="row">
 <?php
 if ($page * $limit < $tableCount ) :
-	echo $this->render('status/pager_footer', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI'], 'method' => 'post'));
+	echo $this->render('status/pager_footer', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post'));
 endif;
 ?>
 	</div><!-- row -->

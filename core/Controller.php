@@ -80,6 +80,7 @@ abstract class Controller
 			'request' => $this->request,
 			'base_url' => $this->request->getBaseUrl(),
 			'href_base' => $this->request->getHrefBase(),
+			'req_base' => $this->request->getRequestBase(),
 			'session' => $this->session,
 		);
 

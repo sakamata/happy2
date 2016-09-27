@@ -7,10 +7,9 @@ if (document.location.protocol==="https:")
 <?php $this->setLayoutVar('title', 'プロフィール編集') ?>
 <div class="container">
 <div class="row">
-
 <h2>プロフィール編集</h2>
 
-<form class="form-horizontal" action="<?php echo $href_base; ?>/account/profileConfirm" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+<form class="form-horizontal" action="<?php echo $req_base; ?>/account/profileConfirm" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 
 	<?php if (isset($errors) && count($errors) > 0): ?>

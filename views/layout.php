@@ -18,7 +18,7 @@
 </head>
 <body>
 	<div id="header">
-		<h1><a href="<?php echo $href_base; ?>">Happy</a></h1>
+		<h1><a href="<?php echo $req_base; ?>">Happy</a></h1>
 		<div id="header_menu">
 			<a href="<?php echo $href_base; ?>/history/general">履歴</a> |
 
