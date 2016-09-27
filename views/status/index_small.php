@@ -175,10 +175,10 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 	<div class="row">
 		<div id="orderInfoArea">
 <?php
-	echo $this->render('status/pager', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI']));
+	echo $this->render('status/pager', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI'], 'method' => 'post'));
 
 	if ($order !== null) :
-		echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI']));
+		echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI'], 'method' => 'post'));
 	endif;
 ?>
 	<form action="<?php echo $href_base; ?>/status/post" method="post" accept-charset="utf-8">
@@ -218,7 +218,7 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 	<div class="row">
 <?php
 if ($page * $limit < $tableCount ) :
-	echo $this->render('status/pager_footer', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI']));
+	echo $this->render('status/pager_footer', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI'], 'method' => 'post'));
 endif;
 ?>
 	</div><!-- row -->
