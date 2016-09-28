@@ -23,12 +23,16 @@
 			<a href="<?php echo $href_base; ?>/history/general">履歴</a> |
 
 <?php if($session->isAuthenticated()): ?>
+			<span>
 				<a href="<?php echo $href_base; ?>/account/editProfile"> 編集 </a>|
 				<!-- <a href="">ヘルプ</a> -->
 				<a href="<?php echo $href_base; ?>/account/signout"> ログアウト</a>
+			</span>
 <?php else: ?>
+			<span>
 				<a href="<?php echo $href_base; ?>/account/signin"> ログイン</a> |
 				<a href="<?php echo $href_base; ?>/account/signup"> アカウント登録</a>
+			</span>
 <?php endif; ?>
 
 		</div><!-- header_menu -->

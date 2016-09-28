@@ -79,9 +79,17 @@ class Request
 
 	public function getRequestBase()
 	{
-		// $_SERVER['REQUEST_URI']　にindex*.php があればそこまで出力
-		// 無ければ /happy2/web まで出力
 		$uri = $_SERVER['REQUEST_URI'];
+
+		// /happy2/web/index.php or index_dev.php より後ろが無ければそのまま出力
+		if ($uri === '/happy2/web/index.php') {
+			return $uri;
+		}
+		if ($uri === '/happy2/web/index_dev.php') {
+			return $uri;
+		}
+
+		// $_SERVER['REQUEST_URI']　にindex*.php があればそこまで出力
 		if(0 < strpos($uri, 'index_dev.php')) {
 			$req_base = strstr($uri, 'index_dev.php',TRUE);
 			$req_base = $req_base.'index_dev.php';
@@ -94,9 +102,9 @@ class Request
 			return $req_base;
 		}
 
+		// index*.php が無ければ /happy2/web まで出力
 		$req_base = '/happy2/web';
 		return $req_base;
-
 	}
 
 	public function getPathInfo()
