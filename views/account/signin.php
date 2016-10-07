@@ -16,14 +16,14 @@
 <p>現在はプレリリース中の為、登録前に以下の点をご了承ください。</p>
 
 <ul class="warning_list">
-	<li>SSL通信を導入しました</li>
-	<p>入力したパスワードや名前、ID等の情報は保護されます</p>
 	<li>現在パスワードの再設定ができません。</li>
 	<p>パスワードを忘れると再度ログインができなくなるのでご注意ください。</p>
 	<li>データがリセットされる場合があります</li>
 	<p>運用の都合上、やむなくデータを削除させていただく場合があります。</p>
 </ul>
-
+<ul>
+	<li>ユーザーID,名前,プロフィール画像,クリック記録,等の情報は登録者以外にも公開されます</li>
+</ul>
 <form class="form-horizontal" action="/happy2/web/account/authenticate" method="post" accept-charset="utf-8">
 	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 

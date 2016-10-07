@@ -112,7 +112,7 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 
 <div class="container">
 <div class="row">
-<form class="indexFrom" action="<?php echo $req_base; ?>/history/userHistory"  method="get">
+<form class="indexFrom" action="/happy2/web/history/userHistory"  method="get">
 	<input type='hidden' name='order' value='<?php echo $this->escape($order); ?>'>
 	<input type='hidden' name='viewUser' value='<?php echo $this->escape($viewUser); ?>'>
 	<div class="form-inline">
