@@ -5,7 +5,9 @@
 
 <li class="mainStatus_small">
 	<div class="userImageArea_small">
+		<a href='/happy2/web/history/userHistory?viewUser=<?php echo $status['usNo']; ?>'>
 		<img src="<?php echo $href_base .'/user/img/'. $status['usImg']; ?>" alt="user_photo" width="60" height="60">
+		</a>
 	</div><!-- userImageArea -->
 	<div class="userInfoArea_small">
 		<div class="userBalloon_small" id="userBalloon_<?php echo $this->escape($status['usNo']); ?>">

@@ -24,7 +24,9 @@
 
 						<div class="centerArea">
 							<div class="userImageArea">
+								<a href='/happy2/web/history/userHistory?viewUser=<?php echo $status['usNo']; ?>'>
 								<img src="<?php echo $href_base .'/user/img/'. $status['usImg']; ?>" alt="user_photo" width="100" height="100">
+								</a>
 								<p>ID:<?php echo $this->escape($status['usId']); ?></p>
 							</div><!-- userImageArea -->
 							<div class="userInfoArea">
@@ -42,7 +44,9 @@
 								<div class="otherUserGraph">
 									<canvas id="otherPersentGraphCanvas_<?php echo $status['usNo']; ?>" class="otherCikCanvas" width="190" height="20">Canvasに対応したブラウザが必要です。</canvas>
 								</div><!-- userGraph -->
+								<a href='/happy2/web/history/userHistory?viewUser=<?php echo $status['usNo']; ?>'>
 								<p><?php echo $this->escape($status['usName']); ?></p>
+								</a>
 							</div>
 						</div><!-- userCenterArea -->
 					</div><!-- mainStatus -->
@@ -56,6 +60,7 @@
 							<span id="clickSum_<?php echo $status['usNo']; ?>" class="countNumber"><?php echo $this->escape($status['MySendClkSum']); ?></span><br>Happy!</button>
 							<!-- <?php echo $this->escape($thisTimeAllClkSum); ?> -->
 						</div><!-- userButton -->
+						<?php if (!$user) : echo $this->render('status/unLoginButton', array()); endif; ?>
 						<div class="userGraph">
 							<canvas id="persentGraphCanvas_<?php echo $status['usNo']; ?>" class="myCikCanvas" width="290" height="40">Canvasに対応したブラウザが必要です。</canvas>
 						</div><!-- userGraph -->

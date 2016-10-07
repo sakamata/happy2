@@ -2,7 +2,7 @@
 
 class HistoryRepository extends DbRepository
 {
-	public function fetchAllUsersHistry($limit, $offset, $order)
+	public function fetchAllUsersHistry($limit, $offset, $order, $viewUser = null, $usersArray = null)
 	{
 		$sql = "
 			SELECT
@@ -34,9 +34,7 @@ class HistoryRepository extends DbRepository
 				FROM tbset
 				ORDER BY
 					setGvnNo $order
-			# 下記はNG rowの並びが異なる為、ToDo 絞り込みしないと重くなる
-			#	LIMIT $limit
-			#	OFFSET $offset
+			# ToDo ここに絞り込み条件書く、負荷対策
 			)
 				AS setPtTable
 			ON gvnMaster.gvnNo = setPtTable.setGvnNo
@@ -48,20 +46,28 @@ class HistoryRepository extends DbRepository
 			)
 				AS toUserValue
 			ON gvnMaster.seUs = toUserValue.usNo
+		";
 
-			#WHERE
-			#	gvnMaster.dTm BETWEEN '2016-08-22 12:06:30'
-			#	AND now()
+		if (isset($viewUser) && $usersArray === 'toSendHistory') {
+			$sql .= "
+				WHERE gvnMaster.usNo = :viewUser
+			";
+		}
+		if (isset($viewUser) && $usersArray === 'receiveFromHistory') {
+			$sql .= "
+				WHERE gvnMaster.seUs = :viewUser
+			";
+		}
 
+		$sql .= "
 			ORDER BY
 				gvnMaster.gvnNo $order
 			LIMIT $limit
 			OFFSET $offset
 		";
 
-		return $this->fetchAll_bindParam($sql, array(
-			':offset' => $offset,
-			':limit' => $limit,
+		return $this->fetchAll($sql, array(
+			':viewUser' => $viewUser,
 		));
 	}
 

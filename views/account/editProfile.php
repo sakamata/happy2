@@ -4,12 +4,12 @@ if (document.location.protocol==="https:")
 {location.replace('http://'+window.location.host+window.location.pathname);}
 </script>
 
-<?php $this->setLayoutVar('title', 'プロフィール編集') ?>
+<?php $this->setLayoutVar('title', '設定編集') ?>
 <div class="container">
 <div class="row">
-<h2>プロフィール編集</h2>
-
-<form class="form-horizontal" action="<?php echo $req_base; ?>/account/profileConfirm" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+<h2>設定編集</h2>
+<form class="form-horizontal" action="/happy2/web/account/profileConfirm" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+	<p class="algin_right"><a href="<?php echo $href_base; ?>/account/signout"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>ログアウト</a></p>
 	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 
 	<?php if (isset($errors) && count($errors) > 0): ?>

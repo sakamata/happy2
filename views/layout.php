@@ -20,18 +20,21 @@
 	<div id="header">
 		<h1><a href="<?php echo $req_base; ?>">Happy</a></h1>
 		<div id="header_menu">
-			<a href="<?php echo $href_base; ?>/history/general">履歴</a> |
+			<a href="<?php echo $href_base; ?>/releaseNews"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>ニュース&nbsp;</a>
+			<a href="<?php echo $href_base; ?>/history/general"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span>履歴&nbsp;</a>
 
 <?php if($session->isAuthenticated()): ?>
+
 			<span>
-				<a href="<?php echo $href_base; ?>/account/editProfile"> 編集 </a>|
+				 <a href="<?php echo $href_base; ?>/account/editProfile"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span>編集&nbsp;</a>
 				<!-- <a href="">ヘルプ</a> -->
-				<a href="<?php echo $href_base; ?>/account/signout"> ログアウト</a>
+				<!-- <a href="<?php echo $href_base; ?>/account/signout"> ログアウト</a> -->
 			</span>
 <?php else: ?>
 			<span>
-				<a href="<?php echo $href_base; ?>/account/signin"> ログイン</a> |
-				<a href="<?php echo $href_base; ?>/account/signup"> アカウント登録</a>
+				<a href="<?php echo $href_base; ?>/account/signin"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp;ログイン&nbsp;</a>
+				<a href="<?php echo $href_base; ?>/account/signup">
+<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>登録&nbsp;</a>
 			</span>
 <?php endif; ?>
 

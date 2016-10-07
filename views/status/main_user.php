@@ -28,7 +28,9 @@
 				</div><!-- simpleStatus -->
 				<div class="centerArea mainUserCenterArea">
 					<div class="userImageArea">
+						<a href='/happy2/web/history/userHistory?viewUser=<?php echo $headerUser['usNo']; ?>'>
 						<img src="<?php echo $href_base .'/user/img/'. $headerUser['usImg']; ?>?<?php echo time(); ?>" alt="user_photo" width="100" height="100">
+						</a>
 						<p>ID:<?php echo $this->escape($headerUser['usId']); ?></p>
 					</div><!-- userImageArea -->
 					<div class="userInfoArea">
@@ -47,7 +49,9 @@
 						<div class="otherUserGraph">
 							<canvas id="otherPersentGraphCanvas_<?php echo $headerUser['usNo']; ?>" class="otherCikCanvas" width="190" height="20">Canvasに対応したブラウザが必要です。</canvas>
 						</div><!-- userGraph -->
+						<a href='/happy2/web/history/userHistory?viewUser=<?php echo $headerUser['usNo']; ?>'>
 						<p><?php echo $this->escape($headerUser['usName']); ?></p>
+						</a>
 					</div>
 				</div><!-- userCenterArea -->
 			</div><!-- mainStatus -->

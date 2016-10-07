@@ -89,14 +89,23 @@ class AdminRepository extends DbRepository
 		));
 	}
 
-	public function tableCount($tableName)
+	public function tableCount($tableName, $reqColumn = null, $reqValue = null)
 	{
 		$sql = "
 			SELECT COUNT(*) AS $tableName
 			FROM $tableName
 		";
 
+		if (isset($reqColumn) && isset($reqValue)) {
+			$sql .= "
+				WHERE $reqColumn = $reqValue
+			";
+		}
+
 		return $this->fetch($sql, array(
+			':tableName' => $tableName,
+			':reqColumn' => $reqColumn,
+			':reqValue' => $reqValue,
 		));
 	}
 

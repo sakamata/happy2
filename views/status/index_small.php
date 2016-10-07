@@ -175,7 +175,7 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 	<div class="row">
 		<div id="orderInfoArea">
 <?php
-	echo $this->render('status/pager', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post'));
+	echo $this->render('status/pager', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'viewUser' => $viewUser, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post'));
 
 	if ($order !== null) :
 		echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post'));
@@ -204,7 +204,7 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 		echo $this->render('status/users_null', array('usersNullMessage' => $usersNullMessage));
 	} else {
 		foreach ($statuses as $status):
-			echo $this->render('status/users_small', array('status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'thisTimeAllClkSum' => $headerUser['thisTimeAllClkSum']));
+			echo $this->render('status/users_small', array('status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'thisTimeAllClkSum' => $headerUser['thisTimeAllClkSum'], 'user' => $user,));
 		endforeach;
 	}
 ?>
@@ -218,7 +218,7 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 	<div class="row">
 <?php
 if ($page * $limit < $tableCount ) :
-	echo $this->render('status/pager_footer', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post'));
+	echo $this->render('status/pager_footer', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'viewUser' => $viewUser, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post'));
 endif;
 ?>
 	</div><!-- row -->

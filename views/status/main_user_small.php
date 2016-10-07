@@ -5,7 +5,9 @@
 		<div class="mainUserInfo_small">
 
 			<div class="userImageArea_small">
+				<a href='/happy2/web/history/userHistory?viewUser=<?php echo $headerUser['usNo']; ?>'>
 				<img src="<?php echo $href_base .'/user/img/'. $headerUser['usImg']; ?>?<?php echo time(); ?>" alt="user_photo" width="60" height="60">
+				</a>
 				<!-- <canvas id="otherPersentGraphCanvas_<?php echo $headerUser['usNo']; ?>" class="otherCikCanvas" width="50" height="20">Canvasに対応したブラウザが必要です。</canvas> -->
 			</div><!-- userImageArea -->
 			<div class="MainUserInfoArea_small">
@@ -19,7 +21,9 @@
 			</div><!-- userInfoArea_small -->
 			<div class="clearBoth">	</div>
 			<p class="user_id">ID:<?php echo $this->escape($headerUser['usId']); ?></p>
-			<div class="mainUser_name"><p><?php echo $this->escape($headerUser['usName']); ?></p></div>
+			<div class="mainUser_name">
+				<p><?php echo $this->escape($headerUser['usName']); ?></p>
+			</div>
 		</div><!-- mainUserInfo_small -->
 		<div class="mainUserButton_small">
 			<button type="submit" id="clickAction_<?php echo $headerUser['usNo']; ?>" class="myClickAction_small" onclick="clickAction('post', '<?php echo $headerUser['usNo']; ?>', '<?php echo $headerUser['usId']; ?>', '<?php echo $headerUser['usName']; ?>' )">My Happy!<br><span id="clickSum_<?php echo $headerUser['usNo']; ?>" class="countNumber"><?php echo $this->escape($headerUser['thisTimeToMeClkSum']); ?></span>

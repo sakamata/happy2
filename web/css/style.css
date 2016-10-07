@@ -47,6 +47,11 @@ a {
 	z-index: 2;
 }
 
+.form_lavel_r{
+	text-align: right;
+	padding-top: 5px;
+}
+
 #dummyIndexForm {
 	position: fixed;
 	width: 100%;
@@ -657,4 +662,9 @@ ul.warning_list li {
 
 .table_date {
 	/*white-space : pre-wrap;*/
+}
+
+/* editProfile */
+.algin_right {
+	text-align: right;
 }

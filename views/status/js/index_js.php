@@ -27,7 +27,7 @@ function clickGraph (area, argumentsPercents) {
 	// headerUser（0番）は色違い処理
 
 	for (var i = 0; i < Object.keys(statuses).length; i++) {
-		if (i == 0) {
+		if (statuses[i].usNo == <?php echo $user['usNo']; ?>) {
 			clickSum[i] = statuses[i].thisTimeToMeClkSum;
 			var backColor = "#c8d6f0";
 			var barColor = "#3668c4";
@@ -259,6 +259,7 @@ var clickAction = function(action, usNo, usId, usName) {
 
 	// WebSocketで共有する値
 	var msg = {
+		// ***ToDo*** 履歴画面ではreceive = send になる
 		receiveNo : usNo,
 		receiveUserId : usId,
 		receiveUserName : usName,
@@ -366,6 +367,11 @@ $(window).resize(function () {
 
 // 簡易クリック受信通知
 function toOhterNewsPop(mess){
+	if (mess.sendUserNo == mess.receiveNo) {
+		(new Audio(window.clkSoundMy)).play();
+	} else {
+		(new Audio(window.newsPopOther)).play();
+	}
 	var li = '<li><b>' + mess.sendUserName + '</b>から<b>' + mess.receiveUserName + '</b>へクリックされました</li>';
 	var jqdiv = $('<div>')
 	.appendTo($('#otherMsg'))
@@ -416,16 +422,12 @@ function toOhterNewsPop(mess){
 			});
 		});
 	});
-	if (mess.sendUserNo == mess.receiveNo) {
-		(new Audio(window.clkSoundMy)).play();
-	} else {
-		(new Audio(window.newsPopOther)).play();
-	}
 }
 
 
 // 自分へのクリックメッセージを表示
 function toMeNewsPop(mess){
+	(new Audio(window.newsPopToMe)).play();
 	var li = '<li><b>' + mess.sendUserName + '</b>から<b>' + mess.receiveUserName + '</b>へクリックされました</li>';
 
 	var jqdiv = $('<div>')
@@ -473,7 +475,6 @@ function toMeNewsPop(mess){
 			});
 		});
 	});
-	(new Audio(window.newsPopToMe)).play();
 }
 
 </script>

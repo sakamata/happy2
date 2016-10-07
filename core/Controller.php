@@ -10,11 +10,11 @@ abstract class Controller
 	protected $db_manager;
 	protected $auth_actions = array();
 
-	protected $lastCalcTime;	// 最終集計時間
-	protected $allUserCount;	// 全ユーザー数
-	protected $userViewLimit; // ユーザー表示数
-	protected $postSecond; // クリック情報の定期POST秒
-	protected $calcCount; // 集計回数
+	public $lastCalcTime;	// 最終集計時間
+	public $allUserCount;	// 全ユーザー数
+	public $userViewLimit; // ユーザー表示数
+	public $postSecond; // クリック情報の定期POST秒
+	public $calcCount; // 集計回数
 	protected $myUser; // tbusステータス
 
 	// サービス全体で必要な情報を生成
@@ -166,6 +166,24 @@ abstract class Controller
 		return $offset;
 	}
 
+	public function getOrder()
+	{
+		$order = strval($this->request->getGet('order'));
+		$order = htmlspecialchars($order, ENT_QUOTES);
+		if ((!$order == 'ASC') || (!$order == 'DESC')) {
+			$order = 'DESC';
+		}
+		return $order;
+	}
+
+	public function getPager()
+	{
+		$page = $this->request->getGet('pager');
+		$page = htmlspecialchars($page, ENT_QUOTES);
+		$page = intval($page);	// 空や不正な値は全て int 0 を返す　配列なら1
+		return $page;
+	}
+
 	public function pointRounder($users, $action)
 	{
 		switch ($action) {
@@ -207,5 +225,115 @@ abstract class Controller
 		}
 		return $users;
 	}
+
+	// 任意のユーザー1名の基本情報を生成
+	// 『メイン画面』や『履歴画面 他人』のヘッダー等に使用
+	public function headerUserPerson($viewUser, $usNo, $lastCalcTime)
+	{
+		$res = $this->db_manager->get('Status')->fetchHeaderUserPerson($viewUser, $usNo, $lastCalcTime);
+		return $res;
+	}
+
+	public function usersArrayInfo($usersArray, $usNo)
+	{
+		$selected = array(
+			'newUsers' => null,
+			'following' => null,
+			'followers' => null,
+			'receiveFromHistory' => null,
+			'toSendHistory' => null,
+			'test' => null,
+		);
+
+		switch ($usersArray) {
+			case 'following':
+				$tableCount = $this->db_manager->get('Status')->countFollowing($usNo);
+				$tableCount = $tableCount['tableCount'];
+
+				$selected['following'] = 'selected';
+				$usersNullMessage = "フォロー中のユーザーはまだいません。";
+				$usersArrayMessage = "フォロー中の";
+				return array($tableCount, $selected, $usersNullMessage, $usersArrayMessage);
+				break;
+
+			case 'followers':
+				$tableCount = $this->db_manager->get('Status')->countFollowers($usNo);
+				$tableCount = $tableCount['tableCount'];
+
+				$selected['followers'] = 'selected';
+				$usersNullMessage = "フォローされているユーザーはまだいません。";
+				$usersArrayMessage = "フォローされている";
+				return array($tableCount, $selected, $usersNullMessage, $usersArrayMessage);
+				break;
+
+			case 'receiveFromHistory':
+				$tableName = 'tbgvn';
+				$reqColumn = 'seUs';
+
+				$tableCount = $this->db_manager->get('Admin')->tableCount($tableName, $reqColumn, $usNo);
+
+				$selected['receiveFromHistory'] = 'selected';
+				$usersNullMessage = "もらった履歴はまだありません";
+				$usersArrayMessage = "もらった履歴";
+				return array($tableCount[$tableName], $selected, $usersNullMessage, $usersArrayMessage);
+				break;
+
+			case 'toSendHistory':
+				$tableName = 'tbgvn';
+				$reqColumn = 'usNo';
+
+				$tableCount = $this->db_manager->get('Admin')->tableCount($tableName, $reqColumn, $usNo);
+
+				$selected['toSendHistory'] = 'selected';
+				$usersNullMessage = "送った履歴はまだありません";
+				$usersArrayMessage = "送った履歴";
+				return array($tableCount[$tableName], $selected, $usersNullMessage, $usersArrayMessage);
+				break;
+
+			case 'test':
+				$selected['test'] = 'selected';
+				$tableCount = 0;
+				$usersNullMessage = "testメッセージ　ユーザーはまだいません。";
+				$usersArrayMessage = "testをしているユーザー";
+				return array($tableCount, $selected, $usersNullMessage, $usersArrayMessage);
+				break;
+
+			default:
+				// newUsers 新規ユーザー順 user数を返す
+				$tableName = 'tbus';
+				$tableCount = $this->db_manager->get('Admin')->tableCount($tableName);
+				$tableCount = $tableCount['tbus'];
+				$selected['newUsers'] = 'selected';
+				$usersNullMessage = "他のユーザーはまだいません。";
+				$usersArrayMessage = "登録順";
+				return array($tableCount, $selected, $usersNullMessage, $usersArrayMessage);
+				break;
+		}
+	}
+
+	public function switchUsersArray($usersArray, $usNo, $offset, $order)
+	{
+		$lastCalcTime = $this->lastCalcTime;
+		$limit = $this->userViewLimit;
+
+		switch ($usersArray) {
+			case 'following':
+				$statuses = $this->db_manager->get('Status')->usersArrayFollowingUsers($usNo, $lastCalcTime, $limit, $offset, $order);
+				return $statuses;
+				break;
+
+			case 'followers':
+				$statuses = $this->db_manager->get('Status')->usersArrayFollowersUsers($usNo, $lastCalcTime, $limit, $offset, $order);
+				return $statuses;
+				break;
+
+			default:
+				// newUsers
+				$statuses = $this->db_manager->get('Status')->usersArrayNewUsers($usNo, $lastCalcTime, $limit, $offset, $order);
+				return $statuses;
+				break;
+		}
+	}
+
 
 }

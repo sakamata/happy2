@@ -24,7 +24,7 @@
 	<p>運用の都合上、やむなくデータを削除させていただく場合があります。</p>
 </ul>
 
-<form class="form-horizontal" action="<?php echo $req_base; ?>/account/authenticate" method="post" accept-charset="utf-8">
+<form class="form-horizontal" action="/happy2/web/account/authenticate" method="post" accept-charset="utf-8">
 	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 
 	<?php if (isset($errors) && count($errors) > 0): ?>

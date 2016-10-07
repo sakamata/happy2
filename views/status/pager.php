@@ -6,6 +6,7 @@
 				<input type='hidden' name='order' value='<?php echo $order; ?>'>
 				<input type='hidden' name='usersArray' value='<?php echo $usersArray; ?>'>
 				<input type='hidden' name='pager' value="<?php echo  $page - 1 ; ?>">
+				<input type='hidden' name='viewUser' value='<?php echo  $viewUser; ?>'>
 				<a href='javascript:page_prev.submit()'><img src="<?php echo $this->escape($href_base); ?>/img/prev_active_icon.png" alt="prev_active_icon"></a>
 			</form>
 <?php endif; ?>
@@ -28,6 +29,7 @@ if ($tableCount !== 0) {
 				<input type='hidden' name='order' value='<?php echo $order; ?>'>
 				<input type='hidden' name='usersArray' value='<?php echo $usersArray; ?>'>
 				<input type='hidden' name='pager' value='<?php echo  $page + 1 ; ?>'>
+				<input type='hidden' name='viewUser' value='<?php echo  $viewUser; ?>'>
 				<a href='javascript:page_next.submit()'><img src="<?php echo $this->escape($href_base); ?>/img/next_active_icon.png" alt="next_active_icon"></a>
 			</form>
 <?php endif; ?>

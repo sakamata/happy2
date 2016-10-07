@@ -124,25 +124,23 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 <div class="row">
 <form class="indexFrom" action="<?php echo $req_base; ?>"  method="post">
 	<input type='hidden' name='order' value='<?php echo $this->escape($order); ?>'>
-	<div class="form-group">
-		<div class="form-inline">
-			<div class="col-xs-5 col-sm-4 col-md-4 col-lg-4">
-				<input type="text" class="form-control input-sm" disabled="disabled" id="InputText" placeholder="検索(未実装)">
-			</div>
-			<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-				<button type="submit" class="btn btn-warning btn-sm"  disabled="disabled">send</button>
-			</div>
-			<div class="hidden-xs col-sm-2 col-md-2 col-lg-2">
-				<lavel for="InputSelect">並び替え</lavel>
-			</div>
-			<div class="col-xs-5 col-sm-4 col-md-4 col-lg-4">
-				<select class="form-control input-sm" id="InputSelect" name="usersArray" onChange="this.form.submit()">
-				<option value="newUsers" <?php echo $selected['newUsers']; ?>>登録順</option>
-				<option value="following" <?php echo $selected['following']; ?>>フォロー中</option>
-				<option value="followers" <?php echo $selected['followers']; ?>>フォローされている</option>
-				<!-- <option value="test" <?php echo $selected['test']; ?>>テスト</option> -->
-				</select>
-			</div>
+	<div class="form-inline">
+		<div class="form-group col-xs-5 col-sm-4 col-md-4 col-lg-4">
+			<input type="text" class="form-control input-sm" disabled="disabled" id="InputText" placeholder="検索(未実装)">
+		</div>
+		<div class="form-group col-xs-2 col-sm-2 col-md-2 col-lg-2">
+			<button type="submit" class="btn btn-warning btn-sm"  disabled="disabled">send</button>
+		</div>
+		<div class="form-group hidden-xs col-sm-3 col-md-3 col-lg-3 form_lavel_r">
+			<lavel for="InputSelect">並び替え</lavel>
+		</div>
+		<div class="form-group col-xs-5 col-sm-3 col-md-3 col-lg-3">
+			<select class="form-control input-sm" id="InputSelect" name="usersArray" onChange="this.form.submit()">
+			<option value="newUsers" <?php echo $selected['newUsers']; ?>>登録順</option>
+			<option value="following" <?php echo $selected['following']; ?>>フォロー中</option>
+			<option value="followers" <?php echo $selected['followers']; ?>>フォローされている</option>
+			<!-- <option value="test" <?php echo $selected['test']; ?>>テスト</option> -->
+			</select>
 		</div>
 	</div>
 </form>
@@ -175,7 +173,7 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 	<div class="row">
 		<div id="orderInfoArea">
 <?php
-	echo $this->render('status/pager', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post'));
+	echo $this->render('status/pager', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'viewUser' => $viewUser, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post'));
 
 	if ($order !== null) :
 		echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post'));
@@ -202,7 +200,7 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 		echo $this->render('status/users_null', array('usersNullMessage' => $usersNullMessage));
 	} else {
 		foreach ($statuses as $status):
-			echo $this->render('status/users', array('status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'thisTimeAllClkSum' => $headerUser['thisTimeAllClkSum']));
+			echo $this->render('status/users', array('status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'thisTimeAllClkSum' => $headerUser['thisTimeAllClkSum'], 'user' => $user,));
 		endforeach;
 	}
 ?>
@@ -211,12 +209,22 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 	<div class="row">
 <?php
 if ($page * $limit < $tableCount ) :
-	echo $this->render('status/pager_footer', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post'));
+	echo $this->render('status/pager_footer', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'viewUser' => $viewUser, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post'));
 endif;
 ?>
 	</div><!-- row -->
 </div><!-- container -->
 
-
 <?php
-	echo $this->render('status/js/index_js', array('hostName'=> $hostName, 'wsProtocol'=> $wsProtocol, 'wsPort'=> $wsPort, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'postSecond'=> $postSecond, 'clickStatus'=> $clickStatus, 'headerUser' => $headerUser, 'user' => $user,));
+	echo $this->render('status/js/index_js', array(
+		'hostName'=> $hostName,
+		'wsProtocol'=> $wsProtocol,
+		'wsPort'=> $wsPort,
+		'status' => $status,
+		'follow_token'=> $follow_token,
+		'click_token'=> $click_token,
+		'postSecond'=> $postSecond,
+		'clickStatus'=> $clickStatus,
+		'headerUser' => $headerUser,
+		'user' => $user,
+	));

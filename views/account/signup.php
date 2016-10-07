@@ -15,8 +15,6 @@
 </p>
 
 <p>現在はプレリリース中の為、登録前に以下の点をご了承ください。</p>
-<li>SSL通信を導入しました</li>
-<p>入力したパスワードは保護されます</p>
 
 <ul class="warning_list">
 	<li>ユーザー,ID,名前,プロフィール画像,クリック記録,等の情報は登録者以外にも公開されます</li>
@@ -26,7 +24,7 @@
 	<p>運用の都合上、やむなくデータを削除させていただく場合があります。</p>
 </ul>
 
-<form class="form-horizontal" action="<?php echo $req_base; ?>/account/register" method="post" accept-charset="utf-8">
+<form class="form-horizontal" action="/happy2/web/account/register" method="post" accept-charset="utf-8">
 	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 
 	<?php if (isset($errors) && count($errors) > 0): ?>

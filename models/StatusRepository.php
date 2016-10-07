@@ -43,6 +43,7 @@ class StatusRepository extends DbRepository
 				master.nowPt,
 				IFNULL(gvnTable.thisTimeAllClkSum, 0) AS thisTimeAllClkSum,
 				IFNULL(gvnTable2.thisTimeToMeClkSum, 0) AS thisTimeToMeClkSum,
+				IFNULL(gvnTable3.MySendClkSum, 0) AS MySendClkSum,
 				IF(ifFollowing.followingNo > 0, 1, 0) AS ifFollowing,
 				IF(ifFollower.usNo > 0, 1, 0) AS ifFollower
 
@@ -74,6 +75,17 @@ class StatusRepository extends DbRepository
 			)
 			AS gvnTable2
 			ON master.usNo = gvnTable2.usNo
+
+			LEFT JOIN(
+				SELECT usNo, seUs,SUM(seClk) AS MySendClkSum
+					FROM tbgvn
+					WHERE usNo = :usNo
+						AND dTm between :lastCalcTime
+						AND now()
+					GROUP BY seUs
+			)
+			AS gvnTable3
+			ON master.usNo = gvnTable3.seUs
 
 			LEFT JOIN(
 				SELECT usNo, followingNo

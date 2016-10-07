@@ -20,7 +20,7 @@ if (document.location.protocol==="https:")
 echo $this->render('status/pager', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI'], 'method' => 'get'));
 
 if ($order !== null) :
-	echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray, 'method' => 'get'));
+	echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI'], 'method' => 'get'));
 endif;
 ?>
 		</div><!-- orderInfoArea -->
@@ -62,9 +62,14 @@ foreach ($result as $tableData):
 	echo "<tr ". $myHappy .">\n";
 	echo "<td class='hidden-xs hidden-sm'><div class='right'>".$tableData['gvnNo']."</div></td>\n";
 
-	echo "<td class='break-all'><img class='history_img' src=".$href_base.'/user/img/'.$tableData['fromImg']. " alt='user_photo'><div class='history_id'>".$tableData['fromId'].'<br><b>'. $tableData['fromName']."</b></div><div class='clearBoth'> </div></td>\n";
+	echo "<td class='break-all'>
+	<a href='/happy2/web/history/userHistory?viewUser=".$tableData['fromNo']."'>
+	<img class='history_img' src=".$href_base.'/user/img/'.$tableData['fromImg']. " alt='user_photo'><div class='history_id'>".$tableData['fromId'].'<br><b>'. $tableData['fromName']."</b></div>
+	</a><div class='clearBoth'> </div></td>\n";
 
-	echo "<td class='break-all'><img class='history_img' src=".$href_base.'/user/img/'.$tableData['toUserImg']. " alt='user_photo'><div class='history_id'>".$tableData['toUserId'].'<br><b>'. $tableData['toUserName']."</b></div><div class='clearBoth'> </div></td>\n";
+	echo "<td class='break-all'>
+	<a href='/happy2/web/history/userHistory?viewUser=".$tableData['toUserNo']."'>
+	<img class='history_img' src=".$href_base.'/user/img/'.$tableData['toUserImg']. " alt='user_photo'><div class='history_id'>".$tableData['toUserId'].'<br><b>'. $tableData['toUserName']."</b></div></a><div class='clearBoth'> </div></td>\n";
 
 	echo "<td><div class='right'>". $tableData['formClickCount'] ."</div></td>";
 	echo "<td class='hidden-xs hidden-sm'><div class='right'>". $tableData['getPt'] ."</div></td>\n";

@@ -8,6 +8,7 @@ class StatusController extends Controller
 
 	public function indexAction()
 	{
+
 		$path = dirname(__FILE__) . '/../../../hidden/info.php';
 		require $path;
 
@@ -36,7 +37,6 @@ class StatusController extends Controller
 
 		// ユーザー画面の並べ方に基づき 該当表示件数、optionタグ内selected、null時文言を返す
 		list($tableCount, $selected, $usersNullMessage, $usersArrayMessage) = $this->usersArrayInfo($usersArray, $usNo);
-
 		if ($tableCount == 0) {
 			$page = null;
 			$order = null;
@@ -54,6 +54,8 @@ class StatusController extends Controller
 				$viewType = 'index_small';
 			}
 		}
+// var_dump($headerUser);
+// var_dump($statuses[0]);
 
 		return $this->render(array(
 			'hostName' => $hostName,
@@ -64,6 +66,7 @@ class StatusController extends Controller
 			'follow_token' => $this->generateCsrfToken('ajaxPost/follow'),
 			'click_token' => $this->generateCsrfToken('ajaxPost/clickPost'),
 			'user' => $user,
+			'viewUser' => $viewUser,
 			'headerUser' => $headerUser,
 			'usersArray' => $usersArray,
 			'statuses' => $statuses,
@@ -78,6 +81,13 @@ class StatusController extends Controller
 			'usersArrayMessage' => $usersArrayMessage,
 			'calcCount' => $this->calcCount,
 		),$viewType);
+	}
+
+	public function releaseNewsAction()
+	{
+		return $this->render(array(
+
+		));
 	}
 
 	// 自分のアカウントを元に、自分に関する情報を生成
@@ -100,89 +110,6 @@ class StatusController extends Controller
 		// NarcisRate
 		// Total
 
-	}
-
-	// 任意のユーザー1名の基本情報を生成
-	// 『メイン画面』や『履歴画面 他人』のヘッダー等に使用
-	public function headerUserPerson($viewUser, $usNo, $lastCalcTime)
-	{
-		$res = $this->db_manager->get('Status')->fetchHeaderUserPerson($viewUser, $usNo, $lastCalcTime);
-		return $res;
-	}
-
-	public function usersArrayInfo($usersArray, $usNo)
-	{
-		$selected = array(
-			'newUsers' => null,
-			'following' => null,
-			'followers' => null,
-			'test' => null,
-		);
-
-		switch ($usersArray) {
-			case 'following':
-				$tableCount = $this->db_manager->get('Status')->countFollowing($usNo);
-				$tableCount = $tableCount['tableCount'];
-
-				$selected['following'] = 'selected';
-				$usersNullMessage = "フォロー中のユーザーはまだいません。";
-				$usersArrayMessage = "フォロー中の";
-				return array($tableCount, $selected, $usersNullMessage, $usersArrayMessage);
-				break;
-
-			case 'followers':
-				$tableCount = $this->db_manager->get('Status')->countFollowers($usNo);
-				$tableCount = $tableCount['tableCount'];
-
-				$selected['followers'] = 'selected';
-				$usersNullMessage = "フォローされているユーザーはまだいません。";
-				$usersArrayMessage = "フォローされている";
-				return array($tableCount, $selected, $usersNullMessage, $usersArrayMessage);
-				break;
-
-			case 'test':
-				$selected['test'] = 'selected';
-				$tableCount = 0;
-				$usersNullMessage = "testメッセージ　ユーザーはまだいません。";
-				$usersArrayMessage = "testをしているユーザー";
-				return array($tableCount, $selected, $usersNullMessage, $usersArrayMessage);
-				break;
-
-			default:
-				// newUsers 新規ユーザー順 user数を返す
-				$tableName = 'tbus';
-				$tableCount = $this->db_manager->get('Admin')->tableCount($tableName);
-				$tableCount = $tableCount['tbus'];
-				$selected['newUsers'] = 'selected';
-				$usersNullMessage = "他のユーザーはまだいません。";
-				$usersArrayMessage = "登録順";
-				return array($tableCount, $selected, $usersNullMessage, $usersArrayMessage);
-				break;
-		}
-	}
-
-	public function switchUsersArray($usersArray, $usNo, $offset, $order)
-	{
-		$lastCalcTime = $this->lastCalcTime;
-		$limit = $this->userViewLimit;
-
-		switch ($usersArray) {
-			case 'following':
-				$statuses = $this->db_manager->get('Status')->usersArrayFollowingUsers($usNo, $lastCalcTime, $limit, $offset, $order);
-				return $statuses;
-				break;
-
-			case 'followers':
-				$statuses = $this->db_manager->get('Status')->usersArrayFollowersUsers($usNo, $lastCalcTime, $limit, $offset, $order);
-				return $statuses;
-				break;
-
-			default:
-				// newUsers
-				$statuses = $this->db_manager->get('Status')->usersArrayNewUsers($usNo, $lastCalcTime, $limit, $offset, $order);
-				return $statuses;
-				break;
-		}
 	}
 
 }
