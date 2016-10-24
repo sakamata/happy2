@@ -1,13 +1,11 @@
-<div class="col-xs-8" class="col-sm-8" class="col-md-8" class="col-lg-8">
-	<div class="pagerArea">
 		<span>ページ</span>
 <?php if ($page != 0 ): ?>
-			<form name='page_prev' action='<?php echo $action; ?>'  method='<?php echo $method; ?>'>
+			<form name='page_prev<?php echo $footer; ?>' action='<?php echo $action; ?>'  method='<?php echo $method; ?>'>
 				<input type='hidden' name='order' value='<?php echo $order; ?>'>
 				<input type='hidden' name='usersArray' value='<?php echo $usersArray; ?>'>
 				<input type='hidden' name='pager' value="<?php echo  $page - 1 ; ?>">
 				<input type='hidden' name='viewUser' value='<?php echo  $viewUser; ?>'>
-				<a href='javascript:page_prev.submit()'><img src="<?php echo $this->escape($href_base); ?>/img/prev_active_icon.png" alt="prev_active_icon"></a>
+				<a href='javascript:page_prev<?php echo $footer; ?>.submit()'><img src="<?php echo $this->escape($href_base); ?>/img/prev_active_icon.png" alt="prev_active_icon"></a>
 			</form>
 <?php endif; ?>
 
@@ -25,14 +23,11 @@ if ($tableCount !== 0) {
 </span>
 
 <?php if ($page * $limit + $limit < $tableCount ): ?>
-			<form name='page_next' action='<?php echo $action; ?>' method='<?php echo $method; ?>'>
+			<form name='page_next<?php echo $footer; ?>' action='<?php echo $action; ?>' method='<?php echo $method; ?>'>
 				<input type='hidden' name='order' value='<?php echo $order; ?>'>
 				<input type='hidden' name='usersArray' value='<?php echo $usersArray; ?>'>
 				<input type='hidden' name='pager' value='<?php echo  $page + 1 ; ?>'>
 				<input type='hidden' name='viewUser' value='<?php echo  $viewUser; ?>'>
-				<a href='javascript:page_next.submit()'><img src="<?php echo $this->escape($href_base); ?>/img/next_active_icon.png" alt="next_active_icon"></a>
+				<a href='javascript:page_next<?php echo $footer; ?>.submit()'><img src="<?php echo $this->escape($href_base); ?>/img/next_active_icon.png" alt="next_active_icon"></a>
 			</form>
 <?php endif; ?>
-
-	</div><!-- pager -->
-</div>

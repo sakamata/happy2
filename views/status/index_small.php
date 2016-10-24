@@ -1,6 +1,5 @@
 <?php
 $this->setLayoutVar('title', 'ホーム');
-
 echo $this->render('status/js/index_js_header', array(
 	'headerUser' => $headerUser,
 	'myStatus' => $myStatus,
@@ -9,7 +8,6 @@ echo $this->render('status/js/index_js_header', array(
 	'clickStatus' => $clickStatus,
 	'user' => $user,
 ));
-
 ?>
 
 <div class="container">
@@ -62,13 +60,27 @@ echo $this->render('status/js/index_js_header', array(
 	<?php echo $this->render('status/main_user_small', array('headerUser' => $headerUser, 'user' => $user,)); ?>
 </div>
 
-
 <div class="container">
 	<div class="row">
 		<div id="orderInfoArea">
+			<div class="col-xs-8" class="col-sm-8" class="col-md-8" class="col-lg-8">
+				<div class="pagerArea">
 <?php
-	echo $this->render('status/pager', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'viewUser' => $viewUser, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post'));
-
+	echo $this->render('status/pager', array(
+		'page' => $page,
+		'limit' => $limit,
+		'tableCount' => $tableCount,
+		'order' => $order,
+		'viewUser' => $viewUser,
+		'usersArray' => $usersArray,
+		'action' => $req_base,
+		'method' => 'post',
+		'footer' => null,
+	));
+?>
+				</div><!-- pager -->
+			</div>
+<?php
 	if ($order !== null) :
 		echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post'));
 	endif;
@@ -76,13 +88,11 @@ echo $this->render('status/js/index_js_header', array(
 	<form action="<?php echo $href_base; ?>/status/post" method="post" accept-charset="utf-8">
 		<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 	</form>
-
-
-	<?php
+<?php
 	if (count($statuses) !== 0) :
 		echo '<p>'.$usersArrayMessage.'<b>'. count($statuses) . '</b>名を表示しています。</p>';
 	endif;
-	?>
+?>
 		</div><!-- orderInfoArea -->
 	</div><!-- row -->
 </div><!-- container-fluid -->
@@ -96,7 +106,13 @@ echo $this->render('status/js/index_js_header', array(
 		echo $this->render('status/users_null', array('usersNullMessage' => $usersNullMessage));
 	} else {
 		foreach ($statuses as $status):
-			echo $this->render('status/users_small', array('status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'thisTimeAllClkSum' => $headerUser['thisTimeAllClkSum'], 'user' => $user,));
+			echo $this->render('status/users_small', array(
+				'status' => $status,
+				'follow_token'=> $follow_token,
+				'click_token'=> $click_token,
+				'thisTimeAllClkSum' => $headerUser['thisTimeAllClkSum'],
+				'user' => $user,
+			));
 		endforeach;
 	}
 ?>
@@ -108,14 +124,41 @@ echo $this->render('status/js/index_js_header', array(
 
 <div class="container">
 	<div class="row">
+		<div class="footer_wrapper col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="pagerArea_footer">
 <?php
 if ($page * $limit < $tableCount ) :
-	echo $this->render('status/pager_footer', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'viewUser' => $viewUser, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post'));
+	echo $this->render('status/pager', array(
+		'page' => $page,
+		'limit' => $limit,
+		'tableCount' => $tableCount,
+		'order' => $order,
+		'viewUser' => $viewUser,
+		'usersArray' => $usersArray,
+		'action' => $req_base,
+		'method' => 'post',
+		'footer' => '_footer',
+	));
 endif;
 ?>
+			</div><!-- pager -->
+			<p class="lead text-center">
+				<a href="http://happy-project.org" target="_blank">Happy-Project.org</a>
+			</p>
+		</div>
 	</div><!-- row -->
 </div><!-- container -->
 
-
 <?php
-	echo $this->render('status/js/index_js', array('hostName'=> $hostName, 'wsProtocol'=> $wsProtocol, 'wsPort'=> $wsPort, 'status' => $status, 'follow_token'=> $follow_token, 'click_token'=> $click_token, 'postSecond'=> $postSecond, 'clickStatus'=> $clickStatus, 'headerUser' => $headerUser, 'user' => $user,));
+	echo $this->render('status/js/index_js', array(
+		'hostName'=> $hostName,
+		'wsProtocol'=> $wsProtocol,
+		'wsPort'=> $wsPort,
+		'status' => $status,
+		'follow_token'=> $follow_token,
+		'click_token'=> $click_token,
+		'postSecond'=> $postSecond,
+		'clickStatus'=> $clickStatus,
+		'headerUser' => $headerUser,
+		'user' => $user,
+	));

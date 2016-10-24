@@ -19,9 +19,25 @@ if (document.location.protocol==="https:")
 <div class="container">
 	<div class="row">
 		<div id="orderInfoArea">
-<?php
-echo $this->render('status/pager', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI'], 'method' => 'get'));
+			<div class="col-xs-8" class="col-sm-8" class="col-md-8" class="col-lg-8">
+				<div class="pagerArea">
 
+<?php
+echo $this->render('status/pager', array(
+	'page' => $page,
+	'limit' => $limit,
+	'tableCount' => $tableCount,
+	'order' => $order,
+	'usersArray' => $usersArray,
+	'action' => $_SERVER['REQUEST_URI'],
+	'method' => 'get',
+	'viewUser' => null,
+	'footer' => null,
+));
+?>
+				</div><!-- pager -->
+			</div>
+<?php
 if ($order !== null) :
 	echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI'], 'method' => 'get'));
 endif;
@@ -91,10 +107,27 @@ endforeach;
 
 <div class="container">
 	<div class="row">
+		<div class="footer_wrapper col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="pagerArea_footer">
 <?php
 if ($page * $limit < $tableCount ) :
-	echo $this->render('status/pager_footer', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI'], 'method' => 'get'));
+	echo $this->render('status/pager', array(
+		'page' => $page,
+		'limit' => $limit,
+		'tableCount' => $tableCount,
+		'order' => $order,
+		'usersArray' => $usersArray,
+		'action' => $_SERVER['REQUEST_URI'],
+		'method' => 'get',
+		'viewUser' => null,
+		'footer' => '_footer',
+	));
 endif;
 ?>
+			</div><!-- pager -->
+			<p class="lead text-center">
+				<a href="http://happy-project.org" target="_blank">Happy-Project.org</a>
+			</p>
+		</div>
 	</div><!-- row -->
 </div><!-- container -->

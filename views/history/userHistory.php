@@ -3,7 +3,7 @@ $this->setLayoutVar('title', 'このユーザーの履歴');
 echo $this->render('status/js/index_js_header', array(
 	'myStatus' => $myStatus,
 	'headerUser' => $headerUser,
-	'statuses' => $statuses,
+	'statuses' => null,
 	'href_base' => $href_base,
 	'clickStatus' => $clickStatus,
 	'user' => $user,
@@ -55,38 +55,50 @@ echo $this->render('status/js/index_js_header', array(
 </div><!-- container -->
 
 <div id="main_user">
-<?php if ($headerUser['usNo'] != $myStatus['usNo'] ) : ?>
-
-	<?php echo $this->render('status/users', array(
+<?php
+if ($headerUser['usNo'] != $myStatus['usNo'] ) :
+	echo $this->render('status/users', array(
 		'myStatus' => $myStatus,
 		'user' => $user,
 		'status' => $headerUser,
 		'follow_token'=> $follow_token,
 		'click_token'=> $click_token,
-		'thisTimeAllClkSum' => $headerUser['thisTimeAllClkSum'])
-	);	?>
-
-<?php else:  ?>
-
-	<?php echo $this->render('status/main_user', array(
+		'thisTimeAllClkSum' => $headerUser['thisTimeAllClkSum'],
+	));
+else:
+	echo $this->render('status/main_user', array(
 		'myStatus' => $myStatus,
 		'user' => $user,
 		'headerUser' => $headerUser,
 		'follow_token'=> $follow_token,
 		'click_token'=> $click_token,
-		'thisTimeAllClkSum' => $headerUser['thisTimeAllClkSum'])
-	);	?>
-
-<?php endif; ?>
-
+		'thisTimeAllClkSum' => $headerUser['thisTimeAllClkSum'],
+	));
+endif;
+?>
 </div>
 
 <div class="container">
 	<div class="row">
 		<div id="orderInfoArea">
+			<div class="col-xs-8" class="col-sm-8" class="col-md-8" class="col-lg-8">
+				<div class="pagerArea">
 <?php
-echo $this->render('status/pager', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'viewUser' => $viewUser, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI'], 'method' => 'get'));
-
+echo $this->render('status/pager', array(
+	'page' => $page,
+	'limit' => $limit,
+	'tableCount' => $tableCount,
+	'order' => $order,
+	'viewUser' => $viewUser,
+	'usersArray' => $usersArray,
+	'action' => $_SERVER['REQUEST_URI'],
+	'method' => 'get',
+	'footer' => null,
+));
+?>
+				</div><!-- pager -->
+			</div>
+<?php
 if ($order !== null) :
 	echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI'], 'method' => 'get'));
 endif;
@@ -165,11 +177,28 @@ endforeach;
 </div><!-- container -->
 <div class="container">
 	<div class="row">
+		<div class="footer_wrapper col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="pagerArea_footer">
 <?php
 if ($page * $limit < $tableCount ) :
-	echo $this->render('status/pager_footer', array('page' => $page, 'limit' => $limit, 'tableCount' => $tableCount, 'order' => $order, 'viewUser' => $viewUser, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI'], 'method' => 'get'));
+	echo $this->render('status/pager', array(
+		'page' => $page,
+		'limit' => $limit,
+		'tableCount' => $tableCount,
+		'order' => $order,
+		'viewUser' => $viewUser,
+		'usersArray' => $usersArray,
+		'action' => $_SERVER['REQUEST_URI'],
+		'method' => 'get',
+		'footer' => '_footer',
+	));
 endif;
 ?>
+			</div><!-- pager -->
+			<p class="lead text-center">
+				<a href="http://happy-project.org" target="_blank">Happy-Project.org</a>
+			</p>
+		</div>
 	</div><!-- row -->
 </div><!-- container -->
 
