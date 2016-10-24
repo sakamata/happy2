@@ -1,114 +1,15 @@
-<?php $this->setLayoutVar('title', 'このユーザーの履歴') ?>
-<?php $jsonStatuses = json_encode($headerUser); ?>
+<?php
+$this->setLayoutVar('title', 'このユーザーの履歴');
+echo $this->render('status/js/index_js_header', array(
+	'myStatus' => $myStatus,
+	'headerUser' => $headerUser,
+	'statuses' => $statuses,
+	'href_base' => $href_base,
+	'clickStatus' => $clickStatus,
+	'user' => $user,
+));
 
-<script type="text/javascript">
-// change not ssl protocol
-if (document.location.protocol==="https:")
-{location.replace('http://'+window.location.host+window.location.pathname);}
-
-var myUserNo = <?php echo $myStatus['usNo']; ?>;
-var viewNo = 0;
-var statuses = JSON.parse('[<?php echo $jsonStatuses; ?>]');
-
-// soundの準備
-window.clkSoundMy = "<?php echo $href_base; ?>/sound/puyon1.mp3";
-window.clkSound = "<?php echo $href_base; ?>/sound/touch1.mp3";
-window.newsPopToMe = "<?php echo $href_base; ?>/sound/coin05.mp3";
-window.newsPopOther = "<?php echo $href_base; ?>/sound/se_maoudamashii_onepoint26.mp3";
-(new Audio(window.clkSoundMy)).load();
-(new Audio(window.clkSound)).load();
-(new Audio(window.newsPopToMe)).load();
-(new Audio(window.newsPopOther)).load();
-
-// ボタン押下によるクリック数の保持と書き換え
-var myClickCountIncrement = function (){
-	var clickSum = [];
-	var numbers = [];
-	var sumId = [];
-	var allUsersSendClkSum = <?php echo $clickStatus['allUsersSendClkSum']; ?>;
-	for (var i = 0; i < Object.keys(statuses).length; i++) {
-		if (i == 0) {
-			// headerUser処理
-			clickSum[i] = statuses[i].thisTimeToMeClkSum;
-		} else {
-			clickSum[i] = statuses[i].MySendClkSum;
-		}
-		numbers[i] = statuses[i].usNo;
-		sumId[i] = '#clickSum_' + numbers[i];
-	}
-
-	// クロージャ クリック総数を貯めて返す
-	return function(usNo){
-		for (var i = 0; i < Object.keys(statuses).length; i++) {
-			if (usNo == numbers[i]) {
-				clickSum[i]++;
-				var replaceSum = clickSum[i];
-				$(sumId[i]).html(clickSum[i]);	// クリック合計の書き換え
-				if (i == 0) {
-					$(".myCountBalloon").html(clickSum[i]);	// 自分の吹き出し数の書き換え
-					(new Audio(clkSoundMy)).play();
-				} else {
-					(new Audio(clkSound)).play();
-				}
-			}
-		}
-		allUsersSendClkSum++;
-		var percent = [];
-		for (var i = 0; i < Object.keys(statuses).length; i++) {
-			percent[i] = clickSum[i] / allUsersSendClkSum;
-			percent[i] = percent[i] * 10000;
-			percent[i] = Math.round(percent[i]) / 100;
-		}
-		return percent;
-	}
-};
-var ReplaceMyClickInfo = myClickCountIncrement();
-
-
-// 他のユーザークリック由来のメッセージを元にグラフと数値の書き換え
-var otherClickCountIncrement = function (){
-	var thisTimeToMeClkSum = [];
-	var numbers = [];
-	var thisTimeAllClkSum = [];
-	var sumId = [];
-	for (var i = 0; i < Object.keys(statuses).length; i++) {
-		thisTimeToMeClkSum[i] = statuses[i].thisTimeToMeClkSum;
-		numbers[i] = statuses[i].usNo;
-		thisTimeAllClkSum[i] = statuses[i].thisTimeAllClkSum;
-		if (i != 0) {
-			sumId[i] = '#userBalloon_' + numbers[i];
-		}
-	}
-
-	// クロージャ クリック総数を貯めて返す
-	return function(msg){
-		for (var i = 0; i < Object.keys(statuses).length; i++) {
-			if (msg.sendUserNo == numbers[i]) {
-				thisTimeAllClkSum[i]++;
-				// 自分宛ならクリックバルーンの書き換え
-				if (msg.receiveNo == myUserNo) {
-					thisTimeToMeClkSum[i]++;
-					if (i != 0) {
-						// クリック合計の書き換え
-						$(sumId[i]).html('<p>' + thisTimeToMeClkSum[i] + '</p>')
-							.animate({'background-color': '#f00'})
-							.animate({'background-color': '#fff'});
-					}
-				}
-			}
-		}
-		var percent = [];
-		for (var i = 0; i < Object.keys(statuses).length; i++) {
-			percent[i] = thisTimeToMeClkSum[i] / thisTimeAllClkSum[i];
-			percent[i] = percent[i] * 10000;
-			percent[i] = Math.round(percent[i]) / 100;
-		}
-		return percent;
-	}
-};
-var ReplaceOtherClickInfo = otherClickCountIncrement();
-
-</script>
+?>
 
 <div class="container">
 <div class="row">
@@ -140,9 +41,16 @@ var ReplaceOtherClickInfo = otherClickCountIncrement();
 
 <div class="container">
 	<div class="row">
-		<div id="pageTitle">
-			<h2><?php echo $headerUser['usName']; ?>さん　<?php echo $usersArrayMessage; ?></h2>
-		</div><!-- pageTitle -->
+		<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+			<div id="pageTitle">
+				<h2><?php echo $headerUser['usName']; ?>さん　<?php echo $usersArrayMessage; ?></h2>
+			</div><!-- pageTitle -->
+		</div><!--  -->
+		<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+			<div id="calcStatusArea">
+				<p>集計<b><?php echo $calcCount; ?></b>回　<span id="wsStatus"></span></p>
+			</div>
+		</div>
 	</div><!-- row -->
 </div><!-- container -->
 

@@ -308,8 +308,8 @@ socket.onerror = function(msg){
 	$('#wsStatus').html('通知:<b>ERROR</b>');
 };
 
-console.log(socket);
-console.log(socket.readyState);
+// console.log(socket);
+// console.log(socket.readyState);
 
 socket.onopen = function(msg){
 	$('#wsStatus').html('通知:<b>ON</b>');

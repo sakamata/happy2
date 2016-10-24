@@ -54,8 +54,6 @@ class StatusController extends Controller
 				$viewType = 'index_small';
 			}
 		}
-// var_dump($headerUser);
-// var_dump($statuses[0]);
 
 		return $this->render(array(
 			'hostName' => $hostName,
@@ -68,6 +66,7 @@ class StatusController extends Controller
 			'user' => $user,
 			'viewUser' => $viewUser,
 			'headerUser' => $headerUser,
+			'myStatus' => $headerUser,
 			'usersArray' => $usersArray,
 			'statuses' => $statuses,
 			'clickStatus' => $clickStatus,

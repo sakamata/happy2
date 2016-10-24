@@ -11,6 +11,7 @@ class HistoryController extends Controller
 	// サービス全体での履歴を出力
 	public function GeneralAction()
 	{
+		$this->serviceStatus();
 		$usersArray = strval($this->request->getGet('usersArray'));
 		$usersArray = htmlspecialchars($usersArray, ENT_QUOTES);
 		if (empty($usersArray)) {
@@ -36,6 +37,7 @@ class HistoryController extends Controller
 			'tableCount' => $tableCount,
 			'order' => $order,
 			'usersArray' => $usersArray,
+			'calcCount' => $this->calcCount,
 		),'general');
 	}
 
@@ -137,6 +139,7 @@ class HistoryController extends Controller
 			'limit' => $limit,
 			'order' => $order,
 			'usersArray' => $usersArray,
+			'calcCount' => $this->calcCount,
 		),'userHistory');
 	}
 

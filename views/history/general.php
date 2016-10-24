@@ -3,13 +3,16 @@
 if (document.location.protocol==="https:")
 {location.replace('http://'+window.location.host+window.location.pathname);}
 </script>
-
 <?php $this->setLayoutVar('title', '全体履歴') ?>
 <div class="container">
 	<div class="row">
 		<div id="pageTitle">
 			<h2>全体履歴</h2>
 		</div><!-- pageTitle -->
+		<div id="calcStatusArea">
+			<p>集計<b><?php echo $calcCount; ?></b>回　<span id="wsStatus"></span>
+			</p>
+		</div>
 	</div><!-- row -->
 </div><!-- container -->
 
