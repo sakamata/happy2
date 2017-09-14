@@ -3,13 +3,27 @@
 class AccountController extends Controller
 {
 	// ログインが必要なActionを記述登録
-	protected $auth_actions = array('index', 'signout','follow','editProfile');
+	protected $auth_actions = array('signout','follow','editProfile');
+
+	// account関連のページはログイン中ならホーム画面にリダイレクトさせる
+	// その為の変数呼び出しのみ処理
+	public function indexAction()
+	{
+		$path = dirname(__FILE__) . '/../../../hidden/info.php';
+		require $path;
+
+		return $this->render(array(
+			'permitDomain' => $permitDomain,
+		));
+	}
 
 	// generateCsrfToken( controller名 / action名 )
 	// 単にレンダリングをさせるだけだが フォームの為の_tokenを発行
 	//Done
 	public function signupAction()
 	{
+		// $this->redirectAction();
+
 		return $this->render(array(
 			'usName' => '',
 			'usId' => '',
@@ -469,6 +483,7 @@ class AccountController extends Controller
 		), 'signin');
 	}
 
+	// Facabookログインの為の遷移先URLを生成する
 	public function facebookAuthenticateAction()
 	{
 		// date_default_timezone_set('Asia/Tokyo');
@@ -489,6 +504,7 @@ class AccountController extends Controller
 		return $link;
 	}
 
+	// Facabookログインのリダイレクト先の処理
 	public function facebookCallbackAction()
 	{
 		// date_default_timezone_set('Asia/Tokyo');
@@ -516,8 +532,24 @@ class AccountController extends Controller
 			exit();
 		}
 
+		// Facebookより返ったユーザー関連の情報（連想配列）
+		$FBuserStatus = $res->getDecodedBody();
+
+
+		// FB IDがDBに存在するか確認
+
+			// 有る場合はログイン
+
+			// 無い場合は　HappyIDの存在確認
+				// Happyで既にアカウントを作ったか？
+
+					// Yes 既存ID Passの入力
+
+					// No HappyID の作成フローへ
+
+
 		return $this->render(array(
-			'getDecodedBody' => $res->getDecodedBody(),
+			'getDecodedBody' => $FBuserStatus,
 		));
 	}
 

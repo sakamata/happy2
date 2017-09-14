@@ -39,7 +39,7 @@
 	</div>
 </div>
 
-<a href="<?php echo $this->escape($facebookLink); ?>">FBログインリンク</a>
+<a href="<?php echo $this->escape($facebookLink); ?>">Facebookで登録/ログイン</a>
 
 </form>
 <!-- FB login button -->
