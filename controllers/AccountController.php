@@ -5,16 +5,11 @@ class AccountController extends Controller
 	// ログインが必要なActionを記述登録
 	protected $auth_actions = array('signout','follow','editProfile');
 
-	// account関連のページはログイン中ならホーム画面にリダイレクトさせる
-	// その為の変数呼び出しのみ処理
+	// account関連のリダイレクト
+	// 非ログイン => account/signin , ログイン中 => ホーム画面
 	public function indexAction()
 	{
-		$path = dirname(__FILE__) . '/../../../hidden/info.php';
-		require $path;
-
-		return $this->render(array(
-			'permitDomain' => $permitDomain,
-		));
+		return $this->redirect('/');
 	}
 
 	// generateCsrfToken( controller名 / action名 )
@@ -23,6 +18,9 @@ class AccountController extends Controller
 	public function signupAction()
 	{
 		// $this->redirectAction();
+		if ($this->session->isAuthenticated()) {
+			return $this->redirect('/');
+		}
 
 		return $this->render(array(
 			'usName' => '',
@@ -60,7 +58,7 @@ class AccountController extends Controller
 			$errors[] = 'ユーザーIDを入力してください';
 		} else if (!preg_match('/^\w{3,20}$/', $usId)) {
 			$errors[] = 'ユーザーIDは半角英数字及びアンダースコアを3～20文字以内で入力してください。';
-		} elseif (!$this->db_manager->get('User')->isUniqueUserName($usId)) {
+		} elseif (!$this->db_manager->get('User')->isUniqueUserId($usId)) {
 			$errors[] = 'このユーザーIDは既に使用されています。';
 		}
 
@@ -373,24 +371,11 @@ class AccountController extends Controller
 		return false;
 	}
 
-/*
-	public function indexAction()
-	{
-		$user = $this->session->get('user');
-		$followings = $this->db_manager->get('User')->fetchAllFollowingsByUserId($user['usNo']);
-
-		return $this->render(array(
-			'user' => $user,
-			'followings' => $followings,
-		));
-	}
-*/
-
 	//Done
 	public function signinAction()
 	{
 		if ($this->session->isAuthenticated()) {
-			return $this->redirect('/account');
+			return $this->redirect('/');
 		}
 
 		return $this->render(array(
@@ -533,23 +518,25 @@ class AccountController extends Controller
 		}
 
 		// Facebookより返ったユーザー関連の情報（連想配列）
-		$FBuserStatus = $res->getDecodedBody();
-
+		$fbUserStatus = $res->getDecodedBody();
 
 		// FB IDがDBに存在するか確認
-
+		$facebookId = $fbUserStatus['id'];
+		if (!$this->db_manager->get('User')->isUniqueFacebookUserId($facebookId)) {
 			// 有る場合はログイン
+		}
 
-			// 無い場合は　HappyIDの存在確認
+			// 無い場合は　HappyIDの存在をユーザーに確認
+
 				// Happyで既にアカウントを作ったか？
 
 					// Yes 既存ID Passの入力
 
-					// No HappyID の作成フローへ
+					// No HappyID の作成フローへ   FBIDinsetの際ユニーク確認をすること
 
 
 		return $this->render(array(
-			'getDecodedBody' => $FBuserStatus,
+			'getDecodedBody' => $fbUserStatus,
 		));
 	}
 
