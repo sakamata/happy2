@@ -123,6 +123,7 @@ class AdminRepository extends DbRepository
 				`ip` VARCHAR(100) NULL,
 				`host` VARCHAR(100) NULL,
 				`regDate` DATETIME NULL,
+				`facebookId` VARCHAR(64) NULL,
 				PRIMARY KEY (`usNo`),
 				UNIQUE INDEX `id_UNIQUE` (`usNo` ASC),
 				UNIQUE INDEX `usId_UNIQUE` (`usId` ASC)

@@ -383,6 +383,7 @@ class AccountController extends Controller
 			'usId' => '',
 			'usPs' => '',
 			'_token' => $this->generateCsrfToken('account/signin'),
+			'facebookLink' => $this->facebookAuthenticateAction(),
 		));
 	}
 
@@ -466,6 +467,58 @@ class AccountController extends Controller
 			'errors' => $errors,
 			'_token' => $this->generateCsrfToken('account/signin'),
 		), 'signin');
+	}
+
+	public function facebookAuthenticateAction()
+	{
+		// date_default_timezone_set('Asia/Tokyo');
+		require_once '../php-graph-sdk-5.x/src/Facebook/autoload.php';
+		$path = dirname(__FILE__) . '/../../../hidden/info.php';
+		require $path;
+
+		$fb = new Facebook\Facebook([
+			'app_id' => $FacebookAppId,
+			'app_secret' => $FacebookAppSecret,
+			'default_graph_version' => 'v2.8'
+		]);
+
+		$helper = $fb->getRedirectLoginHelper();
+		$scope = ['public_profile'];
+		$link = 'https://' . $permitDomain . '/happy2/web/account/facebookcallback';
+		$link = $helper->getLoginUrl($link, $scope);
+		return $link;
+	}
+
+	public function facebookCallbackAction()
+	{
+		// date_default_timezone_set('Asia/Tokyo');
+		require_once '../php-graph-sdk-5.x/src/Facebook/autoload.php';
+		$path = dirname(__FILE__) . '/../../../hidden/info.php';
+		require $path;
+
+		$fb = new Facebook\Facebook([
+			'app_id' => $FacebookAppId,
+			'app_secret' => $FacebookAppSecret,
+			'default_graph_version' => 'v2.8'
+		]);
+
+		$helper = $fb->getRedirectLoginHelper();
+		try {
+			$access_token = $helper->getAccessToken();
+			$res = $fb->get( '/me', $access_token);
+
+		} catch(Facebook\Exceptions\FacebookResponseException $e) {
+			echo $e->getMessage();
+			exit();
+
+		} catch(Facebook\Exceptions\FacebookSDKException $e) {
+			echo $e->getMessage();
+			exit();
+		}
+
+		return $this->render(array(
+			'getDecodedBody' => $res->getDecodedBody(),
+		));
 	}
 
 	//Done
