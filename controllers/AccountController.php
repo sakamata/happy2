@@ -471,7 +471,6 @@ class AccountController extends Controller
 	// Facabookログインの為の遷移先URLを生成する
 	public function facebookAuthenticateAction()
 	{
-		// date_default_timezone_set('Asia/Tokyo');
 		require_once '../php-graph-sdk-5.x/src/Facebook/autoload.php';
 		$path = dirname(__FILE__) . '/../../../hidden/info.php';
 		require $path;
@@ -489,10 +488,11 @@ class AccountController extends Controller
 		return $link;
 	}
 
+	// 最低限処理済み (FB PHP SDKから id name のみ取得)
+	// ***ToDo*** 全角名前とか画像等の取得
 	// Facabookログインのリダイレクト先の処理
 	public function facebookCallbackAction()
 	{
-		// date_default_timezone_set('Asia/Tokyo');
 		require_once '../php-graph-sdk-5.x/src/Facebook/autoload.php';
 		$path = dirname(__FILE__) . '/../../../hidden/info.php';
 		require $path;
@@ -522,22 +522,149 @@ class AccountController extends Controller
 
 		// FB IDがDBに存在するか確認
 		$facebookId = $fbUserStatus['id'];
-		if (!$this->db_manager->get('User')->isUniqueFacebookUserId($facebookId)) {
+		$facebookName = $fbUserStatus['name'];
+		$res = $this->db_manager->get('User')->FacebookIdExistenceCheck($facebookId);
+		if (isset($res)) {
 			// 有る場合はログイン
+			$usId = $res['usId'];
+			$user_repository = $this->db_manager->get('User');
+			$user = $user_repository->fetchByUserName($usId);
+			$this->session->setAuthenticated(true);
+			$this->session->set('user', $user);
+			return $this->redirect('/');
 		}
 
-			// 無い場合は　HappyIDの存在をユーザーに確認
+		// セッションにFBID入れてリダイレクト
+		$this->session->set('facebookId', $facebookId);
+		$this->session->set('facebookName', $facebookName);
+		return $this->redirect('/account/facebookjoinform');
 
-				// Happyで既にアカウントを作ったか？
+		// デバッグ用、本来は不要
+		// return $this->render(array(
+		// 	'fbUserStatus' => $fbUserStatus,
+		// ));
+	}
 
-					// Yes 既存ID Passの入力
+	// FB連携 入力フォーム画面 HappyIDの存在をユーザーに確認
+	public function facebookJoinFormAction()
+	{
+		if (!$this->session->get('facebookId')) {
+			// 処理を中止
+			$this->signoutAction();
+			return $this->redirect('/');
+		}
 
-					// No HappyID の作成フローへ   FBIDinsetの際ユニーク確認をすること
-
+		$currentUsId = $this->session->get('facebookName');
+		$usIdSignup = $this->generateHappyId($currentUsId);
 
 		return $this->render(array(
-			'getDecodedBody' => $fbUserStatus,
+			'currentUsId' => $currentUsId,
+			'usIdSignup' => $usIdSignup,
+			'usIdJoin' => '',
+			'usPs' => '',
+			'errorsSiginup' => null,
+			'errorsJoin' => null,
+			'_token' => $this->generateCsrfToken('account/facebookjoinform'),
 		));
+	}
+
+	// FB連携　アカウント新規登録チェック（HappyID持っていない）
+	public function facebookJoinRegisterAction()
+	{
+		if (!$this->request->isPost()) {
+			$this->forward404();
+		}
+
+		$token = $this->request->getPost('_token');
+		if (!$this->checkCsrfToken('account/facebookjoinform', $token)) {
+			return $this->redirect('/account/facebookjoinform');
+		}
+
+		$currentUsId = $this->session->get('facebookName');
+		// HappyID の生成 $currentUsId をhappy のusID準拠のものに変更
+		$usId = $this->request->getPost('usIdSignup');
+		$usPs = null;
+		$usName = $this->session->get('facebookName');
+		$facebookId = $this->session->get('facebookId');
+
+		// $usName を16文字以内に置換
+		if (strlen($usName) > 16) {
+			$usName = substr($usName, 0, 16);
+		}
+
+		$errors = array();
+
+		if (!strlen($usId)) {
+			$errors[] = 'ユーザーIDを入力してください';
+		} else if (!preg_match('/^\w{3,20}$/', $usId)) {
+			$errors[] = 'ユーザーIDは半角英数字及びアンダースコアを3～20文字以内で入力してください。';
+		} elseif (!$this->db_manager->get('User')->isUniqueUserId($usId)) {
+			$errors[] = 'このユーザーIDは既に使用されています。';
+		}
+
+		if (count($errors) === 0) {
+			// FBID insetの際ユニーク確認をする
+
+			$this->db_manager->get('User')->insert($usId, $usPs, $usName, $facebookId);
+			// 自分に1クリックさせる
+			$n = $this->db_manager->get('User')->getUserNo($usId);
+			$usNo = $n['usNo'];
+			$this->db_manager->get('User')->selfOneClick($usNo);
+
+			// tb_user_statusに位置と現在日時を登録
+			// ***ToDo***user側で緯度経度取得の実装
+			$latitude = $this->request->getPost('latitude');
+			$longitude = $this->request->getPost('longitude');
+			$this->db_manager->get('User')->tb_user_statusRegisterInsert($usNo, $latitude, $longitude);
+
+			$this->session->setAuthenticated(true);
+			$user = $this->db_manager->get('User')->fetchByUserName($usId);
+			$this->session->set('user', $user);
+
+			return $this->redirect('/');
+		}
+
+		return $this->render(array(
+			'currentUsId' => $currentUsId,
+			'usIdSignup' => $usId,
+			'usIdJoin' => '',
+			'usPs' => $usPs,
+			'errorsSiginup' => $errorsSiginup,
+			'errorsJoin' => null,
+			'_token' => $this->generateCsrfToken('account/facebookjoinform'),
+		), 'facebookjoinform');
+	}
+
+	// HappyID の自動作成
+	// $currentUsId を正規表現,20文字以内に置換　記号は　_ のみ どれも駄目なら空欄
+	public function generateHappyId($currentUsId)
+	{
+		// 全角文字を削除
+		$currentUsId = preg_replace('/[^\x01-\x7E]/u' , '' , $currentUsId);
+		// 半角記号を _ に置換
+		$usId = preg_replace('/\W/u' , '_' , $currentUsId);
+		// 20文字以内に加工
+		if (strlen($usId) > 20) {
+			$usId = substr($usId, 0, 20);
+		}
+		// DBへ重複確認
+		if (!$this->db_manager->get('User')->isUniqueUserId($usId)) {
+			// 重複ありなら文末数値付与、文字数オーバーならID末尾削る
+			if (strlen($usId) > 17) {
+				$usId = substr($usId, 0, 17);
+			}
+			$num = rand(1, 999);
+			$usId = $usId . $num;
+			// 生成した$suIdは確率論的に完璧にユニークにならない。
+			// しかし生成したIDが非ユニークなら、あとはユーザーの入力修正に任せる
+		}
+		return $usId;
+	}
+
+	// FB連携　既存アカウント連携チェック（HappyID持っている）
+	public function facebookJoinSigninAction()
+	{
+		// _token,usId,usPs,errors1,errors2
 	}
 
 	//Done

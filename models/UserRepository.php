@@ -3,9 +3,11 @@
 class UserRepository extends DbRepository
 {
 
-	public function insert($usId, $usPs, $usName)
+	public function insert($usId, $usPs, $usName, $facebookId)
 	{
-		$usPs = $this->hashPassword($usPs);
+		if (isset($usPs)) {
+			$usPs = $this->hashPassword($usPs);
+		}
 		$now = new DateTime();
 		$img =  "default/dummy.png";
 		$nowPt = AdminSettingRepository::userDefaultPoint;
@@ -13,8 +15,8 @@ class UserRepository extends DbRepository
 		$host = gethostbyaddr($ip);
 
 		$sql = "
-			INSERT INTO tbus (usId,usPs,usName,usImg,nowPt,ip,host,regDate)
-			VALUES(:usId, :usPs, :usName, '$img', '$nowPt', '$ip', '$host', :regDate)
+			INSERT INTO tbus (usId,usPs,usName,usImg,nowPt,ip,host,regDate,facebookId)
+			VALUES(:usId, :usPs, :usName, '$img', '$nowPt', '$ip', '$host', :regDate, :facebookId)
 		";
 
 		$stmt = $this->execute($sql, array(
@@ -22,6 +24,7 @@ class UserRepository extends DbRepository
 			':usPs' => $usPs,
 			':usName' => $usName,
 			':regDate' => $now->format('Y-m-d H:i:s'),
+			':facebookId' => $facebookId,
 		));
 	}
 
@@ -111,7 +114,7 @@ class UserRepository extends DbRepository
 		return $this->fetch($sql, array(':usId' => $usId));
 	}
 
-	public function isUniqueUserName($usId)
+	public function isUniqueUserId($usId)
 	{
 		$sql = "SELECT COUNT(usNo) as count FROM tbus WHERE usId = :usId";
 
@@ -121,6 +124,15 @@ class UserRepository extends DbRepository
 		}
 
 		return false;
+	}
+
+	public function FacebookIdExistenceCheck($facebookId)
+	{
+		$sql = "SELECT * FROM tbus WHERE facebookId = :facebookId";
+
+		return $this->fetch($sql, array(
+			':facebookId' => $facebookId,
+		));
 	}
 
 	public function fetchAllFollowingsByUserId($usId)
