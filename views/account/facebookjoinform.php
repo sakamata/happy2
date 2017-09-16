@@ -7,12 +7,12 @@
 	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 	<h3>Q:Happyのアカウントを既に持っていますか？</h3>
 
-	<?php if (isset($errorsSiginup) && count($errorsSiginup) > 0): ?>
-	<?php echo $this->render('errors', array('errors' => $errorsSiginup)); ?>
-	<?php endif; ?>
 
 	<h3 class="marginTop70px">A1:持っていない</h3>
 	<p>Happyで使用するIDを登録してください。(半角英数字20文字まで)	</p>
+	<?php if (isset($errorsSiginup) && count($errorsSiginup) > 0): ?>
+		<?php echo $this->render('errors', array('errors' => $errorsSiginup)); ?>
+	<?php endif; ?>
 	<div class="form-group">
 		<label class="col-sm-2 control-label">ユーザーID</label>
 		<div class="col-sm-4">
@@ -26,12 +26,12 @@
 		</div>
 	</div>
 
-	<?php if (isset($errorsJoin) && count($errorsJoin) > 0): ?>
-	<?php echo $this->render('errors', array('errors' => $errorsJoin)); ?>
-	<?php endif; ?>
 
 	<h3 class="marginTop70px">A2:持っている</h3>
 	<p>アカウントを連携します。HappyのユーザーIDとパスワードを入力してください。</p>
+	<?php if (isset($errorsJoin) && count($errorsJoin) > 0): ?>
+		<?php echo $this->render('errors', array('errors' => $errorsJoin)); ?>
+	<?php endif; ?>
 	<?php echo $this->render('account/inputs', array('usId' => $usIdJoin, 'usPs' => $usPs,)); ?>
 
 	<div class="form-group">

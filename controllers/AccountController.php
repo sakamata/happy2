@@ -377,6 +377,8 @@ class AccountController extends Controller
 		if ($this->session->isAuthenticated()) {
 			return $this->redirect('/');
 		}
+		// facebook PHP SDK用のセッション開始
+		session_start();
 
 		return $this->render(array(
 			'usId' => '',
@@ -524,7 +526,7 @@ class AccountController extends Controller
 		$facebookId = $fbUserStatus['id'];
 		$facebookName = $fbUserStatus['name'];
 		$res = $this->db_manager->get('User')->FacebookIdExistenceCheck($facebookId);
-		if (isset($res)) {
+		if ($res) {	// issetでは駄目！
 			// 有る場合はログイン
 			$usId = $res['usId'];
 			$user_repository = $this->db_manager->get('User');
@@ -568,7 +570,7 @@ class AccountController extends Controller
 		));
 	}
 
-	// FB連携　アカウント新規登録チェック（HappyID持っていない）
+	// FB連携　アカウント新規登録チェック （HappyID持っていない）
 	public function facebookJoinRegisterAction()
 	{
 		if (!$this->request->isPost()) {
@@ -601,10 +603,12 @@ class AccountController extends Controller
 		} elseif (!$this->db_manager->get('User')->isUniqueUserId($usId)) {
 			$errors[] = 'このユーザーIDは既に使用されています。';
 		}
+		// ***ToDo*** error追加 このFacebookアカウントは既に連携済みです。
 
+
+		// アカウント発行と初期処理、ログイン処理
 		if (count($errors) === 0) {
 			// FBID insetの際ユニーク確認をする
-
 			$this->db_manager->get('User')->insert($usId, $usPs, $usName, $facebookId);
 			// 自分に1クリックさせる
 			$n = $this->db_manager->get('User')->getUserNo($usId);
@@ -623,13 +627,12 @@ class AccountController extends Controller
 
 			return $this->redirect('/');
 		}
-
 		return $this->render(array(
 			'currentUsId' => $currentUsId,
 			'usIdSignup' => $usId,
 			'usIdJoin' => '',
 			'usPs' => $usPs,
-			'errorsSiginup' => $errorsSiginup,
+			'errorsSiginup' => $errors,
 			'errorsJoin' => null,
 			'_token' => $this->generateCsrfToken('account/facebookjoinform'),
 		), 'facebookjoinform');
