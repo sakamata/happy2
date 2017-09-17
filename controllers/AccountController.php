@@ -64,11 +64,12 @@ class AccountController extends Controller
 
 		if (!strlen($usPs)) {
 			$errors[] = 'パスワードを入力してください';
-		} elseif (4 > strlen($usPs) || strlen($usPs) > 30) {
-			$errors[] = 'パスワードは4～30文字以内で入力してください。';
+		} elseif (!preg_match('/\A[a-z\d]{4,30}+\z/i', $usPs)) {
+			$errors[] = 'パスワードは4～30文字以内入力してください。';
 		}
 
 		if (count($errors) === 0) {
+			$usName = htmlspecialchars($usName);
 			$this->db_manager->get('User')->insert($usId, $usPs, $usName);
 			// 自分に1クリックさせる
 			$n = $this->db_manager->get('User')->getUserNo($usId);
@@ -260,6 +261,7 @@ class AccountController extends Controller
 		// エラーが無い、かつ　名前の変更か、画像がセットされているか？
 		// かつ　現在のCookieの表示設定値と異なっているか?
 		if (count($errors) === 0 && ( $user['usName'] != $usName || $imageFile || $_COOKIE["viewType"] != $viewType)) {
+			$usName = htmlspecialchars($usName);
 			$this->db_manager->get('User')->profileEdit($usId, $usName, $usImgPath);
 			$user = $this->db_manager->get('User')->fetchByUserName($usId);
 			$this->session->set('user', $user);
