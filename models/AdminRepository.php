@@ -115,7 +115,7 @@ class AdminRepository extends DbRepository
 			DROP TABLE tbus;
 			CREATE TABLE IF NOT EXISTS `happy2`.`tbus` (
 				`usNo` INT(11) NOT NULL AUTO_INCREMENT,
-				`usId` VARCHAR(32) NULL,
+				`usId` VARCHAR(32) NOT NULL,
 				`usPs` VARCHAR(64) NULL,
 				`usName` VARCHAR(32) NULL,
 				`usImg` VARCHAR(256) NULL,
@@ -126,7 +126,8 @@ class AdminRepository extends DbRepository
 				`facebookId` VARCHAR(64) NULL,
 				PRIMARY KEY (`usNo`),
 				UNIQUE INDEX `id_UNIQUE` (`usNo` ASC),
-				UNIQUE INDEX `usId_UNIQUE` (`usId` ASC)
+				UNIQUE INDEX `usId_UNIQUE` (`usId` ASC),
+				UNIQUE INDEX `facebookId_UNIQUE` (`facebookId` ASC)
 			)
 			ENGINE = InnoDB
 		";
