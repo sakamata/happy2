@@ -126,11 +126,24 @@ class UserRepository extends DbRepository
 		return false;
 	}
 
-	public function FacebookIdExistenceCheck($facebookId)
+	public function facebookIdExistenceCheck($facebookId)
 	{
 		$sql = "SELECT * FROM tbus WHERE facebookId = :facebookId";
 
 		return $this->fetch($sql, array(
+			':facebookId' => $facebookId,
+		));
+	}
+
+	public function facebookIdAdd($usId, $facebookId)
+	{
+		if (!$usId) {
+			return false;
+		}
+		$sql = "UPDATE tbus SET facebookId = :facebookId WHERE usId = :usId";
+
+		$stmt = $this->execute($sql, array(
+			':usId' => $usId,
 			':facebookId' => $facebookId,
 		));
 	}

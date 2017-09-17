@@ -2,12 +2,9 @@
 <div class="container">
 <div class="row">
 <h2>ようこそ&nbsp;<?php echo $this->escape($currentUsId); ?>&nbsp;さん<br>Facebookアカウントの認証ができました。</h2>
-
-<form class="form-horizontal" action="/happy2/web/account/facebookjoinregister" method="post" accept-charset="utf-8">
+<form id="joinSignin" class="form-horizontal" action="/happy2/web/account/facebookjoinregister" method="post" accept-charset="utf-8">
 	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 	<h3>Q:Happyのアカウントを既に持っていますか？</h3>
-
-
 	<h3 class="marginTop70px">A1:持っていない</h3>
 	<p>Happyで使用するIDを登録してください。(半角英数字20文字まで)	</p>
 	<?php if (isset($errorsSiginup) && count($errorsSiginup) > 0): ?>
@@ -19,13 +16,11 @@
 			<input type="text" name="usIdSignup" class="form-control" id="InputText" placeholder="半角英数字20文字まで" style="ime-mode:disabled;" value="<?php echo $this->escape($usIdSignup); ?>">
 		</div>
 	</div>
-
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
 			<input type="submit" class="btn btn-warning btn-lg" value="新規登録 / ログイン">
 		</div>
 	</div>
-
 
 	<h3 class="marginTop70px">A2:持っている</h3>
 	<p>アカウントを連携します。HappyのユーザーIDとパスワードを入力してください。</p>
@@ -33,10 +28,9 @@
 		<?php echo $this->render('errors', array('errors' => $errorsJoin)); ?>
 	<?php endif; ?>
 	<?php echo $this->render('account/inputs', array('usId' => $usIdJoin, 'usPs' => $usPs,)); ?>
-
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
-			<input type="submit" class="btn btn-warning btn-lg" value="連携してログイン">
+			<input type="submit" class="btn btn-warning btn-lg" value="連携してログイン"  onclick="joinSignin();">
 		</div>
 	</div>
 
@@ -57,3 +51,8 @@
 		</div>
 	</div><!-- row -->
 </div><!-- container -->
+<script type="text/javascript">
+	var joinSignin = function (){
+		document.getElementById('joinSignin').action="/happy2/web/account/facebookjoinsignin";
+	}
+</script>

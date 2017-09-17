@@ -449,7 +449,6 @@ class AccountController extends Controller
 		}
 
 		if (count($errors) === 0) {
-
 			$user_repository = $this->db_manager->get('User');
 			$user = $user_repository->fetchByUserName($usId);
 
@@ -525,7 +524,7 @@ class AccountController extends Controller
 		// FB IDがDBに存在するか確認
 		$facebookId = $fbUserStatus['id'];
 		$facebookName = $fbUserStatus['name'];
-		$res = $this->db_manager->get('User')->FacebookIdExistenceCheck($facebookId);
+		$res = $this->db_manager->get('User')->facebookIdExistenceCheck($facebookId);
 		if ($res) {	// issetでは駄目！
 			// 有る場合はログイン
 			$usId = $res['usId'];
@@ -557,6 +556,7 @@ class AccountController extends Controller
 		}
 
 		$currentUsId = $this->session->get('facebookName');
+		// HappyID の生成 $currentUsId をhappy のusID準拠のものに変更
 		$usIdSignup = $this->generateHappyId($currentUsId);
 
 		return $this->render(array(
@@ -583,7 +583,6 @@ class AccountController extends Controller
 		}
 
 		$currentUsId = $this->session->get('facebookName');
-		// HappyID の生成 $currentUsId をhappy のusID準拠のものに変更
 		$usId = $this->request->getPost('usIdSignup');
 		$usPs = null;
 		$usName = $this->session->get('facebookName');
@@ -664,10 +663,58 @@ class AccountController extends Controller
 		return $usId;
 	}
 
-	// FB連携　既存アカウント連携チェック（HappyID持っている）
+	// FB連携　既存アカウント連携チェック、ログイン処理（HappyID持っている）
 	public function facebookJoinSigninAction()
 	{
-		// _token,usId,usPs,errors1,errors2
+		if (!$this->request->isPost()) {
+			$this->forward404();
+		}
+
+		$token = $this->request->getPost('_token');
+		if (!$this->checkCsrfToken('account/facebookjoinform', $token)) {
+			return $this->redirect('/account/facebookjoinform');
+		}
+
+		// 既存ログイン処理
+		$usId = $this->request->getPost('usId');
+		$usPs = $this->request->getPost('usPs');
+
+		$errors = array();
+
+		if (!strlen($usId)) {
+			$errors[] = 'ユーザーIDを入力してください';
+		}
+
+		if (!strlen($usPs)) {
+			$errors[] = 'パスワードを入力してください';
+		}
+
+		if (count($errors) === 0) {
+			$user_repository = $this->db_manager->get('User');
+			$user = $user_repository->fetchByUserName($usId);
+
+			if (!$user || $user['usPs'] !== $user_repository->hashPassword($usPs)) {
+				$errors[] = 'ユーザーIDかパスワードが正しくありません。';
+			} else {
+				// FBIDをDBに追加
+				$facebookId = $this->session->get('facebookId');
+				$this->db_manager->get('User')->facebookIdAdd($usId, $facebookId);
+				// ログイン処理
+				$this->session->setAuthenticated(true);
+				$this->session->set('user', $user);
+				return $this->redirect('/');
+			}
+		}
+
+		return $this->render(array(
+			'currentUsId' => $currentUsId,
+			'usIdSignup' => '',
+			'usIdJoin' => $usId,
+			'usPs' => $usPs,
+			'errorsSiginup' => null,
+			'errorsJoin' => $errors,
+			'_token' => $this->generateCsrfToken('account/facebookjoinform'),
+		), 'facebookjoinform');
 	}
 
 	//Done
