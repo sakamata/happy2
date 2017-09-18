@@ -23,7 +23,7 @@
 
 	<div class="userButtonArea_small">
 		<div class="userButton_small">
-			<button type="submit" id="clickAction_<?php echo $status['usNo']; ?>" class="clickAction_small" onclick="clickAction('post', '<?php echo $status['usNo']; ?>', '<?php echo $status['usId']; ?>', '<?php echo $status['usName']; ?>' )">
+			<button type="submit" id="clickAction_<?php echo $status['usNo']; ?>" class="clickAction_small" onclick="clickAction('post', '<?php echo $status['usNo']; ?>', '<?php echo $status['usId']; ?>', '<?php echo $this->escape_js($status['usName']); ?>' )">
 			<div class="user_name"><p><?php echo $this->escape($status['usName']); ?></p></div>
 			<div class="happy_button_word">Happy! <span id="clickSum_<?php echo $status['usNo']; ?>" class="countNumber_small"><?php echo $this->escape($status['MySendClkSum']); ?></span></div>
 			<div class="userGraph">

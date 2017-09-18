@@ -188,7 +188,7 @@ clickPool = function (post) {
 		if (post === 'reset') {
 			posts = {};
 			count = 0;
-			console.log('posts reset!')
+			// console.log('posts reset!')
 			return;
 		}
 		if (post) { // postがnullなら クロージャー内のpostsを返す
@@ -236,7 +236,7 @@ function clickPost(posts) {
 		url: '<?php echo $href_base; ?>/ajaxPost/clickPost',
 		data: data,
 		success: function(res) {
-			console.log('clickPost success!');
+			// console.log('clickPost success!');
 			clickPool('reset');
 		},
 		error: function() {
@@ -251,9 +251,9 @@ var clickAction = function(action, usNo, usId, usName) {
 		var postsCount = Object.keys(posts).length;
 		if (postsCount > 0) {
 			clickPost(posts);
-			console.log('intervalPost POST end!');
+			// console.log('intervalPost POST end!');
 		}
-		console.log('intervalPost Check end!');
+		// console.log('intervalPost Check end!');
 		return;
 	}
 
@@ -265,7 +265,7 @@ var clickAction = function(action, usNo, usId, usName) {
 		receiveUserName : usName,
 		sendUserNo : <?php echo $this->escape($user['usNo']); ?>,
 		sendUserId : '<?php echo $this->escape($user['usId']); ?>',
-		sendUserName : '<?php echo $this->escape($user['usName']); ?>',
+		sendUserName : '<?php echo $this->escape_js($user['usName']); ?>',
 		sendUserImage : '<?php echo $this->escape($user['usImg']); ?>'
 	};
 
@@ -288,7 +288,7 @@ var clickAction = function(action, usNo, usId, usName) {
 	// Object数が指定以上で強制POSTさせる
 	if (postsCount >= 10) {
 		clickPost(posts);
-		console.log('postsCount over POST end!');
+		// console.log('postsCount over POST end!');
 	}
 };
 

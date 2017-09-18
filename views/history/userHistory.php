@@ -43,7 +43,7 @@ echo $this->render('status/js/index_js_header', array(
 	<div class="row">
 		<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
 			<div id="pageTitle">
-				<h2><?php echo $headerUser['usName']; ?>さん　<?php echo $usersArrayMessage; ?></h2>
+				<h2><?php echo $this->escape($headerUser['usName']); ?>さん　<?php echo $usersArrayMessage; ?></h2>
 			</div><!-- pageTitle -->
 		</div><!--  -->
 		<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">

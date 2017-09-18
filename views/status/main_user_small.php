@@ -26,7 +26,7 @@
 			</div>
 		</div><!-- mainUserInfo_small -->
 		<div class="mainUserButton_small">
-			<button type="submit" id="clickAction_<?php echo $headerUser['usNo']; ?>" class="myClickAction_small" onclick="clickAction('post', '<?php echo $headerUser['usNo']; ?>', '<?php echo $headerUser['usId']; ?>', '<?php echo $headerUser['usName']; ?>' )">My Happy!<br><span id="clickSum_<?php echo $headerUser['usNo']; ?>" class="countNumber"><?php echo $this->escape($headerUser['thisTimeToMeClkSum']); ?></span>
+			<button type="submit" id="clickAction_<?php echo $headerUser['usNo']; ?>" class="myClickAction_small" onclick="clickAction('post', '<?php echo $headerUser['usNo']; ?>', '<?php echo $headerUser['usId']; ?>', '<?php echo $this->escape_js($headerUser['usName']); ?>' )">My Happy!<br><span id="clickSum_<?php echo $headerUser['usNo']; ?>" class="countNumber"><?php echo $this->escape($headerUser['thisTimeToMeClkSum']); ?></span>
 			<div class="userGraph">
 				<canvas id="persentGraphCanvas_<?php echo $headerUser['usNo']; ?>" class="myCikCanvas" width="130" height="16">
 				Canvasに対応したブラウザが必要です。</canvas>

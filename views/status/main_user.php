@@ -60,7 +60,7 @@
 		<div class="col-sm-6 col-md-6 col-lg-6">
 			<div class="userButtonArea">
 				<div class="userButton">
-					<button type="submit" id="clickAction_<?php echo $headerUser['usNo']; ?>" class="myClickAction" onclick="clickAction('post', '<?php echo $headerUser['usNo']; ?>', '<?php echo $headerUser['usId']; ?>', '<?php echo $headerUser['usName']; ?>' )"><span id="clickSum_<?php echo $headerUser['usNo']; ?>" class="countNumber"><?php echo $this->escape($headerUser['thisTimeToMeClkSum']); ?></span><br>My Happy!</button>
+					<button type="submit" id="clickAction_<?php echo $headerUser['usNo']; ?>" class="myClickAction" onclick="clickAction('post', '<?php echo $headerUser['usNo']; ?>', '<?php echo $headerUser['usId']; ?>', '<?php echo $this->escape_js($headerUser['usName']); ?>')"><span id="clickSum_<?php echo $headerUser['usNo']; ?>" class="countNumber"><?php echo $this->escape($headerUser['thisTimeToMeClkSum']); ?></span><br>My Happy!</button>
 				</div><!-- userButton -->
 				<div class="userGraph">
 					<canvas id="persentGraphCanvas_<?php echo $headerUser['usNo']; ?>" class="myCikCanvas" width="290" height="40">

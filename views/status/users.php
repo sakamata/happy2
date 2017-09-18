@@ -56,7 +56,7 @@
 				<div class="col-sm-6 col-md-6 col-lg-6">
 					<div class="userButtonArea">
 						<div class="userButton">
-							<button type="submit" id="clickAction_<?php echo $status['usNo']; ?>" class="clickAction" onclick="clickAction('post', '<?php echo $status['usNo']; ?>', '<?php echo $status['usId']; ?>', '<?php echo $status['usName']; ?>' )">
+							<button type="submit" id="clickAction_<?php echo $status['usNo']; ?>" class="clickAction" onclick="clickAction('post', '<?php echo $status['usNo']; ?>', '<?php echo $status['usId']; ?>', '<?php echo $this->escape_js($status['usName']); ?>' )">
 							<span id="clickSum_<?php echo $status['usNo']; ?>" class="countNumber"><?php echo $this->escape($status['MySendClkSum']); ?></span><br>Happy!</button>
 							<!-- <?php echo $this->escape($thisTimeAllClkSum); ?> -->
 						</div><!-- userButton -->

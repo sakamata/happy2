@@ -43,4 +43,22 @@ class View
 	{
 		return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 	}
+
+	// Thanks! https://iritec.jp/web_service/6290/ and Mr. Hiroshi Tokumaru
+	// 文字列をすべて uXXXX 形式に変換
+	public function unicode_escape($matches)
+	{
+		$u16 = mb_convert_encoding($matches[0],'UTF-16','UTF-8');
+		return preg_replace('/[0-9a-f]{4}/','\u$0',bin2hex($u16));
+	}
+
+	// 英数字とマイナス、ピリオド以外を uXXXX 形式でエスケープ
+	// JS内で,DBやユーザー記述のPHPの値を呼び出す際にはこれを使用する
+	// 使用例
+	// echo $this->escape_js($data);
+	public function escape_js($string)
+	{
+		$string = preg_replace_callback('/[^-.0-9a-zA-Z]+/u', 'View::unicode_escape', $string);
+		return $this->escape($string);
+	}
 }

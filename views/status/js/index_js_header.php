@@ -8,7 +8,7 @@ if ($statuses) {
 	$status ="";
 }
 
-$jsonStatuses = json_encode($headAndStatuses);
+$jsonStatuses = json_encode($headAndStatuses, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
 ?>
 
 <script type="text/javascript">
@@ -18,8 +18,7 @@ if (document.location.protocol==="https:")
 
 var myUserNo = <?php echo $user['usNo']; ?>;
 var viewNo = 0;
-var statuses = JSON.parse('<?php echo $jsonStatuses; ?>');
-
+var statuses = JSON.parse('<?php echo $this->escape_js($jsonStatuses); ?>');
 // soundの準備
 window.clkSoundMy = "<?php echo $href_base; ?>/sound/puyon1.mp3";
 window.clkSound = "<?php echo $href_base; ?>/sound/touch1.mp3";
