@@ -45,6 +45,14 @@
 			<input type="submit" class="btn btn-warning btn-lg" value="新規登録">
 		</div>
 	</div>
+
+	<div class="marginTop40px"></div>
+
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<a class="fbJoinButton" href="<?php echo $this->escape($facebookLink); ?>"><span class="fbJoinIcon">Facebookで登録/ログイン</span></a>
+		</div>
+	</div>
 </form>
 
 <p class="lead text-right">

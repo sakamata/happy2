@@ -28,7 +28,7 @@ a {
 	height: 36px;
 	background-color: #7ECE15;
 	/*デバッグ用の透過処理*/
-	/*background-color: rgba(126, 207, 21, 0.42);*/
+	background-color: rgba(126, 207, 21, 0.42);
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -669,6 +669,40 @@ ul.warning_list li {
 	text-align: right;
 }
 
+.marginTop40px{
+	margin-top: 40px;
+}
+
 .marginTop70px{
 	margin-top: 70px;
+}
+
+/* signin signup */
+.fbJoinButton {
+	width: 285px;
+	display: block;
+	height: 50px;
+	padding: 0 15px;
+	background-color: #3b579d;
+	border: 1px solid #5e7ac1;
+	border-radius: 6px;
+}
+
+.fbJoinButton:hover {
+	background-color: #5e7ac1;
+	text-decoration: none;
+}
+
+/* span */
+.fbJoinIcon {
+	display: block;
+	background-image: url(../img/FB-f-Logo__white_29.png);
+	background-repeat: no-repeat;
+	background-position: 0px 10px;
+	min-height: 30px;
+	padding-left: 38px;
+	padding-top: 13px;
+	color: #fff;
+	text-decoration: none;
+	font-size: 18px;
 }

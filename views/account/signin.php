@@ -39,12 +39,19 @@
 	</div>
 </div>
 
-<a href="<?php echo $this->escape($facebookLink); ?>">Facebookで登録/ログイン</a>
+<div class="marginTop40px"></div>
+
+<div class="form-group">
+	<div class="col-sm-offset-2 col-sm-10">
+		<a class="fbJoinButton" href="<?php echo $this->escape($facebookLink); ?>"><span class="fbJoinIcon">Facebookで登録/ログイン</span></a>
+	</div>
+</div>
 
 </form>
 <!-- FB login button -->
-<div class="fb-login-button" data-max-rows="1" data-size="large" data-show-faces="true" data-auto-logout-link="true" onlogin="FB.login();"></div>
+<!-- <div class="fb-login-button" data-max-rows="1" data-size="large" data-show-faces="true" data-auto-logout-link="true" onlogin="FB.login();"></div> -->
 
+<!-- FB message display -->
 <div id="status">
 </div>
 
