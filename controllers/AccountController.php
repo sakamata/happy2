@@ -26,6 +26,7 @@ class AccountController extends Controller
 			'usName' => '',
 			'usId' => '',
 			'usPs' => '',
+			'facebookLink' => $this->facebookAuthenticateLinkMake('facebooksigncheck'),
 			'_token' => $this->generateCsrfToken('account/signup'),
 		));
 	}
@@ -93,6 +94,7 @@ class AccountController extends Controller
 			'usId' => $usId,
 			'usPs' => $usPs,
 			'errors' => $errors,
+			'facebookLink' => $this->facebookAuthenticateLinkMake('facebooksigncheck'),
 			'_token' => $this->generateCsrfToken('account/signup'),
 		), 'signup');
 	}
@@ -101,9 +103,9 @@ class AccountController extends Controller
 	public function editProfileAction()
 	{
 		$user = $this->session->get('user');
-
 		return $this->render(array(
 			'user' => $user,
+			'facebookLink' => $this->facebookAuthenticateLinkMake('facebookeditprofilecheck'),
 			'_token' => $this->generateCsrfToken('account/editProfile'),
 		));
 	}
@@ -133,13 +135,9 @@ class AccountController extends Controller
 		} elseif (2 > mb_strlen($usName) || mb_strlen($usName) > 16) {
 			$errors[] = '名前は2～16文字以内で入力してください。';
 		}
-/*
-		if (!strlen($usPs)) {
-			$errors[] = 'パスワードを入力してください';
-		} elseif (4 > strlen($usPs) || strlen($usPs) > 30) {
-			$errors[] = 'パスワードは4～30文字以内で入力してください。';
-		}
-*/
+
+		// ***ToDo*** パスワード編集の際のバリデート処理
+
 		// 画像チェック処理
 		$imageFile = $this->request->getPostFile('imageFile');
 		// 画像がセットされていれば画像チェック
@@ -269,16 +267,67 @@ class AccountController extends Controller
 				setcookie("viewType", $viewType, time() + 60*60*24*30,'/');
 			}
 		}
-
 		if (count($errors) === 0) {
 			return $this->redirect('/');
 		} else {
+			$infos = array();
 			return $this->render(array(
 				'user' => $user,
+				'infos' => $infos,
 				'errors' => $errors,
 				'_token' => $this->generateCsrfToken('account/editProfile'),
+				'facebookLink' => $this->facebookAuthenticateLinkMake('facebookeditprofilecheck'),
 			), 'editProfile');
 		}
+	}
+
+	public function facebookEditProfileCheckAction()
+	{
+		// Facebookより返ったユーザー関連の情報（連想配列）
+		$fbUserStatus = $this->getFacebookStatus();
+
+		// FB IDがDBに存在するか確認
+		$facebookId = $fbUserStatus['id'];
+		$facebookName = $fbUserStatus['name'];
+		$res = $this->db_manager->get('User')->facebookIdExistenceCheck($facebookId);
+		$errors = array();
+		$infos = array();
+		if ($res) {	// issetでは駄目！
+			// 有る場合は重複を通知
+			$errors[] = 'このfacebookアカウントは他のHappyアカウントと既に連携されています。複数のアカウントとの連携はできません。';
+		} else {
+			// 無い場合はログイン中のuserのカラムとsessionにFBIDをset
+			$_SESSION['user']['facebookId'] = $facebookId;
+			$user = $this->session->get('user');
+			$this->db_manager->get('User')->facebookIdAdd($user['usId'], $facebookId);
+			$infos[] = 'facebookアカウントと連携しました。次回ログインよりFacebookアカウントで簡単にログインができます。';
+		}
+
+		return $this->render(array(
+			'user' => $user,
+			'infos' => $infos,
+			'errors' => $errors,
+			'_token' => $this->generateCsrfToken('account/editProfile'),
+			'facebookLink' => $this->facebookAuthenticateLinkMake('facebookeditprofilecheck'),
+		), 'editProfile');
+	}
+
+	// プロフィール編集画面でのfacebook連携解除処理
+	public function facebookJoinRemoveAction()
+	{
+		$_SESSION['user']['facebookId'] = null;
+		$user = $this->session->get('user');
+		$this->db_manager->get('User')->facebookIdAdd($user['usId'], $facebookId = null);
+
+		$infos = array();
+		$infos[] = 'facebookアカウントと連携を解除しました。';
+
+		return $this->render(array(
+			'user' => $user,
+			'infos' => $infos,
+			'_token' => $this->generateCsrfToken('account/editProfile'),
+			'facebookLink' => $this->facebookAuthenticateLinkMake('facebookeditprofilecheck'),
+		), 'editProfile');
 	}
 
 	// Thanks! http://www.glic.co.jp/blog/archives/88
@@ -384,7 +433,7 @@ class AccountController extends Controller
 			'usId' => '',
 			'usPs' => '',
 			'_token' => $this->generateCsrfToken('account/signin'),
-			'facebookLink' => $this->facebookAuthenticateAction(),
+			'facebookLink' => $this->facebookAuthenticateLinkMake('facebooksigncheck'),
 		));
 	}
 
@@ -465,12 +514,13 @@ class AccountController extends Controller
 			'usId' => $usId,
 			'usPs' => $usPs,
 			'errors' => $errors,
+			'facebookLink' => $this->facebookAuthenticateLinkMake('facebooksigncheck'),
 			'_token' => $this->generateCsrfToken('account/signin'),
 		), 'signin');
 	}
 
 	// Facabookログインの為の遷移先URLを生成する
-	public function facebookAuthenticateAction()
+	public function facebookAuthenticateLinkMake($action)
 	{
 		require_once '../php-graph-sdk-5.x/src/Facebook/autoload.php';
 		$path = dirname(__FILE__) . '/../../../hidden/info.php';
@@ -484,15 +534,14 @@ class AccountController extends Controller
 
 		$helper = $fb->getRedirectLoginHelper();
 		$scope = ['public_profile'];
-		$link = 'https://' . $permitDomain . '/happy2/web/account/facebookcallback';
+		$link = 'https://' . $permitDomain . '/happy2/web/account/'. $action;
 		$link = $helper->getLoginUrl($link, $scope);
 		return $link;
 	}
 
 	// 最低限処理済み (FB PHP SDKから id name のみ取得)
 	// ***ToDo*** 全角名前とか画像等の取得
-	// Facabookログインのリダイレクト先の処理
-	public function facebookCallbackAction()
+	public function getFacebookStatus()
 	{
 		require_once '../php-graph-sdk-5.x/src/Facebook/autoload.php';
 		$path = dirname(__FILE__) . '/../../../hidden/info.php';
@@ -520,6 +569,15 @@ class AccountController extends Controller
 
 		// Facebookより返ったユーザー関連の情報（連想配列）
 		$fbUserStatus = $res->getDecodedBody();
+		return $fbUserStatus;
+	}
+
+
+	// Facabookログインのリダイレクト先の処理 FBIDのDBとの突合せでログイン or form表示
+	public function facebookSignCheckAction()
+	{
+		// Facebookより返ったユーザー関連の情報（連想配列）
+		$fbUserStatus = $this->getFacebookStatus();
 
 		// FB IDがDBに存在するか確認
 		$facebookId = $fbUserStatus['id'];
@@ -535,7 +593,7 @@ class AccountController extends Controller
 			return $this->redirect('/');
 		}
 
-		// セッションにFBID入れてリダイレクト
+		// 無い場合はセッションにFBID入れてリダイレクト
 		$this->session->set('facebookId', $facebookId);
 		$this->session->set('facebookName', $facebookName);
 		return $this->redirect('/account/facebookjoinform');

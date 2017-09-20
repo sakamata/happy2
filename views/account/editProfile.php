@@ -1,19 +1,22 @@
 <script>
 // change not ssl protocol
-if (document.location.protocol==="https:")
-{location.replace('http://'+window.location.host+window.location.pathname);}
+if (document.location.protocol==="http:")
+{location.replace('https://'+window.location.host+window.location.pathname);}
 </script>
 
 <?php $this->setLayoutVar('title', '設定編集') ?>
 <div class="container">
 <div class="row">
 <h2>設定編集</h2>
-<form class="form-horizontal" action="/happy2/web/account/profileConfirm" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+<form id="editProfile" class="form-horizontal" action="/happy2/web/account/profileConfirm" method="post" accept-charset="utf-8" enctype="multipart/form-data">
 	<p class="algin_right"><a href="<?php echo $href_base; ?>/account/signout"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>ログアウト</a></p>
 	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 
 	<?php if (isset($errors) && count($errors) > 0): ?>
 	<?php echo $this->render('errors', array('errors' => $errors)); ?>
+	<?php endif; ?>
+	<?php if (isset($infos) && count($infos) > 0): ?>
+	<?php echo $this->render('infos', array('infos' => $infos)); ?>
 	<?php endif; ?>
 
 	<div class="form-group">
@@ -68,11 +71,43 @@ if (document.location.protocol==="https:")
 	</div>
 
 	<div class="form-group">
+		<label class="col-sm-3 control-label">Facebook連携</label>
+		<div class="col-sm-9">
+		<?php if (!$user['facebookId']) : ?>
+			<a class="fbJoinButton" href="<?php echo $this->escape($facebookLink); ?>"><span class="fbJoinIcon">Facebook連携をする</span></a>
+		<?php else: ?>
+			<div id="fbStatus"><p>連携中</p></div>
+			<!-- 解除前にHappyのパスワードを設定させないと駄目！ -->
+			<!-- <input type="submit" class="fbSignoutButton" value="facebookとの連携を解除する" onclick="fbJoinRemove();"> -->
+		<?php endif; ?>
+		</div>
+	</div>
+	<div class="marginTop40px"></div>
+	<div class="form-group">
 		<div class="col-sm-offset-3 col-sm-9">
 			<input type="submit" class="btn btn-warning btn-lg" value="変更">
 		</div>
 	</div>
-
 </form>
+
+<div class="footer_wrapper col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<div class="pagerArea_footer">
+		<p class="lead text-center">
+			<a href="http://happy-project.org" target="_blank">Happy-Project.org</a>
+		</p>
+	</div>
+</div><!-- footer_wrapper -->
 </div><!-- row -->
 </div><!-- container -->
+
+<script type="text/javascript">
+var fbJoinRemove = function (){
+	document.getElementById('editProfile').action="/happy2/web/account/facebookjoinremove";
+}
+</script>
+
+<?php
+echo $this->render('status/js/facebook_join', array(
+	'user' => $user,
+));
+?>

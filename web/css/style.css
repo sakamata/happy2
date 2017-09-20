@@ -28,7 +28,7 @@ a {
 	height: 36px;
 	background-color: #7ECE15;
 	/*デバッグ用の透過処理*/
-	background-color: rgba(126, 207, 21, 0.42);
+	/*background-color: rgba(126, 207, 21, 0.42);*/
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -547,13 +547,25 @@ button.css3button {
 	border-radius: 10px;
 }
 
-ul.error_list {
-	border: 3px solid #FF0000;
+ul.info_list, ul.error_list {
 	border-radius: 8px;
-	background-color: #FFCCCC;
 	padding-top: 10px;
 	padding-bottom: 10px;
 	font-weight: bold;
+}
+
+ul.info_list {
+	border: 3px solid #4f7adb;
+	background-color: #8dd1ee;
+}
+
+ul.info_list li {
+	color: #3e5bbf;
+}
+
+ul.error_list {
+	border: 3px solid #FF0000;
+	background-color: #FFCCCC;
 }
 
 ul.error_list li {
@@ -664,20 +676,17 @@ ul.warning_list li {
 	/*white-space : pre-wrap;*/
 }
 
+
 /* editProfile */
-.algin_right {
-	text-align: right;
+
+#fbStatus {
+	/*color: #f00;
+	font-size: 14px;*/
 }
 
-.marginTop40px{
-	margin-top: 40px;
-}
-
-.marginTop70px{
-	margin-top: 70px;
-}
 
 /* signin signup */
+
 .fbJoinButton {
 	width: 285px;
 	display: block;
@@ -693,7 +702,6 @@ ul.warning_list li {
 	text-decoration: none;
 }
 
-/* span */
 .fbJoinIcon {
 	display: block;
 	background-image: url(../img/FB-f-Logo__white_29.png);
@@ -705,4 +713,18 @@ ul.warning_list li {
 	color: #fff;
 	text-decoration: none;
 	font-size: 18px;
+}
+
+
+
+.algin_right {
+	text-align: right;
+}
+
+.marginTop40px{
+	margin-top: 40px;
+}
+
+.marginTop70px{
+	margin-top: 70px;
 }
