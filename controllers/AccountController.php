@@ -318,17 +318,30 @@ class AccountController extends Controller
 		if ($user['usPs']) {
 			return $this->redirect('/account/fbremovepasswordform');
 		} else {
-			return $this->render(array(
-				'errors' => null,
-				'_token' => $this->generateCsrfToken('account/fbremovesetpassword'),
-				'usPs' => null,
-			),'fbremovesetpassword');
+			return $this->redirect('/account/sethappypasswordform');
 		}
+	}
+
+	// アカウント連携でHappyのPassword未設定の場合のPassword登録form
+	public function SetHappyPasswordFormAction()
+	{
+		return $this->render(array(
+			'usPs' => null,
+			'usPs2' => null,
+			'_token' => $this->generateCsrfToken('account/fbremovepasswordform'),
+		));
+	}
+
+	public function SetHappyPasswordAuthenticateAction()
+	{
+		# code...
 	}
 
 	public function fbRemovePasswordFormAction()
 	{
 		return $this->render(array(
+			'usPs' => null,
+			'usPs2' => null,
 			'_token' => $this->generateCsrfToken('account/fbremovepasswordform'),
 		));
 	}
@@ -639,7 +652,7 @@ class AccountController extends Controller
 			exit();
 		}
 
-		// Facebookより返ったユーザー関連の情報（連想配列）
+		// Facebookより返ったユーザー関連の情報（連想配列 id,name）
 		$fbUserStatus = $res->getDecodedBody();
 		return $fbUserStatus;
 	}
@@ -832,6 +845,7 @@ class AccountController extends Controller
 				// ログイン処理
 				$this->session->setAuthenticated(true);
 				$this->session->set('user', $user);
+				$_SESSION['user']['facebookId'] = $facebookId;
 				return $this->redirect('/');
 			}
 		}
