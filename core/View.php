@@ -52,6 +52,16 @@ class View
 		return preg_replace('/[0-9a-f]{4}/','\u$0',bin2hex($u16));
 	}
 
+	// Thanks!! http://doop-web.com/blog/archives/1182
+	// ファイルpathから更新日を出力、pathにパラメータを入れcssや画像のキャッシュクリアに利用
+	public function echo_filedate($filename) {
+		if (file_exists($filename)) {
+			echo date('YmdHis', filemtime($filename));
+		} else {
+			echo 'file not found';
+		}
+	}
+
 	// 英数字とマイナス、ピリオド以外を uXXXX 形式でエスケープ
 	// JS内で,DBやユーザー記述のPHPの値を呼び出す際にはこれを使用する
 	// 使用例

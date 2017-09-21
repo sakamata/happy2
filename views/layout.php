@@ -12,8 +12,8 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" content="ja">
 	<link type="text/css" rel="stylesheet"
 	href="//code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
-	<link rel="stylesheet" type="text/css" media="screen" href="/happy2/web/css/style.css">
-	<link rel="stylesheet" type="text/css" media="screen" href="<?php echo $href_base; ?>/css/style_small.css">
+	<link rel="stylesheet" type="text/css" media="screen" href="/happy2/web/css/style.css?date=<?php $this->echo_filedate("css/style.css"); ?>">
+	<link rel="stylesheet" type="text/css" media="screen" href="<?php echo $href_base; ?>/css/style_small.css?date=<?php $this->echo_filedate("css/style_small.css"); ?>">
 	<link href="<?php echo $href_base; ?>/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
