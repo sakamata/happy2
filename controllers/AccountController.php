@@ -312,6 +312,78 @@ class AccountController extends Controller
 		), 'editProfile');
 	}
 
+	public function fbJoinRemoveCheckAction()
+	{
+		$user = $this->session->get('user');
+		if ($user['usPs']) {
+			return $this->redirect('/account/fbremovepasswordform');
+		} else {
+			return $this->render(array(
+				'errors' => null,
+				'_token' => $this->generateCsrfToken('account/fbremovesetpassword'),
+				'usPs' => null,
+			),'fbremovesetpassword');
+		}
+	}
+
+	public function fbRemovePasswordFormAction()
+	{
+		return $this->render(array(
+			'_token' => $this->generateCsrfToken('account/fbremovepasswordform'),
+		));
+	}
+
+	public function fbRemoveAuthenticateAction()
+	{
+		if (!$this->request->isPost()) {
+			$this->forward404();
+		}
+
+		$token = $this->request->getPost('_token');
+		if (!$this->checkCsrfToken('account/fbremovepasswordform', $token)) {
+			return $this->redirect('/account/fbremovepasswordform');
+		}
+		$errors = array();
+		$usPs = $this->request->getPost('usPs');
+		$usPs2 = $this->request->getPost('usPs2');
+
+		var_dump($usPs);
+
+		if ($usPs !== $usPs2) {
+			$errors[] = '２つのパスワードが一致しません。';
+		}
+
+		if (!strlen($usPs)) {
+			$errors[] = 'パスワードを入力してください。';
+		}
+
+		if (!strlen($usPs2)) {
+			$errors[] = 'パスワード（確認）を入力してください。';
+		} elseif (!preg_match('/\A[a-z\d]{4,30}+\z/i', $usPs)) {
+			$errors[] = 'パスワードは4～30文字以内入力してください。';
+		}
+
+		if (count($errors) === 0) {
+			$user = $this->session->get('user');
+			$user_repository = $this->db_manager->get('User');
+			$user = $user_repository->fetchByUserName($user['usId']);
+
+			if ($user['usPs'] === $user_repository->hashPassword($usPs)) {
+				return $this->facebookJoinRemoveAction();
+			}else {
+				$errors[] = '設定中のパスワードと一致しません。';
+			}
+		}
+
+		return $this->render(array(
+			'infos' => null,
+			'errors' => $errors,
+			'_token' => $this->generateCsrfToken('account/fbremovepasswordform'),
+			'usPs' => $usPs,
+			'usPs2' => $usPs2,
+		),'fbremovepasswordform');
+	}
+
 	// プロフィール編集画面でのfacebook連携解除処理
 	public function facebookJoinRemoveAction()
 	{
@@ -320,7 +392,7 @@ class AccountController extends Controller
 		$this->db_manager->get('User')->facebookIdAdd($user['usId'], $facebookId = null);
 
 		$infos = array();
-		$infos[] = 'facebookアカウントと連携を解除しました。';
+		$infos[] = 'facebookとの連携を解除しました。次回よりIDとパスワードでログインしてください。';
 
 		return $this->render(array(
 			'user' => $user,

@@ -76,7 +76,9 @@ if (document.location.protocol==="http:")
 		<?php if (!$user['facebookId']) : ?>
 			<a class="fbJoinButton" href="<?php echo $this->escape($facebookLink); ?>"><span class="fbJoinIcon">Facebook連携をする</span></a>
 		<?php else: ?>
-			<div id="fbStatus"><p>連携中</p></div>
+			<span>連携中</span>
+			<button formaction="fbjoinremovecheck">解除</button>
+			<span id="fbStatus">IDを確認中...</span>
 			<!-- 解除前にHappyのパスワードを設定させないと駄目！ -->
 			<!-- <input type="submit" class="fbSignoutButton" value="facebookとの連携を解除する" onclick="fbJoinRemove();"> -->
 		<?php endif; ?>
@@ -85,6 +87,8 @@ if (document.location.protocol==="http:")
 	<div class="marginTop40px"></div>
 	<div class="form-group">
 		<div class="col-sm-offset-3 col-sm-9">
+			<input type="submit" class="btn btn-default btn-lg" value="戻る" onclick="pageBack();">
+			<span class="margin_btn"></span>
 			<input type="submit" class="btn btn-warning btn-lg" value="変更">
 		</div>
 	</div>
@@ -102,7 +106,10 @@ if (document.location.protocol==="http:")
 
 <script type="text/javascript">
 var fbJoinRemove = function (){
-	document.getElementById('editProfile').action="/happy2/web/account/facebookjoinremove";
+	document.getElementById('editProfile').action="/happy2/web/account/fbjoinremovecheck";
+}
+function pageBack(){
+	document.getElementById('editProfile').action = '<?php echo $href_base ?>';
 }
 </script>
 

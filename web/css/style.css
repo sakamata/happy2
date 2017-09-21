@@ -715,8 +715,6 @@ ul.warning_list li {
 	font-size: 18px;
 }
 
-
-
 .algin_right {
 	text-align: right;
 }
@@ -727,4 +725,8 @@ ul.warning_list li {
 
 .marginTop70px{
 	margin-top: 70px;
+}
+
+.margin_btn {
+	margin-left: 50px;
 }
