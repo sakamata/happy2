@@ -10,6 +10,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" content="ja">
+	<link rel="shortcut icon" href="<?php echo $href_base; ?>/img/favicon16.png">
 	<link type="text/css" rel="stylesheet"
 	href="//code.jquery.com/ui/1.10.3/themes/cupertino/jquery-ui.min.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="/happy2/web/css/style.css?date=<?php $this->echo_filedate("css/style.css"); ?>">
