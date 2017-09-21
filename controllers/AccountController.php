@@ -328,13 +328,62 @@ class AccountController extends Controller
 		return $this->render(array(
 			'usPs' => null,
 			'usPs2' => null,
-			'_token' => $this->generateCsrfToken('account/fbremovepasswordform'),
+			'_token' => $this->generateCsrfToken('account/sethappypasswordform'),
 		));
 	}
 
 	public function SetHappyPasswordAuthenticateAction()
 	{
-		# code...
+		if (!$this->request->isPost()) {
+			$this->forward404();
+		}
+
+		$token = $this->request->getPost('_token');
+		if (!$this->checkCsrfToken('account/sethappypasswordform', $token)) {
+			return $this->redirect('/account/sethappypasswordform');
+		}
+
+		$usPs = $this->request->getPost('usPs');
+		$usPs2 = $this->request->getPost('usPs2');
+		$errors = $this->doublePasswordChecker($usPs, $usPs2);
+
+		if (count($errors) === 0) {
+			$user = $this->session->get('user');
+			$user_repository = $this->db_manager->get('User');
+			$user = $user_repository->fetchByUserName($user['usId']);
+			$usPs = $user_repository->hashPassword($usPs);
+			// Haapy password update
+			$this->db_manager->get('User')->passwordChange($user['usId'], $usPs);
+
+			return $this->facebookJoinRemoveAction();
+		}
+
+		return $this->render(array(
+			'infos' => null,
+			'errors' => $errors,
+			'_token' => $this->generateCsrfToken('account/sethappypasswordform'),
+			'usPs' => $usPs,
+			'usPs2' => $usPs2,
+		),'sethappypasswordform');
+	}
+
+	public function doublePasswordChecker($usPs, $usPs2)
+	{
+		$errors = array();
+		if ($usPs !== $usPs2) {
+			$errors[] = '２つのパスワードが一致しません。';
+		}
+
+		if (!strlen($usPs)) {
+			$errors[] = 'パスワードを入力してください。';
+		}
+
+		if (!strlen($usPs2)) {
+			$errors[] = 'パスワード（確認）を入力してください。';
+		} elseif (!preg_match('/\A[a-z\d]{4,30}+\z/i', $usPs)) {
+			$errors[] = 'パスワードは4～30文字以内入力してください。';
+		}
+		return $errors;
 	}
 
 	public function fbRemovePasswordFormAction()
@@ -356,25 +405,10 @@ class AccountController extends Controller
 		if (!$this->checkCsrfToken('account/fbremovepasswordform', $token)) {
 			return $this->redirect('/account/fbremovepasswordform');
 		}
-		$errors = array();
 		$usPs = $this->request->getPost('usPs');
 		$usPs2 = $this->request->getPost('usPs2');
 
-		var_dump($usPs);
-
-		if ($usPs !== $usPs2) {
-			$errors[] = '２つのパスワードが一致しません。';
-		}
-
-		if (!strlen($usPs)) {
-			$errors[] = 'パスワードを入力してください。';
-		}
-
-		if (!strlen($usPs2)) {
-			$errors[] = 'パスワード（確認）を入力してください。';
-		} elseif (!preg_match('/\A[a-z\d]{4,30}+\z/i', $usPs)) {
-			$errors[] = 'パスワードは4～30文字以内入力してください。';
-		}
+		$errors = $this->doublePasswordChecker($usPs, $usPs2);
 
 		if (count($errors) === 0) {
 			$user = $this->session->get('user');
@@ -405,7 +439,7 @@ class AccountController extends Controller
 		$this->db_manager->get('User')->facebookIdAdd($user['usId'], $facebookId = null);
 
 		$infos = array();
-		$infos[] = 'facebookとの連携を解除しました。次回よりIDとパスワードでログインしてください。';
+		$infos[] = 'facebookとの連携を解除しました。次回よりユーザーIDとパスワードでログインしてください。';
 
 		return $this->render(array(
 			'user' => $user,

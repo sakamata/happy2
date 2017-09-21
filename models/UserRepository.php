@@ -28,6 +28,18 @@ class UserRepository extends DbRepository
 		));
 	}
 
+	public function passwordChange($usId, $usPs)
+	{
+		if (!$usId || !$usPs) {	return false;}
+
+		$sql = "UPDATE tbus SET usPs = :usPs WHERE usId = :usId";
+
+		$stmt = $this->execute($sql, array(
+			':usId' => $usId,
+			':usPs' => $usPs,
+		));
+	}
+
 	public function getUserNo($usId)
 	{
 		$sql = "
