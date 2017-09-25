@@ -339,19 +339,19 @@ class AdminController extends Controller
 
 	public function calcAction()
 	{
-		if (!$this->request->isPost()) {
-			$this->forward404();
-		}
-
-		$session = $this->session->get('admin');
-		if (!$session) {
-			return $this->redirect('/');
-		}
-
-		$token = $this->request->getPost('_token');
-		if (!$this->checkCsrfToken('admin/post', $token)) {
-			return $this->redirect('/');
-		}
+		// if (!$this->request->isPost()) {
+		// 	$this->forward404();
+		// }
+		//
+		// $session = $this->session->get('admin');
+		// if (!$session) {
+		// 	return $this->redirect('/');
+		// }
+		//
+		// $token = $this->request->getPost('_token');
+		// if (!$this->checkCsrfToken('admin/post', $token)) {
+		// 	return $this->redirect('/');
+		// }
 
 		$admin_repository = $this->db_manager->get('Admin');
 		$last = $admin_repository->lastCalcTime();
