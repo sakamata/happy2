@@ -48,7 +48,13 @@ class HappyApplication extends Application
 
 	protected function configure()
 	{
-		$path = dirname(__FILE__) . '/../../hidden/info.php';
+		$chk = file_exists(dirname(__FILE__) . '/../../hidden/info.php');
+		if (!$chk){
+			$path = '/var/www/hidden/info.php';
+		} else {
+			$path = dirname(__FILE__) . '/../../hidden/info.php';
+		}
+
 		require $path;
 		$this->db_manager->connect('master', array(
 			'dsn' => $dsn,

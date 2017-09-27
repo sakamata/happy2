@@ -10,8 +10,7 @@ class AdminController extends Controller
 		'getAdminSetting',
 		'signout',
 		'PtDefault',
-		'tbgvnPosts',
-		'calc'
+		'tbgvnPosts'
 	);
 
 	public $tableNames = array('tbus', 'tbgvn', 'tbset', 'tbfollow', 'tbcalctime', 'tb_user_status');
@@ -195,10 +194,10 @@ class AdminController extends Controller
 
 	public function getAdminSettingAction()
 	{
-		$session = $this->session->get('admin');
-		if (!$session) {
-			return $this->redirect('/');
-		}
+//		$session = $this->session->get('admin');
+//		if (!$session) {
+//			return $this->redirect('/');
+//		}
 		$adsetting_repository = $this->db_manager->get('AdminSetting');
 		return $adsetting_repository;
 	}
@@ -339,25 +338,41 @@ class AdminController extends Controller
 
 	public function calcAction()
 	{
-		// if (!$this->request->isPost()) {
-		// 	$this->forward404();
-		// }
-		//
-		// $session = $this->session->get('admin');
-		// if (!$session) {
-		// 	return $this->redirect('/');
-		// }
-		//
-		// $token = $this->request->getPost('_token');
-		// if (!$this->checkCsrfToken('admin/post', $token)) {
-		// 	return $this->redirect('/');
-		// }
+		if (!$this->request->isPost()) {
+			$this->forward404();
+			error_log("clac button POST token unmatch!! no exec calcAction");
+		}
+
+		$buttonToken = $this->request->getPost('_token');
+		$postCronToken = $this->request->getPost('cronToken');
+
+		// ボタンPOSTの場合のcheck
+		if (!$postCronToken) {
+			if (!$this->checkCsrfToken('admin/post', $buttonToken)) {
+				error_log("clac button POST token unmatch!! no exec calcAction");
+				// 管理画面からのボタン押下でNGの場合
+				return $this->redirect('/');
+			}
+		}
+
+		// cronの場合のcheck
+		if (!$buttonToken) {		
+			// $cronToken 読み込み
+			require "/var/www/hidden/cronToken.php";
+			if ($cronToken !== $postCronToken) {
+				// cron処理でNGの場合 ひとまずlogだけ残す。
+				return error_log("clac cron token unmatch!! no exec calcAction");
+			}
+		}
 
 		$admin_repository = $this->db_manager->get('Admin');
 		$last = $admin_repository->lastCalcTime();
 		$lastCalcTime = $last['date'];
 		$date = new DateTime();
 		$now = $date->format('Y-m-d H:i:s');
+
+		$admin_repository->startTransaction();
+
 		// 集計期間の重複防止の為+1秒で登録
 		$admin_repository->tbcalctimeInsertPlus1sec();
 
@@ -366,7 +381,6 @@ class AdminController extends Controller
 		// clkしたユーザーの合計クリック数とnowPt
 		$clkUsersStatus = $admin_repository->clkUsersClkSumAndPts($lastCalcTime, $now);
 		$N = 0;
-		$admin_repository->startTransaction();
 		// ClkをしたuserNのPtを全クリック数に従い分配,tbsetにinsert
 		foreach ($clkUsersStatus as $noUse) {
 			$userNo = $clkUsersStatus[$N]['usNo'];
