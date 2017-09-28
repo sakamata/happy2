@@ -25,6 +25,8 @@ class HappyApplication extends Application
 				=> array('controller' => 'account'),
 			'/digest/signin'
 				=> array('controller' => 'digest', 'action' => 'signin'),
+			'/digest/:action'
+				=> array('controller' => 'digest'),
 			'/admin/'
 				=> array('controller' => 'admin', 'action' => 'index'),
 			'/admin/:action'

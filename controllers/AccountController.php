@@ -643,11 +643,11 @@ class AccountController extends Controller
 	{
 		$chk = file_exists("../php-graph-sdk-5.x/src/Facebook/autoload.php");
 		if (!$chk){
-			require_once '/var/www/html/happy2/php-graph-sdk-5.x/src/Facebook/autoload.php';						
+			require_once '/var/www/html/happy2/php-graph-sdk-5.x/src/Facebook/autoload.php';
 		} else {
 			require_once '../php-graph-sdk-5.x/src/Facebook/autoload.php';
 		}
-		
+
 		$path = dirname(__FILE__) . '/../../../hidden/info.php';
 		require $path;
 

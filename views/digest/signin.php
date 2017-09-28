@@ -9,7 +9,7 @@
 <h2>admin_signin</h2>
 
 
-<form action="<?php echo $base_url; ?>/admin/authenticate" method="post" accept-charset="utf-8">
+<form action="<?php echo $base_url; ?>/digest/authenticate" method="post" accept-charset="utf-8">
 	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
 
 	<?php if (isset($errors) && count($errors) > 0): ?>

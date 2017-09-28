@@ -22,7 +22,7 @@ class DigestController extends Controller
      * @var array
      */
     private static $digests = [
-        'Skmt4atkmr' => '95bd0c216a09d5f30d606776786d7572',
+        'admin929' => '8799f47884fd0c6be2535b50b978e39f',
     ];
 
     /**
@@ -193,16 +193,66 @@ class DigestController extends Controller
 
 	public function signinAction()
 	{
+		self::verify();
 		if ($this->session->isAuthenticated()) {
 			return $this->redirect('/admin');
 		}
-		self::verify();
-		var_dump($_SESSION);
 		return $this->render(array(
 			'usId' => '',
 			'usPs' => '',
-			'_token' => $this->generateCsrfToken('admin/signin'),
+			'_token' => $this->generateCsrfToken('digest/signin'),
 		));
+	}
+
+	public function authenticateAction()
+	{
+		if ($this->session->isAuthenticated()) {
+			return $this->redirect('/admin');
+		}
+
+		if (!$this->request->isPost()) {
+			$this->forward404();
+		}
+
+		$token = $this->request->getPost('_token');
+		if (!$this->checkCsrfToken('digest/signin', $token)) {
+			return $this->redirect('/digest/signin');
+		}
+
+		$usId = $this->request->getPost('usId');
+		$usPs = $this->request->getPost('usPs');
+
+		$errors = array();
+
+		if (!strlen($usId)) {
+			$errors[] = 'ユーザーIDを入力してください';
+		}
+
+		if (!strlen($usPs)) {
+			$errors[] = 'パスワードを入力してください';
+		}
+
+		if (count($errors) === 0) {
+
+			$admin_repository = $this->db_manager->get('Admin');
+			$user_repository = $this->db_manager->get('User');
+			$user = $admin_repository->fetchByAdminUserName($usId);
+
+			if (!$user || $user['usPs'] !== $user_repository->hashPassword($usPs)) {
+				$errors[] = 'ユーザーIDかパスワードが正しくありません。';
+			} else {
+				$this->session->setAuthenticated(true);
+				$this->session->set('admin', $user);
+				return $this->redirect('/admin/index');
+			}
+		}
+
+		return $this->render(array(
+			'usId' => $usId,
+			'usPs' => $usPs,
+			'errors' => $errors,
+			'_token' => $this->generateCsrfToken('digest/signin'),
+		), 'signin');
 	}
 
 }
