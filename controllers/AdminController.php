@@ -220,7 +220,7 @@ class AdminController extends Controller
 		$pager = array($offset, $limit, $page);
 		return $pager;
 	}
-
+/*
 	public function signinAction()
 	{
 		if ($this->session->isAuthenticated()) {
@@ -233,7 +233,7 @@ class AdminController extends Controller
 			'_token' => $this->generateCsrfToken('admin/signin'),
 		));
 	}
-
+*/
 	public function authenticateAction()
 	{
 		if ($this->session->isAuthenticated()) {
@@ -356,7 +356,7 @@ class AdminController extends Controller
 		}
 
 		// cronの場合のcheck
-		if (!$buttonToken) {		
+		if (!$buttonToken) {
 			// $cronToken 読み込み
 			require "/var/www/hidden/cronToken.php";
 			if ($cronToken !== $postCronToken) {
