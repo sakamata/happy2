@@ -1,3 +1,15 @@
+<?php
+require_once '../basicAuth/functions.php';
+$username = require_basic_auth();
+header('Content-Type: text/html; charset=UTF-8');
+?>
+
+<script>
+	// change ssl protocol
+	if (document.location.protocol==="http:")
+	{location.replace('https://'+window.location.host+window.location.pathname);}
+</script>
+
 <?php $this->setLayoutVar('title', 'adminログイン') ?>
 
 <h2>admin_signin</h2>
