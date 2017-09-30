@@ -1,6 +1,18 @@
+<?php
+require_once '../digestAuth/DigestAuthenticator.php';
+$username = DigestAuthenticator::verify();
+header('Content-Type: text/html; charset=UTF-8');
+?>
+<script>
+	// change ssl protocol
+	if (document.location.protocol==="http:")
+	{location.replace('https://'+window.location.host+window.location.pathname);}
+</script>
+
 <?php $this->setLayoutVar('title', 'adminログイン') ?>
 
 <h2>admin_signin</h2>
+<h3>ようこそ,<?=htmlspecialchars($username, ENT_QUOTES, 'UTF-8')?>さん</h3>
 
 
 <form action="<?php echo $base_url; ?>/admin/authenticate" method="post" accept-charset="utf-8">
