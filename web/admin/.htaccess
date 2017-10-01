@@ -1,0 +1,5 @@
+# happy2 applicationの管理画面認証の為以下の3行を追加
+RewriteEngine  On
+RewriteCond     %{HTTP:Authorization} ^(.*)
+RewriteRule     ^(.*) - [E=HTTP_AUTHORIZATION:%1]
+# happy2 ここまで

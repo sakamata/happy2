@@ -1,5 +1,8 @@
 <IfModule mod_rewrite.c>
+	# さくらサーバー用の設定
 	DirectoryIndex index.html index.cgi index.php .ht
+
+	# フレームワーク用の設定 該当ディレクトリ,ファイルが無い場合、index.php へ転送
 	RewriteEngine On
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteRule ^(.*)$ index.php [QSA,L]
