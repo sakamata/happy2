@@ -5,7 +5,7 @@
 # happy2 ここまで
 
 #スタンダートなBasic認証　さくらサポートに基づくもの
-AuthUserFile /var/www/admin_pass
+AuthUserFile /var/www/.htpasswd
 AuthGroupFile /dev/null
 AuthName "このページを閲覧するには認証が必要です。"
 AuthType Basic
