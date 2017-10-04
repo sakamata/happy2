@@ -2,6 +2,7 @@
 require_once '../basicAuth/functions.php';
 $username = require_basic_auth();
 header('Content-Type: text/html; charset=UTF-8');
+error_log(var_dump($_SERVER));
 ?>
 
 <script>

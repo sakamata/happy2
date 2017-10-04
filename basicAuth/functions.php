@@ -12,6 +12,9 @@ function require_basic_auth()
     $hashes = [
         'admin929' => '$2y$10$NpDBxOnjipveNSZFdMt7peGqY.hascB09AKOm9Kn/S20p0SNW9UiK',
     ];
+	// error_log($_SERVER['PHP_AUTH_USER']);
+	// error_log('!!!in!!!!!');
+	// error_log($_SERVER['PHP_AUTH_PW']);
 
     if (
         !isset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) ||
@@ -23,10 +26,17 @@ function require_basic_auth()
         )
     ) {
         // 初回時または認証が失敗したとき
+		error_log(var_dump($_SERVER));
         header('WWW-Authenticate: Basic realm="Enter username and password."');
         header('Content-Type: text/plain; charset=utf-8');
+		// error_log($_SERVER['PHP_AUTH_USER']);
+		// error_log('!!!!!!first or auth_miss!!!!!!');
+		// error_log($_SERVER['PHP_AUTH_PW']);
         exit('このページを見るにはログインが必要です');
     }
+	// error_log($_SERVER['PHP_AUTH_USER']);
+	// error_log('!!!!!!success!!!!!!');
+	// error_log($_SERVER['PHP_AUTH_PW']);
 
     // 認証が成功したときはユーザ名を返す
     return $_SERVER['PHP_AUTH_USER'];

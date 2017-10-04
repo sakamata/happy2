@@ -18,5 +18,6 @@
 	</head>
 	<body>
 		<p>会員限定ページです。</p>
+		<p><?php echo phpinfo(); ?></p>
 	</body>
 </html>
