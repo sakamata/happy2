@@ -28,7 +28,8 @@ class DbManager
 			$params['password'],
 			$params['options']
 		);
-
+		// CentOS7 PHP5.4 & MariaDB5.5.5.6 では指定が必要
+		$con->query("set names utf8");
 		// クエリエラー時にエラーレポート　例外を投げる
 		$con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
