@@ -1,7 +1,7 @@
-<?php $this->setLayoutVar('title', 'リリースニュース') ?>
+<?php $this->setLayoutVar('title', 'ニュース') ?>
 <div class="container">
 	<div class="row">
-		<h2>リリースニュース</h2>
+		<h2>ニュース</h2>
 		<div class="form-horizontal">
 
 		<ul class="warning_list">
