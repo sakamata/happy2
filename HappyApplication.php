@@ -23,10 +23,10 @@ class HappyApplication extends Application
 				=> array('controller' => 'account', 'action' => 'index'),
 			'/account/:action'
 				=> array('controller' => 'account'),
-			'/AdminUGSFFX01GeoS90B/signin'
-				=> array('controller' => 'AdminUGSFFX01GeoS90B', 'action' => 'signin'),
-			'/AdminUGSFFX01GeoS90B/:action'
-				=> array('controller' => 'AdminUGSFFX01GeoS90B'),
+			'/AdminUgsffx01s90b/signin'
+				=> array('controller' => 'AdminUgsffx01s90b', 'action' => 'signin'),
+			'/AdminUgsffx01s90b/:action'
+				=> array('controller' => 'AdminUgsffx01s90b'),
 			'/admin/'
 				=> array('controller' => 'admin', 'action' => 'index'),
 			'/admin/:action'

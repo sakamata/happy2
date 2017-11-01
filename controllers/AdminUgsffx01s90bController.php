@@ -3,7 +3,7 @@
 /**
  * 【完全版: 盗聴されてもなりすましは防ぐことができます】
  */
-class AdminUGSFFX01GeoS90BController extends Controller
+class AdminUgsffx01s90bController extends Controller
 {
     /**
      * 定数各種設定
