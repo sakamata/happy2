@@ -6,7 +6,7 @@
 
 <?php $this->setLayoutVar('title', 'adminログイン') ?>
 
-<h2>admin_signin</h2>
+<h2>Admin signin</h2>
 
 
 <form action="<?php echo $base_url; ?>/digest/authenticate" method="post" accept-charset="utf-8">

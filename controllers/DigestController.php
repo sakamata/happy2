@@ -191,7 +191,7 @@ class DigestController extends Controller
         return $p;
     }
 
-	public function signinAction()
+	public function signinugsffx01geoAction()
 	{
 		self::verify();
 		if ($this->session->isAuthenticated()) {
@@ -200,7 +200,7 @@ class DigestController extends Controller
 		return $this->render(array(
 			'usId' => '',
 			'usPs' => '',
-			'_token' => $this->generateCsrfToken('digest/signin'),
+			'_token' => $this->generateCsrfToken('digest/signinugsffx01geo'),
 		));
 	}
 
@@ -215,8 +215,8 @@ class DigestController extends Controller
 		}
 
 		$token = $this->request->getPost('_token');
-		if (!$this->checkCsrfToken('digest/signin', $token)) {
-			return $this->redirect('/digest/signin');
+		if (!$this->checkCsrfToken('digest/signinugsffx01geo', $token)) {
+			return $this->redirect('/digest/signinugsffx01geo');
 		}
 
 		$usId = $this->request->getPost('usId');
@@ -251,8 +251,8 @@ class DigestController extends Controller
 			'usId' => $usId,
 			'usPs' => $usPs,
 			'errors' => $errors,
-			'_token' => $this->generateCsrfToken('digest/signin'),
-		), 'signin');
+			'_token' => $this->generateCsrfToken('digest/signinugsffx01geo'),
+		), 'signinugsffx01geo');
 	}
 
 }
