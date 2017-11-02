@@ -19,13 +19,14 @@ abstract class Application
 
 	protected function setDebugMode($debug)
 	{
+		// 環境に応じて php.ini 内 display_errors = Off/On で設定に変更、ひとまずコメントアウト
 		if ($debug) {
 			$this->debug = true;
-			ini_set('display_errors', 1);
+			// ini_set('display_errors', 1);
 			error_reporting(-1);
 		} else {
 			$this->debug = false;
-			ini_set('display_errors', 0);
+			// ini_set('display_errors', 0);
 		}
 	}
 
