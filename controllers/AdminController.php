@@ -294,7 +294,7 @@ class AdminController extends Controller
 		// cronの場合のcheck
 		if (!$buttonToken) {
 			// $cronToken 読み込み
-			require "/var/www/hidden/cronToken.php";
+			require "/var/www/hidden/info.php";
 			if ($cronToken !== $postCronToken) {
 				// cron処理でNGの場合 ひとまずlogだけ残す。
 				return error_log("clac cron token unmatch!! no exec calcAction");
