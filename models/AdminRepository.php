@@ -534,13 +534,13 @@ class AdminRepository extends DbRepository
 		$a = 0;
 		while ($a < count($sendUsersNo) - 1) {
 			$sql .= "
-				('0', $sendUsersNo[$a], $rivisePts[$a], :now),
+				(0, $sendUsersNo[$a], $rivisePts[$a], :now),
 			";
 			$a++;
 		}
 
 		$sql .= "
-			('0', $sendUsersNo[$a], $rivisePts[$a], :now);
+			(0, $sendUsersNo[$a], $rivisePts[$a], :now);
 		";
 
 		$stmt = $this->execute($sql, array(
