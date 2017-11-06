@@ -533,21 +533,21 @@ class AdminRepository extends DbRepository
 				VALUES
 		";
 
-		$a = 0;
+		$b = 0;
 		if (count($sendUserNo) == 1 ) {
 			$sql .= "
-				('0', $sendUsersNo[$a], $rivisePts[$a], :now);
+				('0', $sendUsersNo[$b], $rivisePts[$b], :now);
 			";
 		} else {
-			while ($a < count($sendUsersNo) - 1) {
+			while ($b < count($sendUsersNo) - 1) {
 				$sql .= "
-					('0', $sendUsersNo[$a], $rivisePts[$a], :now),
+					('0', $sendUsersNo[$b], $rivisePts[$b], :now),
 				";
-				$a++;
+				$b++;
 			}
 
 			$sql .= "
-				('0', $sendUsersNo[$a], $rivisePts[$a], :now);
+				('0', $sendUsersNo[$b], $rivisePts[$b], :now);
 			";
 		}
 
