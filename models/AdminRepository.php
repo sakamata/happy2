@@ -182,7 +182,7 @@ class AdminRepository extends DbRepository
 				`calcTime` DATETIME NULL,
 				PRIMARY KEY (`calcNo`))
 			ENGINE = InnoDB;
-			INSERT INTO tbcalcTime(calcTime) VALUE(now());
+			INSERT INTO tbcalctime(calcTime) VALUE(now());
 		";
 
 		$stmt = $this->execute($sql, array(
@@ -210,13 +210,15 @@ class AdminRepository extends DbRepository
 		$sql = "
 			DROP TABLE tb_user_status;
 			CREATE TABLE IF NOT EXISTS `happy2`.`tb_user_status` (
-				`No` INT NULL AUTO_INCREMENT,
-				`usNo` INT NOT NULL,
-				`lastActiveTime` DATETIME NULL DEFAULT now(),
-				`latitude` DECIMAL(14,7) NULL,
-				`longitude` DECIMAL(14,7) NULL,
-				UNIQUE INDEX `usNo_UNIQUE` (`usNo` ASC),
-				PRIMARY KEY (`No`))
+			  `No` INT NOT NULL AUTO_INCREMENT,
+			  `usNo` INT NOT NULL,
+			  `lastActiveTime` TIMESTAMP NULL,
+			  `latitude` DECIMAL(14,7) NULL,
+			  `longitude` DECIMAL(14,7) NULL,
+			  `tb_user_statuscol` VARCHAR(45) NULL,
+			  UNIQUE INDEX `usNo_UNIQUE` (`usNo` ASC),
+			  PRIMARY KEY (`No`),
+			  UNIQUE INDEX `No_UNIQUE` (`No` ASC))
 			ENGINE = InnoDB
 		";
 
@@ -534,13 +536,13 @@ class AdminRepository extends DbRepository
 		$a = 0;
 		while ($a < count($sendUsersNo) - 1) {
 			$sql .= "
-				(0, $sendUsersNo[$a], $rivisePts[$a], :now),
+				('0', $sendUsersNo[$a], $rivisePts[$a], :now),
 			";
 			$a++;
 		}
 
 		$sql .= "
-			(0, $sendUsersNo[$a], $rivisePts[$a], :now);
+			('0', $sendUsersNo[$a], $rivisePts[$a], :now);
 		";
 
 		$stmt = $this->execute($sql, array(
