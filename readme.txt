@@ -194,9 +194,9 @@ HappyApplication.php 内　configre()　内で定義
 例:
 require 'C:xampp/htdocs/hidden/info.php';
 
-$dsn = 'mysql:dbname=happy2;host=localhost';
-$user = 'admin';
-$pass = 'hoge';
+$sqlDsn = 'mysql:dbname=happy2;host=localhost';
+$sqlUser = 'admin';
+$sqlPass = 'hoge';
 
 
 HogeController内 generateCsrfTokenについて

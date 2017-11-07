@@ -59,9 +59,9 @@ class HappyApplication extends Application
 
 		require $path;
 		$this->db_manager->connect('master', array(
-			'dsn' => $dsn,
-			'user' => $user,
-			'password' => $pass,
+			'dsn' => $sqlDsn,
+			'user' => $sqlUser,
+			'password' => $sqlPass,
 		));
 	}
 }
