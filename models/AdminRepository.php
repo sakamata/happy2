@@ -145,6 +145,7 @@ class AdminRepository extends DbRepository
 				`usNo` INT(11) NULL,
 				`seUs` INT(11) NULL,
 				`seClk` INT(11) NULL,
+				`systemClk` TINYINT(1) NULL DEFAULT 0,
 				`dTm` DATETIME NULL COMMENT 'クリック数を毎回登録するためのTable',
 				PRIMARY KEY (`gvnNo`))
 			ENGINE = InnoDB
@@ -436,6 +437,22 @@ class AdminRepository extends DbRepository
 		));
 	}
 
+	public function checkTodayClick($lastCalcTime)
+	{
+		$sql = "
+			SELECT gvnNo, dTm
+				FROM tbgvn
+			WHERE
+				systemClk = false
+				AND
+				dTm BETWEEN :lastCalcTime AND now()
+		";
+
+		return $stmt = $this->fetch($sql, array(
+			':lastCalcTime' => $lastCalcTime,
+		));
+	}
+
 	public function clkUsersClkSumAndPts($lastCalcTime, $now)
 	{
 		$sql = "
@@ -675,7 +692,7 @@ class AdminRepository extends DbRepository
 		public function allUserSelfOneClick($usersNo, $startTime)
 	{
 		$sql = "
-			INSERT INTO tbgvn(usNo, seUs, seClk, dTm)
+			INSERT INTO tbgvn(usNo, seUs, seClk, systemClk, dTm)
 			VALUES
 		";
 
@@ -683,11 +700,11 @@ class AdminRepository extends DbRepository
 		$a = 0;
 		while ($a < count($usersNo) - 1) {
 			$usNo = intval($usersNo[$a]['usNo']);
-			$sql .=  "($usNo, $usNo, 1, :startTime)" . ',';
+			$sql .=  "($usNo, $usNo, 1, true, :startTime)" . ',';
 			$a++;
 		}
 		$usNo = intval($usersNo[$a]['usNo']);
-		$sql .= "($usNo, $usNo, 1, :startTime)";
+		$sql .= "($usNo, $usNo, 1, true, :startTime)";
 
 		$stmt = $this->execute($sql, array(
 			':startTime' => $startTime,

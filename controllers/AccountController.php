@@ -74,7 +74,7 @@ class AccountController extends Controller
 			// 自分に1クリックさせる
 			$n = $this->db_manager->get('User')->getUserNo($usId);
 			$usNo = $n['usNo'];
-			$this->db_manager->get('User')->selfOneClick($usNo);
+			$this->db_manager->get('User')->regisSelfOneClick($usNo);
 
 			// tb_user_statusに位置と現在日時を登録
 			// ***ToDo***user側で緯度経度取得の実装
@@ -795,7 +795,7 @@ class AccountController extends Controller
 			// 自分に1クリックさせる
 			$n = $this->db_manager->get('User')->getUserNo($usId);
 			$usNo = $n['usNo'];
-			$this->db_manager->get('User')->selfOneClick($usNo);
+			$this->db_manager->get('User')->regisSelfOneClick($usNo);
 
 			// tb_user_statusに位置と現在日時を登録
 			// ***ToDo***user側で緯度経度取得の実装

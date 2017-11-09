@@ -282,33 +282,48 @@ class AdminController extends Controller
 		$buttonToken = $this->request->getPost('_token');
 		$postCronToken = $this->request->getPost('cronToken');
 
-		// ボタンPOSTの場合のcheck
-		if (!$postCronToken) {
-			if (!$this->checkCsrfToken('admin/post', $buttonToken)) {
-				error_log("clac button POST token unmatch!! no exec calcAction");
-				// 管理画面からのボタン押下でNGの場合
-				return $this->redirect('/');
+		if ($buttonToken || $postCronToken) {
+
+			if ($buttonToken) {
+				if (!$this->checkCsrfToken('admin/post', $buttonToken)) {
+					error_log("clac button POST token unmatch!! no exec calcAction $_POST dump data >>> " . var_dump($_POST));
+					// 管理画面からのボタン押下でNGの場合
+					return $this->redirect('/');
+				}
 			}
+
+			if ($postCronToken) {
+				// $cronToken 読み込み
+				require "/var/www/hidden/info.php";
+				if ($cronToken !== $postCronToken) {
+					// cron処理でNGの場合 ひとまずlogだけ残す。
+					return error_log("clac cron token unmatch!! no exec calcAction. $_POST dump data >>> " . var_dump($_POST));
+				}
+			}
+
+		} else {
+			return error_log("Irregular POST data !! no exec calcAction. $_POST dump data >>> " . var_dump($_POST));
 		}
 
-		// cronの場合のcheck
-		if (!$buttonToken) {
-			// $cronToken 読み込み
-			require "/var/www/hidden/info.php";
-			if ($cronToken !== $postCronToken) {
-				// cron処理でNGの場合 ひとまずlogだけ残す。
-				return error_log("clac cron token unmatch!! no exec calcAction");
-			}
-		}
-
-		$admin_repository = $this->db_manager->get('Admin');
-		$last = $admin_repository->lastCalcTime();
-		$lastCalcTime = $last['date'];
 		$date = new DateTime();
 		$now = $date->format('Y-m-d H:i:s');
+		$admin_repository = $this->db_manager->get('Admin');
+		$last = $admin_repository->lastCalcTime();
+		$last['date']  ?  $lastCalcTime = $last['date']  :  $lastCalcTime = $now;
+
+		// 最終集計時間からClickの更新が無い場合、集計をキャンセル
+		if(!$admin_repository->checkTodayClick($lastCalcTime)){
+			if ($buttonToken) {
+				error_log('!!!button calc cancel!!!');
+				$this->redirect('/admin/index');
+			}
+			if ($postCronToken) {
+				error_log('!!!cron calc cancel!!!');
+				return;
+			}
+		}
 
 		$admin_repository->startTransaction();
-
 		// 集計期間の重複防止の為+1秒で登録
 		$admin_repository->tbcalctimeInsertPlus1sec();
 
@@ -474,11 +489,13 @@ class AdminController extends Controller
 
 		// $this->redirect('/admin/index');
 
-		return $this->render(array(
-			'body' => '',
-			'lastCalcTime' => $lastCalcTime,
-			'clkUsersStatus' => $clkUsersStatus,
-			'_token' => $this->generateCsrfToken('admin/post'),
-		));
+		if ($buttonToken) {
+			return $this->render(array(
+				'body' => '',
+				'lastCalcTime' => $lastCalcTime,
+				'clkUsersStatus' => $clkUsersStatus,
+				'_token' => $this->generateCsrfToken('admin/post'),
+			));
+		}
 	}
 }

@@ -53,11 +53,11 @@ class UserRepository extends DbRepository
 		));
 	}
 
-	public function selfOneClick($usNo)
+	public function regisSelfOneClick($usNo)
 	{
 		$sql = "
-			INSERT INTO tbgvn(usNo, seUs, seClk, dTm)
-			VALUES($usNo, $usNo, 1, now())
+			INSERT INTO tbgvn(usNo, seUs, seClk, systemClk, dTm)
+			VALUES($usNo, $usNo, 1, true, now())
 		";
 
 		$stmt = $this->execute($sql, array(
