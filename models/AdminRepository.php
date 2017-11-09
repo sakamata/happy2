@@ -551,7 +551,7 @@ class AdminRepository extends DbRepository
 		";
 
 		$b = 0;
-		if (count($sendUserNo) == 1 ) {
+		if (count($sendUsersNo) == 1 ) {
 			$sql .= "
 				('0', $sendUsersNo[$b], $rivisePts[$b], :now);
 			";

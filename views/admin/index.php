@@ -17,7 +17,8 @@ echo $this->render('admin/header_menu', array());
 		</form>
 		<form action="<?php echo $this->escape($base_url); ?>/admin/PtDefault" method="post" accept-charset="utf-8">
 			<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
-				PtDefaultAction: <input type="submit" name="PtDefault" value="Ptを初期値に">
+
+			<p style="text-align:right;">PtDefaultAction: <input type="submit" name="PtDefault" value="Ptを初期値に"><p>
 		</form>
 
 </h3>
@@ -56,13 +57,16 @@ foreach ($tables as $table){
 				<tr>
 <?php
 	$field_no = 0;
-	foreach ($table[0] as $noUseValue){
-		$fieldNames = array_keys($table[0]);
-		$fieldName = $fieldNames[$field_no];
+	if ($table) {
+		foreach ($table[0] as $noUseValue){
+			$fieldNames = array_keys($table[0]);
+			$fieldName = $fieldNames[$field_no];
 
-		echo "<th>". $this->escape($fieldName) ."</th>";
-		$field_no++;
+			echo "<th>". $this->escape($fieldName) ."</th>";
+			$field_no++;
+		}
 	}
+
 ?>
 				</tr>
 			</thead>
