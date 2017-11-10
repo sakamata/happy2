@@ -13,6 +13,7 @@ class HistoryRepository extends DbRepository
 				userTable.usName AS fromName,
 				userTable.usImg AS fromImg,
 				gvnMaster.seClk AS formClickCount,
+				gvnMaster.systemClk AS systemClk,
 				gvnMaster.seUs AS toUserNo,
 				toUserValue.usId AS toUserId,
 				toUserValue.usName AS toUserName,
@@ -46,16 +47,17 @@ class HistoryRepository extends DbRepository
 			)
 				AS toUserValue
 			ON gvnMaster.seUs = toUserValue.usNo
+			WHERE gvnMaster.systemClk = false
 		";
 
 		if (isset($viewUser) && $usersArray === 'toSendHistory') {
 			$sql .= "
-				WHERE gvnMaster.usNo = :viewUser
+				AND gvnMaster.usNo = :viewUser
 			";
 		}
 		if (isset($viewUser) && $usersArray === 'receiveFromHistory') {
 			$sql .= "
-				WHERE gvnMaster.seUs = :viewUser
+				AND gvnMaster.seUs = :viewUser
 			";
 		}
 
