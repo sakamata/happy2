@@ -100,7 +100,16 @@ echo $this->render('status/pager', array(
 			</div>
 <?php
 if ($order !== null) :
-	echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI'], 'method' => 'get'));
+	echo $this->render('status/order_changer', array(
+		'page' => $page,
+		'limit' => $limit,
+		'tableCount' => $tableCount,
+		'order' => $order,
+		'viewUser' => $viewUser,
+		'usersArray' => $usersArray,
+		'action' => $_SERVER['REQUEST_URI'],
+		'method' => 'get',
+	));
 endif;
 ?>
 		</div><!-- orderInfoArea -->

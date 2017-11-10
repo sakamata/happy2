@@ -21,7 +21,7 @@ class HistoryController extends Controller
 		$order = $this->getOrder();
 		$page = $this->getPager();
 
-		$tableCount = $this->db_manager->get('Admin')->tableCount('tbgvn');
+		$tableCount = $this->db_manager->get('Admin')->tableCount('tbgvn', 'systemClk', 0);
 		$tableCount = intval($tableCount['tbgvn']);
 		$limit = 50;
 		$offset = $page * $limit;

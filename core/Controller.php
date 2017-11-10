@@ -269,8 +269,10 @@ abstract class Controller
 			case 'receiveFromHistory':
 				$tableName = 'tbgvn';
 				$reqColumn = 'seUs';
+				$reqColumn2 = 'systemClk';
+				$reqValue2 = 0;
 
-				$tableCount = $this->db_manager->get('Admin')->tableCount($tableName, $reqColumn, $usNo);
+				$tableCount = $this->db_manager->get('Admin')->tableCount($tableName, $reqColumn, $usNo, $reqColumn2, $reqValue2);
 
 				$selected['receiveFromHistory'] = 'selected';
 				$usersNullMessage = "もらった履歴はまだありません";
@@ -281,8 +283,10 @@ abstract class Controller
 			case 'toSendHistory':
 				$tableName = 'tbgvn';
 				$reqColumn = 'usNo';
+				$reqColumn2 = 'systemClk';
+				$reqValue2 = 0;
 
-				$tableCount = $this->db_manager->get('Admin')->tableCount($tableName, $reqColumn, $usNo);
+				$tableCount = $this->db_manager->get('Admin')->tableCount($tableName, $reqColumn, $usNo, $reqColumn2, $reqValue2);
 
 				$selected['toSendHistory'] = 'selected';
 				$usersNullMessage = "送った履歴はまだありません";

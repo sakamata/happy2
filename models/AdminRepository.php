@@ -89,7 +89,7 @@ class AdminRepository extends DbRepository
 		));
 	}
 
-	public function tableCount($tableName, $reqColumn = null, $reqValue = null)
+	public function tableCount($tableName, $reqColumn = null, $reqValue = null, $reqColumn2 = null, $reqValue2 = null)
 	{
 		$sql = "
 			SELECT COUNT(*) AS $tableName
@@ -102,10 +102,18 @@ class AdminRepository extends DbRepository
 			";
 		}
 
+		if (isset($reqColumn2) && isset($reqValue2)) {
+			$sql .= "
+				AND $reqColumn2 = $reqValue2
+			";
+		}
+
 		return $this->fetch($sql, array(
 			':tableName' => $tableName,
 			':reqColumn' => $reqColumn,
 			':reqValue' => $reqValue,
+			':reqColumn2' => $reqColumn2,
+			':reqValue2' => $reqValue2,
 		));
 	}
 
