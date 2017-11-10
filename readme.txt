@@ -24,7 +24,7 @@ http headerが無いためか？
 --------------------------------------------------------------
 
 Happy2アプリの環境変数類---------------------------------------
-環境変数はApachの /etc/httpd/conf/httpd.conf 内
+環境変数はApacheの /etc/httpd/conf/httpd.conf 内
 setEnv の値を利用する。
 
 例:
@@ -197,13 +197,23 @@ websocket-クライアント設定---------------------------------
 
 MySQLの接続設定
 HappyApplication.php 内　configre()　内で定義
-以下のpathと変数を環境によって変更する事
-例:
-require 'C:xampp/htdocs/hidden/info.php';
+Apacheの /etc/httpd/conf/httpd.conf 内
+setEnv の値を利用する。
 
-$sqlDsn = 'mysql:dbname=happy2;host=localhost';
-$sqlUser = 'admin';
-$sqlPass = 'hoge';
+# MySQL
+SetEnv SQL_PASS			'hoge'; //databaseのpasswordを指定
+SetEnv SQL_DNS			'mysql:dbname=happy2;host=localhost'; // database PDOでのdsn設定
+SetEnv SQL_USER			'root';	//databaseのログインユーザー名
+
+上記の様に設定した値を利用したい場合はPHP内で以下の様に記述すると値を取得できる。
+
+$hoge = $_SERVER['SQL_PASS'];
+$hoge には 'hoge' の値が入る
+
+例:
+'dsn' => $_SERVER['SQL_DNS'],
+'user' => $_SERVER['SQL_USER'],
+'password' => $_SERVER['SQL_PASS'],
 
 
 HogeController内 generateCsrfTokenについて

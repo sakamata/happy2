@@ -14,6 +14,7 @@ $classLoader = new SplClassLoader('WebSocket', __DIR__ . '/lib');
 $classLoader->register();
 
 // require $hostName, $permitDomain, $wsPort, $wsSSL
+// localhostだと SetEnv が使えない為 requireとした
 $infoPath = dirname(__FILE__) .'/../../../hidden/info.php';
 require $infoPath;
 
