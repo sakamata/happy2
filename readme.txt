@@ -24,30 +24,37 @@ http headerが無いためか？
 --------------------------------------------------------------
 
 Happy2アプリの環境変数類---------------------------------------
-環境変数はweb公開フォルダの兄弟フォルダに hidden フォルダを設け、その中に
-info.php にて以下の様に変数を設定する。
+環境変数はApachの /etc/httpd/conf/httpd.conf 内
+setEnv の値を利用する。
 
-$pass = 'hoge'; //databaseのpasswordを指定
-$dsn = 'mysql:dbname=happy2;host=localhost'; // database PDOでのdsn設定
-$user = 'root';	//databaseのログインユーザー名
+例:
+SetEnv SERVER_ENV	development
 
-$hostName = 'hoge.com';		// ドメインを指定 開発環境では'127.0.0.1'
+上記の様に設定した値を利用したい場合はPHP内で以下の様に記述すると値を取得できる。
 
-$wsPort = 80; //websocket通信に使用するPort番号を指定
-$permitDomain = 'localhost';	// websocket用 $server->setAllowedOrigin($permitDomain) にて使用、基本はドメイン、開発環境では'localhost'と指定
-$wsSSL =  true or false // サーバー側のWebSocket設定におけるSSL通信かを判断
-$wsProtocol = 'ws' or 'wss' //クライアント側のWebSocket設定におけるSSL通信かを切り替え
+$hoge = $_SERVER['SERVER_ENV'];
+$hoge には 'development' の値が入る
 
-// HTTPS通信状態かを判定
-if (filter_input(INPUT_SERVER, 'HTTPS', FILTER_VALIDATE_BOOLEAN)) {
-	/* HTTPS */
-	$wsSSL = true;
-	$wsProtocol = 'wss';
-} else {
-	/* HTTP */
-	$wsSSL = false;
-	$wsProtocol = 'ws';
-}
+
+# 開発/本番
+SetEnv SERVER_ENV		development or product
+# WebSocket
+SetEnv HOST_NAME		'hoge.com';		// ドメインを指定 開発環境では'127.0.0.1'
+SetEnv PERMIT_DOMAIN	localhost
+SetEnv WS_PORT			80; //websocket通信に使用するPort番号を指定
+# MySQL
+SetEnv SQL_PASS			'hoge'; //databaseのpasswordを指定
+SetEnv SQL_DNS			'mysql:dbname=happy2;host=localhost'; // database PDOでのdsn設定
+SetEnv SQL_USER			'root';	//databaseのログインユーザー名
+
+# Facebook App連携
+SetEnv FACEBOOK_APP_ID	Facebook App の数値IDを設定
+SetEnv FACEBOOK_APP_SECRET	Facebook App の hush 値を設定
+#WebSocket
+SetEnv WS_SSL			true or false // サーバー側のWebSocket設定におけるSSL通信かを判断
+SetEnv WS_PROTOCOL		'ws' or 'wss' //クライアント側のWebSocket設定におけるSSL通信かを切り替え
+
+SetEnv CRON_TOKEN		集計(admin/calcAction) POST時の hush 値を設定
 
 --------------------------------------------------------------
 
@@ -64,7 +71,7 @@ C:\Windows\System32\drivers\etc\hosts
 
 .htaccess設定-------------------------------------------------
 	ブラウザでの httpリクエストは全て(ドキュメントルート内の)index.phpで受け取る設定に変更
-
+	views? or web? フォルダ内に別途作った .php ファイルはappicationを経由せずに直接読み込まれる
 
 <IfModule mod_rewrite.c>
 	RewriteEngine On

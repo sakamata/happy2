@@ -8,10 +8,6 @@ class StatusController extends Controller
 
 	public function indexAction()
 	{
-
-		$path = dirname(__FILE__) . '/../../../hidden/info.php';
-		require $path;
-
 		$this->serviceStatus();
 		$user = $this->session->get('user');
 		$usNo = $user['usNo'];
@@ -56,9 +52,9 @@ class StatusController extends Controller
 		}
 
 		return $this->render(array(
-			'hostName' => $hostName,
-			'wsPort' => $wsPort,
-			'wsProtocol' => $wsProtocol,
+			'hostName' => $_SERVER['HOST_NAME'],
+			'wsPort' => $_SERVER['WS_PORT'],
+			'wsProtocol' => $_SERVER['WS_PROTOCOL'],
 			'body' => '',
 			'_token' => $this->generateCsrfToken('status/post'),
 			'follow_token' => $this->generateCsrfToken('ajaxPost/follow'),

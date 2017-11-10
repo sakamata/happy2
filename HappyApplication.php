@@ -50,18 +50,10 @@ class HappyApplication extends Application
 
 	protected function configure()
 	{
-		$chk = file_exists(dirname(__FILE__) . '/../../hidden/info.php');
-		if (!$chk){
-			$path = '/var/www/hidden/info.php';
-		} else {
-			$path = dirname(__FILE__) . '/../../hidden/info.php';
-		}
-
-		require $path;
 		$this->db_manager->connect('master', array(
-			'dsn' => $sqlDsn,
-			'user' => $sqlUser,
-			'password' => $sqlPass,
+			'dsn' => $_SERVER['SQL_DNS'],
+			'user' => $_SERVER['SQL_USER'],
+			'password' => $_SERVER['SQL_PASS'],
 		));
 	}
 }

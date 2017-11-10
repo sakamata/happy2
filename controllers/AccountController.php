@@ -648,18 +648,15 @@ class AccountController extends Controller
 			require_once '../php-graph-sdk-5.x/src/Facebook/autoload.php';
 		}
 
-		$path = dirname(__FILE__) . '/../../../hidden/info.php';
-		require $path;
-
 		$fb = new Facebook\Facebook([
-			'app_id' => $FacebookAppId,
-			'app_secret' => $FacebookAppSecret,
+			'app_id' => $_SERVER['FACEBOOK_APP_ID'],
+			'app_secret' => $_SERVER['FACEBOOK_APP_SECRET'],
 			'default_graph_version' => 'v2.8'
 		]);
 
 		$helper = $fb->getRedirectLoginHelper();
 		$scope = ['public_profile'];
-		$link = 'https://' . $permitDomain . '/happy2/web/account/'. $action;
+		$link = 'https://' . $_SERVER['PERMIT_DOMAIN'] . '/happy2/web/account/'. $action;
 		$link = $helper->getLoginUrl($link, $scope);
 		return $link;
 	}
@@ -669,12 +666,10 @@ class AccountController extends Controller
 	public function getFacebookStatus()
 	{
 		require_once '../php-graph-sdk-5.x/src/Facebook/autoload.php';
-		$path = dirname(__FILE__) . '/../../../hidden/info.php';
-		require $path;
 
 		$fb = new Facebook\Facebook([
-			'app_id' => $FacebookAppId,
-			'app_secret' => $FacebookAppSecret,
+			'app_id' => $_SERVER['FACEBOOK_APP_ID'],
+			'app_secret' => $_SERVER['FACEBOOK_APP_SECRET'],
 			'default_graph_version' => 'v2.8'
 		]);
 

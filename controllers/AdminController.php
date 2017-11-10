@@ -94,6 +94,7 @@ class AdminController extends Controller
 			'prevpages' => $prevpages,
 			'limit' => $limit,
 			'_token' => $this->generateCsrfToken('admin/post'),
+			'hostName' => $_SERVER['HOST_NAME'],
 		));
 	}
 
@@ -286,23 +287,21 @@ class AdminController extends Controller
 
 			if ($buttonToken) {
 				if (!$this->checkCsrfToken('admin/post', $buttonToken)) {
-					error_log("clac button POST token unmatch!! no exec calcAction $_POST dump data >>> " . var_dump($_POST));
+					error_log("clac button POST token unmatch!! no exec calcAction $_POST dump data >>> " . print_r($_POST));
 					// 管理画面からのボタン押下でNGの場合
 					return $this->redirect('/');
 				}
 			}
 
 			if ($postCronToken) {
-				// $cronToken 読み込み
-				require "/var/www/hidden/info.php";
-				if ($cronToken !== $postCronToken) {
+				if ($_SERVER['CRON_TOKEN'] !== $postCronToken) {
 					// cron処理でNGの場合 ひとまずlogだけ残す。
-					return error_log("clac cron token unmatch!! no exec calcAction. $_POST dump data >>> " . var_dump($_POST));
+					return error_log("clac cron token unmatch!! no exec calcAction. $_POST dump data >>> " . print_r($_POST));
 				}
 			}
 
 		} else {
-			return error_log("Irregular POST data !! no exec calcAction. $_POST dump data >>> " . var_dump($_POST));
+			return error_log("Irregular POST data !! no exec calcAction. $_POST dump data >>> " . print_r($_POST));
 		}
 
 		$date = new DateTime();

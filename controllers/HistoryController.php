@@ -56,8 +56,6 @@ class HistoryController extends Controller
 		// if (!preg_match("/^[a-zA-Z0-9]+$/", $viewUser)) {
 		// 	// すべて半角英数ではありません。
 		// }
-		$path = dirname(__FILE__) . '/../../../hidden/info.php';
-		require $path;
 		$this->serviceStatus();
 
 		$user = $this->session->get('user');
@@ -118,9 +116,9 @@ class HistoryController extends Controller
 		$clickStatus = $this->db_manager->get('Status')->fetchClickStatus($usNo, $this->lastCalcTime);
 
 		return $this->render(array(
-			'hostName' => $hostName,
-			'wsPort' => $wsPort,
-			'wsProtocol' => $wsProtocol,
+			'hostName' => $_SERVER['HOST_NAME'],
+			'wsPort' => $_SERVER['WS_PORT'],
+			'wsProtocol' => $_SERVER['WS_PROTOCOL'],
 			'myStatus' => $myStatus,
 			'viewUser' => $viewUser,
 			'tableCount' => $tableCount,
