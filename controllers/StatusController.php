@@ -31,15 +31,30 @@ class StatusController extends Controller
 			$page = 0;
 		}
 
+		// 検索文言があればsessionに値を入れ、今回と前回を比較、新規文言入力である場合のみ
+		// $usersArray = 'searchWord' とさせる
+		$lastSearchWord = $this->session->get('searchWord');
+		$searchWord = htmlspecialchars($this->request->getPost('searchWord'));
+		if (!empty($searchWord)) {
+			$this->session->set('searchWord', $searchWord);
+			if ($lastSearchWord !== $searchWord) {
+				$usersArray = 'searchWord';
+			}
+		}
+		if ($usersArray !== 'searchWord' || $searchWord == null || $searchWord == $lastSearchWord) {
+			$this->session->remove('searchWord');
+		}
+
 		// ユーザー画面の並べ方に基づき 該当表示件数、optionタグ内selected、null時文言を返す
-		list($tableCount, $selected, $usersNullMessage, $usersArrayMessage) = $this->usersArrayInfo($usersArray, $usNo);
+		list($tableCount, $selected, $usersNullMessage, $usersArrayMessage) = $this->usersArrayInfo($usersArray, $usNo, $searchWord);
+
 		if ($tableCount == 0) {
 			$page = null;
 			$order = null;
 			$statuses = null;
 		} else {
 			$offset = $this->pager($page);
-			$statuses = $this->switchUsersArray($usersArray, $usNo, $offset, $order);
+			$statuses = $this->switchUsersArray($usersArray, $usNo, $offset, $order, $searchWord);
 			$statuses = $this->pointRounder($statuses, $action = 'index');
 		}
 
@@ -72,6 +87,7 @@ class StatusController extends Controller
 			'postSecond' => $this->postSecond,
 			'order' => $order,
 			'selected' => $selected,
+			'searchWord' => $searchWord,
 			'usersNullMessage' => $usersNullMessage,
 			'usersArrayMessage' => $usersArrayMessage,
 			'calcCount' => $this->calcCount,

@@ -140,6 +140,25 @@ class StatusRepository extends DbRepository
 		));
 	}
 
+	public function searchWordHitCount($usNo, $searchWord)
+	{
+		$sql = "
+			SELECT count(usName) AS tableCount
+				FROM tbus
+				WHERE usNo != :usNo
+				AND(
+					usName LIKE :searchWord
+					OR usId LIKE :searchWord
+					OR usNo LIKE :searchWord
+				)
+		";
+
+		return $this->fetch($sql, array(
+			':usNo' => $usNo,
+			':searchWord' => '%' . $searchWord .'%',
+		));
+	}
+
 	public function usersArrayNewUsers($usNo, $lastCalcTime, $limit, $offset, $order = 'DESC')
 	{
 		$sql= "
@@ -218,6 +237,93 @@ class StatusRepository extends DbRepository
 		return $this->fetchall($sql, array(
 			':usNo' => $usNo,
 			':lastCalcTime' => $lastCalcTime,
+		));
+	}
+
+	public function usersArraySearchUsers($usNo, $lastCalcTime, $limit, $offset, $order = 'DESC', $searchWord)
+	{
+		$sql= "
+			SELECT
+				master.usNo,
+				master.usId,
+				master.usName,
+				master.usImg,
+				master.nowPt,
+				IFNULL(gvnTable.thisTimeAllClkSum, 0) AS thisTimeAllClkSum,
+				IFNULL(gvnTable2.thisTimeToMeClkSum, 0) AS thisTimeToMeClkSum,
+				IFNULL(gvnTable3.MySendClkSum, 0) AS MySendClkSum,
+				IF(ifFollowing.followingNo > 0, 1, 0) AS ifFollowing,
+				IF(ifFollower.usNo > 0, 1, 0) AS ifFollower
+			FROM tbus
+			AS master
+
+			LEFT JOIN(
+				SELECT
+					usNo,
+					sum(seClk) AS thisTimeAllClkSum
+					FROM tbgvn
+					WHERE
+						dTm between :lastCalcTime
+						AND now()
+					GROUP BY usNo
+			)
+			AS gvnTable
+			ON master.usNo = gvnTable.usNo
+
+			LEFT JOIN(
+				SELECT usNo, SUM(seClk) AS thisTimeToMeClkSum, dTm
+					FROM tbgvn
+					WHERE seUs = :usNo
+						AND dTm between :lastCalcTime
+						AND now()
+					GROUP BY usNo
+			)
+			AS gvnTable2
+			ON master.usNo = gvnTable2.usNo
+
+			LEFT JOIN(
+				SELECT usNo, seUs,SUM(seClk) AS MySendClkSum
+					FROM tbgvn
+					WHERE usNo = :usNo
+						AND dTm between :lastCalcTime
+						AND now()
+					GROUP BY seUs
+			)
+			AS gvnTable3
+			ON master.usNo = gvnTable3.seUs
+
+			LEFT JOIN(
+				SELECT usNo, followingNo
+					FROM tbfollow
+					WHERE usNo = :usNo
+			)
+			AS ifFollowing
+			ON master.usNo = ifFollowing.followingNo
+
+			LEFT JOIN(
+				SELECT usNo, followingNo
+					FROM tbfollow
+					WHERE followingNo = :usNo
+			)
+			AS ifFollower
+			ON master.usNo = ifFollower.usNo
+
+			WHERE
+				master.usNo != :usNo
+				AND(
+					master.usName LIKE :searchWord
+					OR master.usId LIKE :searchWord
+					OR master.usNo LIKE :searchWord
+				)
+			ORDER BY master.usNo $order
+			LIMIT $limit
+			OFFSET $offset
+		";
+
+		return $this->fetchall($sql, array(
+			':usNo' => $usNo,
+			':lastCalcTime' => $lastCalcTime,
+			':searchWord' => '%' . $searchWord . '%',
 		));
 	}
 

@@ -1,7 +1,7 @@
 <?php $this->setLayoutVar('title', 'ニュース') ?>
 <div class="container">
 	<div class="row">
-		<h2>ニュース.</h2>
+		<h2>ニュース</h2>
 		<div class="form-horizontal">
 
 		<ul class="warning_list">
@@ -13,6 +13,8 @@
 		</ul>
 
 		<ul>
+			<li><b>検索機能をリリースしました (2017/11/12)</b></li>
+			<p>画面上部の検索欄からユーザーの番号、ID、名前での検索が出来るようになりました。</p>
 			<li><b>facebookアカウントでのログイン機能をリリースしました (2017/9/21)</b></li>
 			<p>facebookのアカウントがあれば、簡単にログインができる様になりました。</p>
 			<li><b>全体履歴をリリースしました (2016/10/7)</b></li>

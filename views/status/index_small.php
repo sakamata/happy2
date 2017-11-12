@@ -17,10 +17,10 @@ echo $this->render('status/js/index_js_header', array(
 	<div class="form-group">
 		<div class="form-inline">
 			<div class="col-xs-5 col-sm-4 col-md-4 col-lg-4">
-				<input type="text" class="form-control input-sm" disabled="disabled" id="InputText" placeholder="検索(未実装)">
+				<input type="text"  name='searchWord' class="form-control input-sm" id="InputText" placeholder="No,ID,名前" <?php if ($selected['searchWord'] =='selected') { echo "value='" .$searchWord. "'" ;}; ?>>
 			</div>
 			<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-				<button type="submit" class="btn btn-warning btn-sm"  disabled="disabled">send</button>
+				<button type="submit" class="btn btn-warning btn-sm">検索</button>
 			</div>
 			<div class="hidden-xs col-sm-2 col-md-2 col-lg-2">
 				<lavel for="InputSelect">並び替え</lavel>
@@ -30,6 +30,9 @@ echo $this->render('status/js/index_js_header', array(
 				<option value="newUsers" <?php echo $selected['newUsers']; ?>>登録順</option>
 				<option value="following" <?php echo $selected['following']; ?>>フォロー中</option>
 				<option value="followers" <?php echo $selected['followers']; ?>>フォローされている</option>
+<?php if ($selected['searchWord'] !== null) : ?>
+				<option value="searchWord" <?php echo $selected['searchWord']; ?>>検索結果</option>
+<?php endif; ?>
 				<!-- <option value="test" <?php echo $selected['test']; ?>>テスト</option> -->
 				</select>
 			</div>
@@ -57,7 +60,12 @@ echo $this->render('status/js/index_js_header', array(
 </div><!-- container -->
 
 <div id="main_user">
-	<?php echo $this->render('status/main_user_small', array('headerUser' => $headerUser, 'user' => $user,)); ?>
+<?php
+	echo $this->render('status/main_user_small', array(
+		'headerUser' => $headerUser,
+		'user' => $user,
+	));
+?>
 </div>
 
 <div class="container">
@@ -73,6 +81,7 @@ echo $this->render('status/js/index_js_header', array(
 		'order' => $order,
 		'viewUser' => $viewUser,
 		'usersArray' => $usersArray,
+		'searchWord' => $searchWord,
 		'action' => $req_base,
 		'method' => 'post',
 		'footer' => null,
@@ -82,7 +91,7 @@ echo $this->render('status/js/index_js_header', array(
 			</div>
 <?php
 	if ($order !== null) :
-		echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post'));
+		echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post', 'searchWord' => $searchWord));
 	endif;
 ?>
 	<form action="<?php echo $href_base; ?>/status/post" method="post" accept-charset="utf-8">
@@ -135,6 +144,7 @@ if ($page * $limit < $tableCount ) :
 		'order' => $order,
 		'viewUser' => $viewUser,
 		'usersArray' => $usersArray,
+		'searchWord' => $searchWord,
 		'action' => $req_base,
 		'method' => 'post',
 		'footer' => '_footer',

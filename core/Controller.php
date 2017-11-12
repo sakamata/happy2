@@ -226,6 +226,13 @@ abstract class Controller
 		return $users;
 	}
 
+	// SQL LIKE検索に使用する記号をエスケープ処理する _ %
+	public function escSearchWord($searchWord)
+	{
+		$escSearchWord = addcslashes($searchWord, '\_%');
+		return $escSearchWord;
+	}
+
 	// 任意のユーザー1名の基本情報を生成
 	// 『メイン画面』や『履歴画面 他人』のヘッダー等に使用
 	public function headerUserPerson($viewUser, $usNo, $lastCalcTime)
@@ -234,7 +241,7 @@ abstract class Controller
 		return $res;
 	}
 
-	public function usersArrayInfo($usersArray, $usNo)
+	public function usersArrayInfo($usersArray, $usNo, $searchWord = null)
 	{
 		$selected = array(
 			'newUsers' => null,
@@ -242,6 +249,7 @@ abstract class Controller
 			'followers' => null,
 			'receiveFromHistory' => null,
 			'toSendHistory' => null,
+			'searchWord' => null,
 			'test' => null,
 		);
 
@@ -273,11 +281,12 @@ abstract class Controller
 				$reqValue2 = 0;
 
 				$tableCount = $this->db_manager->get('Admin')->tableCount($tableName, $reqColumn, $usNo, $reqColumn2, $reqValue2);
-
+				// 自分自身を除外
+				$tableCount = intval($tableCount[$tableName]) -1;
 				$selected['receiveFromHistory'] = 'selected';
 				$usersNullMessage = "もらった履歴はまだありません";
 				$usersArrayMessage = "もらった履歴";
-				return array($tableCount[$tableName], $selected, $usersNullMessage, $usersArrayMessage);
+				return array($tableCount, $selected, $usersNullMessage, $usersArrayMessage);
 				break;
 
 			case 'toSendHistory':
@@ -287,11 +296,22 @@ abstract class Controller
 				$reqValue2 = 0;
 
 				$tableCount = $this->db_manager->get('Admin')->tableCount($tableName, $reqColumn, $usNo, $reqColumn2, $reqValue2);
-
+				// 自分自身を除外
+				$tableCount = intval($tableCount[$tableName]) -1;
 				$selected['toSendHistory'] = 'selected';
 				$usersNullMessage = "送った履歴はまだありません";
 				$usersArrayMessage = "送った履歴";
-				return array($tableCount[$tableName], $selected, $usersNullMessage, $usersArrayMessage);
+				return array($tableCount, $selected, $usersNullMessage, $usersArrayMessage);
+				break;
+
+			case 'searchWord':
+				$escSearchWord = $this->escSearchWord($searchWord);
+				$tableCount = $this->db_manager->get('Status')->searchWordHitCount($usNo, $escSearchWord);
+				$tableCount = $tableCount['tableCount'];
+				$selected['searchWord'] = 'selected';
+				$usersNullMessage = "<b> " . $searchWord . " </b>に該当がありません";
+				$usersArrayMessage = "<b>" . $searchWord . "</b> の検索結果<b>" . $tableCount . "</b>人中の ";
+				return array($tableCount, $selected, $usersNullMessage, $usersArrayMessage);
 				break;
 
 			case 'test':
@@ -306,7 +326,8 @@ abstract class Controller
 				// newUsers 新規ユーザー順 user数を返す
 				$tableName = 'tbus';
 				$tableCount = $this->db_manager->get('Admin')->tableCount($tableName);
-				$tableCount = $tableCount['tbus'];
+				// 自分自身を除外
+				$tableCount = intval($tableCount[$tableName]) -1;
 				$selected['newUsers'] = 'selected';
 				$usersNullMessage = "他のユーザーはまだいません。";
 				$usersArrayMessage = "登録順";
@@ -315,7 +336,7 @@ abstract class Controller
 		}
 	}
 
-	public function switchUsersArray($usersArray, $usNo, $offset, $order)
+	public function switchUsersArray($usersArray, $usNo, $offset, $order, $searchWord = null)
 	{
 		$lastCalcTime = $this->lastCalcTime;
 		$limit = $this->userViewLimit;
@@ -328,6 +349,12 @@ abstract class Controller
 
 			case 'followers':
 				$statuses = $this->db_manager->get('Status')->usersArrayFollowersUsers($usNo, $lastCalcTime, $limit, $offset, $order);
+				return $statuses;
+				break;
+
+			case 'searchWord':
+				$escSearchWord = $this->escSearchWord($searchWord);
+				$statuses = $this->db_manager->get('Status')->usersArraySearchUsers($usNo, $lastCalcTime, $limit, $offset, $order, $escSearchWord);
 				return $statuses;
 				break;
 
