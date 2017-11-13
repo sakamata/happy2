@@ -30,11 +30,17 @@ class HistoryController extends Controller
 
 		$result = $this->pointRounder($historyArray, $action = 'general');
 
+		// !!!!!ひとまず定義!!!!!
+		$searchWord = null;
+		$viewUser = null;
+
 		return $this->render(array(
 			'result' => $result,
 			'page' => $page,
 			'limit' => $limit,
+			'viewUser' => $viewUser,
 			'tableCount' => $tableCount,
+			'searchWord' => $searchWord,
 			'order' => $order,
 			'usersArray' => $usersArray,
 			'calcCount' => $this->calcCount,
@@ -115,6 +121,9 @@ class HistoryController extends Controller
 
 		$clickStatus = $this->db_manager->get('Status')->fetchClickStatus($usNo, $this->lastCalcTime);
 
+		// !!!!!ひとまず定義!!!!!
+		$searchWord = null;
+
 		return $this->render(array(
 			'hostName' => $_SERVER['HOST_NAME'],
 			'wsPort' => $_SERVER['WS_PORT'],
@@ -133,6 +142,7 @@ class HistoryController extends Controller
 			'clickStatus' => $clickStatus,
 			'postSecond' => $this->postSecond,
 			'result' => $result,
+			'searchWord' => $searchWord,
 			'page' => $page,
 			'limit' => $limit,
 			'order' => $order,

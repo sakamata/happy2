@@ -91,9 +91,10 @@ echo $this->render('status/pager', array(
 	'order' => $order,
 	'viewUser' => $viewUser,
 	'usersArray' => $usersArray,
+	'searchWord' => $searchWord,
 	'action' => $_SERVER['REQUEST_URI'],
 	'method' => 'get',
-	'footer' => null,
+	'name_add' => null,
 ));
 ?>
 				</div><!-- pager -->
@@ -102,11 +103,11 @@ echo $this->render('status/pager', array(
 if ($order !== null) :
 	echo $this->render('status/order_changer', array(
 		'page' => $page,
-		'limit' => $limit,
-		'tableCount' => $tableCount,
 		'order' => $order,
 		'viewUser' => $viewUser,
+		'limit' => $limit,
 		'usersArray' => $usersArray,
+		'searchWord' => $searchWord,
 		'action' => $_SERVER['REQUEST_URI'],
 		'method' => 'get',
 	));
@@ -189,6 +190,7 @@ endforeach;
 		<div class="footer_wrapper col-xs-12 col-sm-12 col-md-12 col-lg-12">
 			<div class="pagerArea_footer">
 <?php
+
 if ($page * $limit < $tableCount ) :
 	echo $this->render('status/pager', array(
 		'page' => $page,
@@ -197,11 +199,13 @@ if ($page * $limit < $tableCount ) :
 		'order' => $order,
 		'viewUser' => $viewUser,
 		'usersArray' => $usersArray,
+		'searchWord' => $searchWord,
 		'action' => $_SERVER['REQUEST_URI'],
 		'method' => 'get',
-		'footer' => '_footer',
+		'name_add' => '_footer',
 	));
 endif;
+
 ?>
 			</div><!-- pager -->
 			<p class="lead text-center">

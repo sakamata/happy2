@@ -29,17 +29,26 @@ echo $this->render('status/pager', array(
 	'tableCount' => $tableCount,
 	'order' => $order,
 	'usersArray' => $usersArray,
+	'searchWord' => $searchWord,
 	'action' => $_SERVER['REQUEST_URI'],
 	'method' => 'get',
 	'viewUser' => null,
-	'footer' => null,
+	'name_add' => null,
 ));
 ?>
 				</div><!-- pager -->
 			</div>
 <?php
 if ($order !== null) :
-	echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray, 'action' => $_SERVER['REQUEST_URI'], 'method' => 'get'));
+	echo $this->render('status/order_changer', array(
+		'page' => $page,
+		'order' => $order,
+		'viewUser' => $viewUser,
+		'usersArray' => $usersArray,
+		'searchWord' => $searchWord,
+		'action' => $_SERVER['REQUEST_URI'],
+		'method' => 'get',
+	));
 endif;
 ?>
 		</div><!-- orderInfoArea -->
@@ -117,10 +126,11 @@ if ($page * $limit < $tableCount ) :
 		'tableCount' => $tableCount,
 		'order' => $order,
 		'usersArray' => $usersArray,
+		'searchWord' => $searchWord,
 		'action' => $_SERVER['REQUEST_URI'],
 		'method' => 'get',
 		'viewUser' => null,
-		'footer' => '_footer',
+		'name_add' => '_footer',
 	));
 endif;
 ?>

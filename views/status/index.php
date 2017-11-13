@@ -83,14 +83,22 @@ echo $this->render('status/js/index_js_header', array(
 		'searchWord' => $searchWord,
 		'action' => $req_base,
 		'method' => 'post',
-		'footer' => null,
+		'name_add' => null,
 	));
 ?>
 				</div><!-- pager -->
 			</div>
 <?php
 	if ($order !== null) :
-		echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post', 'searchWord' => $searchWord));
+		echo $this->render('status/order_changer', array(
+			'page' => $page,
+			'order' => $order,
+			'viewUser' => $viewUser,
+			'usersArray' => $usersArray,
+			'searchWord' => $searchWord,
+			'action' => $req_base,
+			'method' => 'post',
+		));
 	endif;
 ?>
 	<form action="<?php echo $req_base; ?>/status/post" method="post" accept-charset="utf-8">
@@ -138,7 +146,7 @@ if ($page * $limit < $tableCount ) :
 		'searchWord' => $searchWord,
 		'action' => $req_base,
 		'method' => 'post',
-		'footer' => '_footer',
+		'name_add' => '_footer',
 	));
 endif;
 ?>
