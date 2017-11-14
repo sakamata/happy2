@@ -11,35 +11,22 @@ echo $this->render('status/js/index_js_header', array(
 ?>
 
 <div class="container">
-<div class="row">
-<form class="indexFrom" action="<?php echo $req_base; ?>"  method="post">
-	<input type='hidden' name='order' value='<?php echo $this->escape($order); ?>'>
-	<div class="form-group">
-		<div class="form-inline">
-			<div class="col-xs-5 col-sm-4 col-md-4 col-lg-4">
-				<input type="text"  name='searchWord' class="form-control input-sm" id="InputText" placeholder="No,ID,名前" <?php if ($selected['searchWord'] =='selected') { echo "value='" .$searchWord. "'" ;}; ?>>
-			</div>
-			<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-				<button type="submit" class="btn btn-warning btn-sm">検索</button>
-			</div>
-			<div class="hidden-xs col-sm-2 col-md-2 col-lg-2">
-				<lavel for="InputSelect">並び替え</lavel>
-			</div>
-			<div class="col-xs-5 col-sm-4 col-md-4 col-lg-4">
-				<select class="form-control input-sm" id="InputSelect" name="usersArray" onChange="this.form.submit()">
-				<option value="newUsers" <?php echo $selected['newUsers']; ?>>登録順</option>
-				<option value="following" <?php echo $selected['following']; ?>>フォロー中</option>
-				<option value="followers" <?php echo $selected['followers']; ?>>フォローされている</option>
-<?php if ($selected['searchWord'] !== null) : ?>
-				<option value="searchWord" <?php echo $selected['searchWord']; ?>>検索結果</option>
-<?php endif; ?>
-				<!-- <option value="test" <?php echo $selected['test']; ?>>テスト</option> -->
-				</select>
-			</div>
-		</div>
-	</div>
-</form>
-</div><!-- row -->
+<div class="row indexFrom">
+
+<?php
+echo $this->render('status/form_search', array(
+	'req_base' => $req_base,
+	'order' => $order,
+	'selected' => $selected,
+	'searchWord' => $searchWord,
+));
+echo $this->render('status/form_index_order', array(
+	'req_base' => $req_base,
+	'selected' => $selected,
+));
+?>
+
+</div>
 </div><!-- container -->
 
 <div id="dummyIndexForm"></div>
@@ -84,14 +71,22 @@ echo $this->render('status/js/index_js_header', array(
 		'searchWord' => $searchWord,
 		'action' => $req_base,
 		'method' => 'post',
-		'footer' => null,
+		'name_add' => null,
 	));
 ?>
 				</div><!-- pager -->
 			</div>
 <?php
 	if ($order !== null) :
-		echo $this->render('status/order_changer', array('order' => $order, 'usersArray' => $usersArray, 'action' => $req_base, 'method' => 'post', 'searchWord' => $searchWord));
+		echo $this->render('status/order_changer', array(
+			'page' => $page,
+			'order' => $order,
+			'viewUser' => $viewUser,
+			'usersArray' => $usersArray,
+			'searchWord' => $searchWord,
+			'action' => $req_base,
+			'method' => 'post',
+		));
 	endif;
 ?>
 	<form action="<?php echo $href_base; ?>/status/post" method="post" accept-charset="utf-8">
@@ -147,7 +142,7 @@ if ($page * $limit < $tableCount ) :
 		'searchWord' => $searchWord,
 		'action' => $req_base,
 		'method' => 'post',
-		'footer' => '_footer',
+		'name_add' => '_footer',
 	));
 endif;
 ?>

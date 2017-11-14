@@ -8,33 +8,30 @@ echo $this->render('status/js/index_js_header', array(
 	'clickStatus' => $clickStatus,
 	'user' => $user,
 ));
-
 ?>
 
 <div class="container">
-<div class="row">
-<form class="indexFrom" action="/happy2/web/history/userHistory"  method="get">
-	<input type='hidden' name='order' value='<?php echo $this->escape($order); ?>'>
-	<input type='hidden' name='viewUser' value='<?php echo $this->escape($viewUser); ?>'>
-	<div class="form-inline">
-		<div class="form-group col-xs-5 col-sm-4 col-md-4 col-lg-4">
-			<input type="text" class="form-control input-sm" disabled="disabled" id="InputText" placeholder="検索(未実装)">
-		</div>
-		<div class="form-group col-xs-2 col-sm-2 col-md-2 col-lg-2">
-			<button type="submit" class="btn btn-warning btn-sm"  disabled="disabled">send</button>
-		</div>
-		<div class="form-group hidden-xs col-sm-3 col-md-3 col-lg-3 form_lavel_r">
-			<lavel for="InputSelect">並び替え</lavel>
-		</div>
-		<div class="form-group col-xs-5 col-sm-3 col-md-3 col-lg-3">
-			<select class="form-control input-sm" id="InputSelect" name="usersArray" onChange="this.form.submit()">
+<div class="row indexFrom">
+
+<?php
+echo $this->render('status/form_search', array(
+	'req_base' => $req_base,
+	'order' => $order,
+	'selected' => $selected,
+	'searchWord' => $searchWord,
+));
+?>
+
+	<form class="dis_inline" action="/happy2/web/history/userHistory"  method="get">
+		<input type='hidden' name='order' value='<?php echo $this->escape($order); ?>'>
+		<input type='hidden' name='viewUser' value='<?php echo $this->escape($viewUser); ?>'>
+		<lavel id="Lavel_Order">並び替え</lavel>
+		<select id="Order_Form" class="input_form_style" name="usersArray" onChange="this.form.submit()">
 			<option value="receiveFromHistory" <?php echo $selected['receiveFromHistory']; ?>>もらった履歴</option>
 			<option value="toSendHistory" <?php echo $selected['toSendHistory']; ?>>あげた履歴</option>
-			</select>
-		</div>
-	</div>
-</form>
-</div><!-- row -->
+		</select>
+	</form>
+</div>
 </div><!-- container -->
 
 <div id="dummyIndexForm"></div>

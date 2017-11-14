@@ -11,33 +11,22 @@ echo $this->render('status/js/index_js_header', array(
 ?>
 
 <div class="container">
-<div class="row">
-<form class="indexFrom" action="<?php echo $req_base; ?>"  method="post">
-	<input type='hidden' name='order' value='<?php echo $this->escape($order); ?>'>
-	<div class="form-inline">
-		<div class="form-group col-xs-5 col-sm-4 col-md-4 col-lg-4">
-			<input type="text"  name='searchWord' class="form-control input-sm" id="InputText" placeholder="No,ID,名前" <?php if ($selected['searchWord'] =='selected') { echo "value='" .$searchWord. "'" ;}; ?>>
-		</div>
-		<div class="form-group col-xs-2 col-sm-2 col-md-2 col-lg-2">
-			<button type="submit" class="btn btn-warning btn-sm">検索</button>
-		</div>
-		<div class="form-group hidden-xs col-sm-3 col-md-3 col-lg-3 form_lavel_r">
-			<lavel for="InputSelect">並び替え</lavel>
-		</div>
-		<div class="form-group col-xs-5 col-sm-3 col-md-3 col-lg-3">
-			<select class="form-control input-sm" id="InputSelect" name="usersArray" onChange="this.form.submit()">
-			<option value="newUsers" <?php echo $selected['newUsers']; ?>>登録順</option>
-			<option value="following" <?php echo $selected['following']; ?>>フォロー中</option>
-			<option value="followers" <?php echo $selected['followers']; ?>>フォローされている</option>
-<?php if ($selected['searchWord'] !== null) : ?>
-			<option value="searchWord" <?php echo $selected['searchWord']; ?>>検索結果</option>
-<?php endif; ?>
-			<!-- <option value="test" <?php echo $selected['test']; ?>>テスト</option> -->
-			</select>
-		</div>
-	</div>
-</form>
-</div><!-- row -->
+<div class="row indexFrom">
+
+<?php
+echo $this->render('status/form_search', array(
+	'req_base' => $req_base,
+	'order' => $order,
+	'selected' => $selected,
+	'searchWord' => $searchWord,
+));
+echo $this->render('status/form_index_order', array(
+	'req_base' => $req_base,
+	'selected' => $selected,
+));
+?>
+
+</div>
 </div><!-- container -->
 
 <div id="dummyIndexForm"></div>
