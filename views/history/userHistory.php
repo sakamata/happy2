@@ -1,5 +1,5 @@
 <?php
-$this->setLayoutVar('title', 'このユーザーの履歴');
+$this->setLayoutVar('title', '履歴 '. $headerUser['usName']);
 echo $this->render('status/js/index_js_header', array(
 	'myStatus' => $myStatus,
 	'headerUser' => $headerUser,
@@ -38,14 +38,14 @@ echo $this->render('status/form_search', array(
 
 <div class="container">
 	<div class="row">
-		<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+		<div class="col-xs-8 col-sm-8 col-md-10 col-lg-10">
 			<div id="pageTitle">
-				<h2><?php echo $this->escape($headerUser['usName']); ?>さん　<?php echo $usersArrayMessage; ?></h2>
+				<h2><?php echo $usersArrayMessage; ?>　<br class="visible-xs-block visible-sm-block"><?php echo $this->escape($headerUser['usName']); ?></h2>
 			</div><!-- pageTitle -->
-		</div><!--  -->
-		<div class="col-xs-7 col-sm-7 col-md-7 col-lg-7">
+		</div>
+		<div class="col-xs-4 col-sm-4 col-md-2 col-lg-2">
 			<div id="calcStatusArea">
-				<p>集計<b><?php echo $calcCount; ?></b>回　<span id="wsStatus"></span></p>
+				<p>集計<b><?php echo $calcCount; ?></b>回<br class="visible-xs-block">　<span id="wsStatus"></span></p>
 			</div>
 		</div>
 	</div><!-- row -->

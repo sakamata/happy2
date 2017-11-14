@@ -17,7 +17,8 @@
 					</p>
 				</div>
 				<div class="clearBoth">	</div>
-				<p class="user_no">No: <?php echo $this->escape($headerUser['usNo']); ?></p>
+				<p class="user_no">No: <?php echo $this->escape($headerUser['usNo']); ?>
+				<br>Pt:<?php echo $this->escape($headerUser['roundPt']); ?></p>
 			</div><!-- userInfoArea_small -->
 			<div class="clearBoth">	</div>
 			<p class="user_id">ID:<?php echo $this->escape($headerUser['usId']); ?></p>

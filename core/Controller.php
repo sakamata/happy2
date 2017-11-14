@@ -299,8 +299,8 @@ abstract class Controller
 				// 自分自身を除外
 				$tableCount = intval($tableCount[$tableName]) -1;
 				$selected['toSendHistory'] = 'selected';
-				$usersNullMessage = "送った履歴はまだありません";
-				$usersArrayMessage = "送った履歴";
+				$usersNullMessage = "あげた履歴はまだありません";
+				$usersArrayMessage = "あげた履歴";
 				return array($tableCount, $selected, $usersNullMessage, $usersArrayMessage);
 				break;
 

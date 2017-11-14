@@ -230,6 +230,10 @@ a {
 		inset 0px -1px 0px rgba(255,255,255,0.7);
 }
 
+.follow_button:hover, .unfollow_button:hover {
+	border: 2px solid #7ece15;
+}
+
 .viewUsers {
 	width: 100%;
 	padding: 10px 10px 0 10px;
@@ -293,6 +297,10 @@ a {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
+}
+
+.userImageArea img:hover {
+	border: 2px solid #7ece15;
 }
 
 .userInfoArea {
@@ -530,6 +538,7 @@ button.css3button {
 }
 .break-all {
 	word-break: break-all;
+	vertical-align:top;
 }
 
 
@@ -720,6 +729,10 @@ ul.warning_list li {
 	width: 50px;
 	height: 50px;
 	border-radius: 5px;
+}
+
+.break-all img:hover {
+	border: 2px solid #7ece15;
 }
 
 .history_id {

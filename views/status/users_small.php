@@ -13,7 +13,8 @@
 		<div class="userBalloon_small" id="userBalloon_<?php echo $this->escape($status['usNo']); ?>">
 			<p><?php echo $this->escape($status['thisTimeToMeClkSum']); ?></p>
 		</div>
-			<p class="user_no">No:<?php echo $this->escape($status['usNo']); ?></p>
+			<p class="user_no">No:<?php echo $this->escape($status['usNo']); ?>
+			<br>Pt:<?php echo $this->escape($status['roundPt']); ?></p>
 	</div><!-- userInfoArea_small -->
 	<div class="clearBoth">	</div>
 	<div class="userInfoBottom_small">
