@@ -36,6 +36,7 @@ class StatusController extends Controller
 		$lastSearchWord = $this->session->get('searchWord');
 		$searchWord = htmlspecialchars($this->request->getPost('searchWord'));
 		if (!empty($searchWord)) {
+			$searchWord = mb_substr($searchWord, 0, 20, "UTF-8");
 			$this->session->set('searchWord', $searchWord);
 			if ($lastSearchWord !== $searchWord) {
 				$usersArray = 'searchWord';
