@@ -90,7 +90,8 @@ class StatusRepository extends DbRepository
 			LEFT JOIN(
 				SELECT usNo, followingNo
 					FROM tbfollow
-					WHERE usNo = :viewUser
+					WHERE usNo = :usNo
+					AND followingNo = :viewUser
 			)
 			AS ifFollowing
 			ON master.usNo = ifFollowing.followingNo
