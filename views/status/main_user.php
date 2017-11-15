@@ -18,7 +18,7 @@
 	<div class="mainUser">
 		<div class="col-sm-6 col-md-6 col-lg-6">
 			<div class="mainStatus">
-				<div class="simpleStatus text-center">
+				<div class="simpleStatus simpleStatus-main text-center">
 					<!-- <a href="#">?</a><br>
 					<span>ON/OFF</span><br> -->
 					<img src="<?php echo $href_base; ?>/img/more_Info_icon.png" alt="more_info_button" alt="login_status" width="54" height="54">

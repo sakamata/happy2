@@ -23,7 +23,7 @@
 	padding: 5px;
 	border-radius: 10px;
 	margin-right: 5px;
-	background-color: #fff;
+	background-color: #b2fcc4;
 }
 
 .viewUsers_small li {
@@ -201,7 +201,11 @@
 		inset 0px -1px 0px rgba(255,255,255,0.7);
 }
 
-.clickAction:active {
+.clickAction_small:hover {
+	background-color: #f0d674;
+}
+
+.clickAction_small:active {
 	background-color: #fcffc6;
 }
 
@@ -218,7 +222,11 @@
 		inset 0px -1px 0px rgba(255,255,255,0.7);
 }
 
-.myClickAction:active {
+.myClickAction_small:hover {
+	background-color: #789ce0;
+}
+
+.myClickAction_small:active {
 	background-color: #89a8e7;
 }
 

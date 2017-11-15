@@ -252,13 +252,16 @@ a {
 }
 
 .simpleStatus {
-	background-color: #b2fcc4;
+	background-color: #e2fee5;
 	width: 80px;
 	height: 220px;
 	padding: 10px;
 	border-radius: 10px;
 	float: left;
 	margin-right: 5px;
+}
+.simpleStatus-main {
+	background-color: #b2fcc4;
 }
 
 .simpleStatus img{
@@ -276,7 +279,7 @@ a {
 }
 
 .mainUserCenterArea {
-	background-color: #fff;
+	background-color: #b2fcc4;
 }
 
 .userImageArea {
@@ -456,6 +459,11 @@ button.css3button {
 
 }
 
+.clickAction:hover {
+	background-color: #f0d674;
+}
+
+
 .clickAction:active {
 	/*border: 2px solid #e3b508;*/
 	background-color: #fcffc6;
@@ -499,6 +507,10 @@ button.css3button {
 	box-shadow:
 		0px 1px 3px rgba(005,005,005,0.5),
 		inset 0px -1px 0px rgba(255,255,255,0.7);
+}
+
+.myClickAction:hover {
+	background-color: #789ce0;
 }
 
 .myClickAction:active {
