@@ -1,0 +1,26 @@
+version: '3'
+services:
+  app:
+    container_name: happy2-app
+    build: app
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - db
+    depends_on:
+      - db
+  db:
+    container_name: happy2-db
+    # build: db
+    image: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - "./db/init:/docker-entrypoint-initdb.d"
+      - "./db/conf.d:/etc/mysql/conf.d"
+      - "./db/datadir:/var/lib/mysql"
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysql
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_DATABASE=happy2
