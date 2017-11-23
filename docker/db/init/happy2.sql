@@ -7,6 +7,8 @@
 -- サーバのバージョン： 5.5.56-MariaDB
 -- PHP Version: 5.6.31
 
+USE happy2;
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
@@ -106,6 +108,7 @@ CREATE TABLE `tbgvn` (
   `usNo` int(11) DEFAULT NULL,
   `seUs` int(11) DEFAULT NULL,
   `seClk` int(11) DEFAULT NULL,
+  `systemClk` int(11) DEFAULT 0,
   `dTm` datetime DEFAULT NULL COMMENT 'クリック数を毎回登録するためのTable'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
