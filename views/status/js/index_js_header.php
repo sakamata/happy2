@@ -100,7 +100,7 @@ var otherClickCountIncrement = function (){
 						// クリック合計の書き換え
 						$(sumId[i]).html('<p>' + thisTimeToMeClkSum[i] + '</p>')
 							.animate({'background-color': '#f00'})
-							.animate({'background-color': '#fff'});
+							.animate({'background-color': '#fff'}, 6000)
 					}
 				}
 			}
