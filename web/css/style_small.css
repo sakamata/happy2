@@ -162,6 +162,8 @@
 	margin-right : auto;
 	margin-left : auto;
 	width: 150px;
+	-webkit-touch-callout:none;
+	-webkit-user-select:none;
 }
 
 .mainUserButton_small {
@@ -173,6 +175,8 @@
 	margin-left : auto;
 	width: 150px;
 	float: left;
+	-webkit-touch-callout:none;
+	-webkit-user-select:none;
 }
 
 .clickAction_small, .myClickAction_small {

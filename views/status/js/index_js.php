@@ -277,6 +277,23 @@ var clickAction = function(action, usNo, usId, usName) {
 	if (action == 'post') {
 		// POST用のオブジェクト生成とその他の処理
 
+			// var touched = false;
+			// $(ID).bind({
+			// 	'touchstart mousedown': function(e) { // PCにも対応させるなら、touchstartではなくmousedown
+			// 		touched = true;
+			// 		e.preventDefault(); // このイベントに紐つく動作をキャンセル
+			// 	},
+			// 	'touchend mouseup': function(e) {
+			// 		if (touched) {
+			// 			// なんか処理
+			// 	// clickAction('post', '4', 'dddd', 'dddd' );
+			// 	(new Audio(window.newsPopOther)).play();
+			// 		}
+			// 		touched = false;
+			// 		e.preventDefault();
+			// 	}
+			// });
+
 		// 返り値percentsは0番を含み配列されている
 		var percents = ReplaceMyClickInfo(usNo);
 		var post = clickObjct(usNo);
@@ -293,6 +310,72 @@ var clickAction = function(action, usNo, usId, usName) {
 };
 
 setInterval( "clickAction('intervalPost')" , <?php echo $postSecond; ?> *1000 );
+
+// ページ遷移の際、ClickPost処理前であれば警告ダイアログ表示
+window.onbeforeunload = function(event){
+	var posts = clickPool();
+	var postsCount = Object.keys(posts).length;
+	if (Number(postsCount) == 0) {
+		return;
+	}
+	event = event || window.event;
+	// 以下、ほとんどのブラウザで表示されず標準ダイアログのメッセージが出るのみ
+	return event.returnValue = 'クリックしたデータが送信されていません。メッセージを消した後10秒程待ってから再度移動してください。';
+}
+
+
+/*
+$(function() {
+	var touched = false;
+	var touch_time = 0;
+	$("#clickAction_1").bind({
+		'touchstart mousedown': function(e) {
+			touched = true;
+			touch_time = 0;
+			document.interval = setInterval(function(){
+				touch_time += 100;
+				if (touch_time == 1000) {
+					// ロングタップ(タップから約1秒)時の処理
+			alert('long');
+				}
+			}, 100)
+			e.preventDefault();
+		},
+		'touchend mouseup mouseout': function(e) { // マウスが領域外に出たかどうかも拾うと、より自然
+			if (touched) {
+				if (touch_time < 1000 ) {
+					// 短いタップでの処理
+			alert('touch');
+
+				}
+			}
+			touched = false;
+			clearInterval(document.interval);
+			e.preventDefault();
+		}
+	});
+});
+
+
+$(function() {
+	var touched = false;
+	$("#clickAction_4").bind({
+		'touchstart mousedown': function(e) { // PCにも対応させるなら、touchstartではなくmousedown
+			touched = true;
+			e.preventDefault(); // このイベントに紐つく動作をキャンセル
+		},
+		'touchend mouseup': function(e) {
+			if (touched) {
+				// なんか処理
+		// clickAction('post', '4', 'dddd', 'dddd' );
+		(new Audio(window.newsPopOther)).play();
+			}
+			touched = false;
+			e.preventDefault();
+		}
+	});
+});
+*/
 
 
 // from layout.php
