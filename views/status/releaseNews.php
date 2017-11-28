@@ -13,6 +13,8 @@
 		</ul>
 
 		<ul>
+			<li><b>自動集計機能をリリースしました (2017/11/21)</b></li>
+			<p>クリック送信があった日の深夜にポイントの集計が行われるようになりました。</p>
 			<li><b>検索機能をリリースしました (2017/11/12)</b></li>
 			<p>画面上部の検索欄からユーザーの番号、ID、名前での検索が出来るようになりました。</p>
 			<li><b>facebookアカウントでのログイン機能をリリースしました (2017/9/21)</b></li>
@@ -28,6 +30,15 @@
 			<li><b>SSL通信を導入しました (2016/9/16)</b></li>
 			<p>入力したパスワードや名前、ID等の情報は保護されます。</p>
 		</ul>
+
+<?php if($session->isAuthenticated()): ?>
+
+<?php else: ?>
+		<div class="lead center-block">
+			<a href="<?php echo $href_base; ?>/account/signin"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp;ログイン&nbsp;&nbsp;&nbsp;&nbsp;</a>
+			<a href="<?php echo $href_base; ?>/account/signup"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>アカウント登録&nbsp;</a>
+		</div>
+<?php endif; ?>
 
 		</div>
 	</div><!-- row -->

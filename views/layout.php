@@ -40,12 +40,17 @@
 				<!-- <a href="">ヘルプ</a> -->
 				<!-- <a href="<?php echo $href_base; ?>/account/signout"> ログアウト</a> -->
 			</span>
+
 <?php else: ?>
+
 			<span>
+	<?php if($action_name == 'signup' || $action_name == 'register' || $action_name == 'releaseNews'):	 ?>
 				<a href="<?php echo $href_base; ?>/account/signin"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>&nbsp;ログイン&nbsp;</a>
-				<a href="<?php echo $href_base; ?>/account/signup">
-<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>登録&nbsp;</a>
+	<?php elseif($action_name == 'signin' || $action_name == 'authenticate' || $action_name == 'releaseNews'): ?>
+				<a href="<?php echo $href_base; ?>/account/signup"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>登録&nbsp;</a>
+	<?php endif; ?>
 			</span>
+
 <?php endif; ?>
 
 		</div><!-- header_menu -->

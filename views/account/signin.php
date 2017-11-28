@@ -9,10 +9,6 @@
 <div class="row">
 <h2>ログイン</h2>
 
-<p class="lead text-right">
-	<a href="<?php echo $href_base; ?>/account/signup">新規ユーザ登録はこちら</a>
-</p>
-
 <p>現在はプレリリース中の為、登録前に以下の点をご了承ください。</p>
 
 <ul class="warning_list">
@@ -26,7 +22,9 @@
 </ul>
 <form class="form-horizontal" action="/happy2/web/account/authenticate" method="post" accept-charset="utf-8">
 	<input type="hidden" name="_token" value="<?php echo $this->escape($_token); ?>">
-
+	<p class="lead text-right">
+		<button type="button" class="btn btn-default btn-success" onclick="location.href='<?php echo $href_base; ?>/account/signup'">新規ユーザ登録はこちら</button>
+	</p>
 	<?php if (isset($errors) && count($errors) > 0): ?>
 	<?php echo $this->render('errors', array('errors' => $errors)); ?>
 	<?php endif; ?>

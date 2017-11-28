@@ -118,6 +118,7 @@
 	text-align: left;
 	font-size: 1em;
 	word-wrap: break-word;
+	margin-bottom: 0;
 }
 
 .user_id p {
@@ -263,7 +264,7 @@
 	margin: 0 0 8px 5px;
 	border-radius: 10px;
 	background-color: #b2fcc4;
-	min-height:220px;
+	min-height:210px;
 	height:auto !important;
 	height:220px;
 }

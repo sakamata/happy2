@@ -78,6 +78,7 @@ abstract class Controller
 	{
 		$defaults = array(
 			'request' => $this->request,
+			'action_name' => $this->action_name,
 			'base_url' => $this->request->getBaseUrl(),
 			'href_base' => $this->request->getHrefBase(),
 			'req_base' => $this->request->getRequestBase(),
