@@ -23,7 +23,7 @@ $server = new \WebSocket\Server($hostName, $wsPort, $wsSSL);
 
 // server settings:
 $server->setMaxClients(200);
-$server->setCheckOrigin(true);
+$server->setCheckOrigin(isset($checkOrigin) ? $checkOrigin : true);
 
 // 通信を許可するドメイン 複数指定可能
 $server->setAllowedOrigin($permitDomain);

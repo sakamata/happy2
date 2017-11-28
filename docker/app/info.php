@@ -1,6 +1,7 @@
 <?php
-$hostName = 'localhost';
-$permitDomain ='localhost';
+$hostName = '0.0.0.0';
+$permitDomain ='127.0.0.1';
+$checkOrigin = false;
 
 //$hostName = '160.16.221.26';
 //$permitDomain ='160.16.221.26';
@@ -25,6 +26,4 @@ if (filter_input(INPUT_SERVER, 'HTTPS', FILTER_VALIDATE_BOOLEAN)) {
         $wsSSL = false;
         $wsProtocol = 'ws';
 }
-
-?>
 
