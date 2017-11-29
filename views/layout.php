@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<?php if($_SERVER['SERVER_ENV'] == 'product'): ?>
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-10746070-5"></script>
 	<script>
@@ -10,6 +11,9 @@
 
 	  gtag('config', 'UA-10746070-5');
 	</script>
+<?php endif; ?>
+
+
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script type="text/javascript"
 		src="//code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
