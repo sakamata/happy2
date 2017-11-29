@@ -53,9 +53,10 @@ dockerのインストーラは以下のページよりダウンロードでき�
 - [Windows 10 64bit Pro](https://www.docker.com/docker-windows)
 - [Mac OSX Yosemite 10.10.3以上](https://www.docker.com/docker-mac)
 
-### アプリとデータベース
+### アプリ(app)とデータベース(db)
 
 アプリのWebサーバにはApache、データベースにはMySQLを使用しています。
+アプリにはWebサーバの他に、WebSocketがphpで8000番ポートで起動します。
 
 データベースのコンテナはDockerfileからbuildするのではなく、[mysql](https://hub.docker.com/r/_/mysql/)のイメージに設定と初期データのあるディレクトリをデータ・ボリュームとしてマウントさせています。
 
@@ -69,6 +70,9 @@ Happy2システムのdockerコンテナでは、まだ確認できない機能�
 - ログイン後のホーム画面でリロードすると、値が初期化され、前の状態を表示できない。
 - 集計機能がない。
 - 履歴が更新されなくなることがある。
-- 通知機能が使えない。Web Socketによる通信ができない。
 
+## 更新履歴
+
+### 2017-11-29
+-  appコンテナでWebSocketを起動。通知機能がONに。
 

@@ -24,7 +24,7 @@ RUN echo include_path=".:/usr/PEAR" >> /etc/php.ini && \
     echo 'mbstring.detect_order =  UTF-8,EUC-JP,SJIS,JIS,ASCII' >> /etc/php.ini && \
     echo 'mbstring.substitute_character = none;' >> /etc/php.ini
 
-RUN yum install -y telnet mysql
+RUN yum install -y telnet mysql sudo bind-utils net-tools
 
 RUN cd /var/www && git clone --depth 1 https://github.com/sakamata/happy2.git
 
@@ -33,6 +33,11 @@ RUN mkdir -p /var/www/hidden  /var/hidden/ && \
 
 COPY info.php /var/hidden/
 COPY virtual.conf /etc/httpd/conf.d/
+COPY docker-entrypoint.sh /
 
-CMD httpd -DFOREGROUND
+# CMD httpd -DFOREGROUND
+
+EXPOSE 80 443 8000
+
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
 

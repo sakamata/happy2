@@ -3,16 +3,19 @@ services:
   app:
     container_name: happy2-app
     build: app
+    hostname: happy2
     ports:
       - "80:80"
       - "443:443"
-    links:
-      - db
+      - "127.0.0.1:8000:8000"
+    external_links:
+      - happy2-db:db
     depends_on:
       - db
   db:
     container_name: happy2-db
     # build: db
+    hostname: db
     image: mysql
     ports:
       - "3306:3306"
