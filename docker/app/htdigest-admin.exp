@@ -1,0 +1,9 @@
+#! /usr/bin/expect
+
+spawn htdigest -c /tmp/htdigest "Enter username and password." admin
+expect "New password:"
+send "password\r"
+expect "new password:"
+send "password\r"
+wait
+
