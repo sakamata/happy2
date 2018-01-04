@@ -46,6 +46,19 @@ Creating happy2-app ... done
 「[新規ユーザ登録はこちら](https://localhost/happy2/web/account/signup)」から始めてください。
 (Facebookからの登録は無効になっています。)
 
+## 管理画面
+
+[管理画面へのログイン](https://localhost/happy2/web/digest/signinugsffx01geo)
+
+管理ツールにログインするには、Apacheのダイジェスト認証と管理画面の管理ユーザ認証の２段階があります。
+
+どちらの認証も同じユーザ・パスワードでログインできるように、パスワードを上書きするコマンドを用意しました。
+システム起動後に、以下のコマンドを実行すると、２段階の認証をadmin/passwordでログインできるようになります。
+
+```
+$ docker exec -it happy2-app /update-admin-password.sh
+```
+
 ## docker
 
 dockerのインストーラは以下のページよりダウンロードできます。
