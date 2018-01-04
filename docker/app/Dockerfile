@@ -24,7 +24,7 @@ RUN echo include_path=".:/usr/PEAR" >> /etc/php.ini && \
     echo 'mbstring.detect_order =  UTF-8,EUC-JP,SJIS,JIS,ASCII' >> /etc/php.ini && \
     echo 'mbstring.substitute_character = none;' >> /etc/php.ini
 
-RUN yum install -y telnet mysql sudo bind-utils net-tools
+RUN yum install -y telnet mysql sudo bind-utils net-tools expect
 
 RUN cd /var/www && git clone --depth 1 https://github.com/sakamata/happy2.git
 
@@ -34,6 +34,20 @@ RUN mkdir -p /var/www/hidden  /var/hidden/ && \
 COPY info.php /var/hidden/
 COPY virtual.conf /etc/httpd/conf.d/
 COPY docker-entrypoint.sh /
+COPY htdigest-admin.exp /
+
+# create admin user
+# add digest password of DigestController.php
+RUN expect htdigest-admin.exp
+RUN DIGEST=`cat /tmp/htdigest | awk -F: '{print $3}'` && \
+    sed -i -e "/admin929/a 'admin' => '$DIGEST'," /var/www/happy2/controllers/DigestController.php
+# update admin password
+RUN HASH=`echo -n passwordzyx7532cba | sha1sum | awk '{print $1}'` && \
+    sql="update adtbus set usPs = \"$HASH\" where usId = \"admin\";" && \
+    script="/update-admin-password.sh" && \
+    echo "#!/bin/sh" > $script && \
+    echo "mysql -hdb -uroot -pmysql happy2 -e'$sql'" >> $script && \
+    chmod a+x $script
 
 # CMD httpd -DFOREGROUND
 
