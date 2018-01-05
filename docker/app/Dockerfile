@@ -26,12 +26,13 @@ RUN echo include_path=".:/usr/PEAR" >> /etc/php.ini && \
 
 RUN yum install -y telnet mysql sudo bind-utils net-tools expect
 
-RUN cd /var/www && git clone --depth 1 https://github.com/sakamata/happy2.git
+RUN cd /var && git clone --depth 1 https://github.com/sakamata/happy2.git
 
-RUN mkdir -p /var/www/hidden  /var/hidden/ && \
-    ln -s /var/www/happy2 /var/www/happy2/
+RUN mkdir -p /var/www/happy2 /hidden && \
+    ln -s /var/happy2/web /var/www/happy2/ && \
+    ln -s /var/happy2 /var/www/happy2/
 
-COPY info.php /var/hidden/
+COPY info.php /hidden/
 COPY virtual.conf /etc/httpd/conf.d/
 COPY docker-entrypoint.sh /
 COPY htdigest-admin.exp /
@@ -40,7 +41,10 @@ COPY htdigest-admin.exp /
 # add digest password of DigestController.php
 RUN expect htdigest-admin.exp
 RUN DIGEST=`cat /tmp/htdigest | awk -F: '{print $3}'` && \
-    sed -i -e "/admin929/a 'admin' => '$DIGEST'," /var/www/happy2/controllers/DigestController.php
+    sed -i -e "/admin929/a 'admin' => '$DIGEST'," /var/happy2/controllers/DigestController.php && \
+    mkdir -p /var/happy2.dev/controllers && \
+    cp /var/happy2/controllers/DigestController.php /var/happy2.dev/controllers/
+
 # update admin password
 RUN HASH=`echo -n passwordzyx7532cba | sha1sum | awk '{print $1}'` && \
     sql="update adtbus set usPs = \"$HASH\" where usId = \"admin\";" && \

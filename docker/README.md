@@ -2,8 +2,7 @@
 
 Happy2のシステムをdockerコンテナ起動します。
 
-dockerがインストールされたローカルPC上で、Happyサービスを立ち上げ、アプリを体験することができます。
-
+dockerがインストールされたローカルPC上で、Happyサービスを立ち上げ、アプリを体験したり開発に参加することができます。
 
 ## Get Started
 
@@ -50,7 +49,7 @@ Creating happy2-app ... done
 
 [管理画面へのログイン](https://localhost/happy2/web/digest/signinugsffx01geo)
 
-管理ツールにログインするには、Apacheのダイジェスト認証と管理画面の管理ユーザ認証の２段階があります。
+管理ツールにログインするには、PHPによるダイジェスト認証と管理画面の管理ユーザ認証の２段階があります。
 
 どちらの認証も同じユーザ・パスワードでログインできるように、パスワードを上書きするコマンドを用意しました。
 システム起動後に、以下のコマンドを実行すると、２段階の認証をadmin/passwordでログインできるようになります。
@@ -58,6 +57,36 @@ Creating happy2-app ... done
 ```
 $ docker exec -it happy2-app /update-admin-password.sh
 ```
+
+アプリコンテナのビルド時に、ダイジェスト値を controllers/DigestController.php に埋め込んでいます。
+
+## 開発方法
+
+アプリコンテナ(happy2-app)は、リポジトリのトップディレクトリを /var/happy2 へ clone しています。
+
+開発時には、ローカルにcloneしたリポジトリをこのディレクトリに上書きマウントすることで、開発することができます。
+
+管理画面のダイジェスト認証ができないときは、adminパスワード追加済みの DigetController.php を以下のようにコピーすることで、ログインできるようになります。
+
+```
+$ git clone git@github.com:<your_fork_repo>/happy2.git
+ :
+$ cd happy2/docker
+$ docker-compose -f docker-compose.dev.yml up -d
+Creating network "docker_default" with the default driver
+Creating happy2-db ... 
+Creating happy2-db ... done
+Creating happy2-app ... 
+Creating happy2-app ... done
+$ ls db/log
+query.log
+$ ls app/log
+access_log	error_log	ssl_access_log	ssl_error_log	ssl_request_log
+$ exec -it happy2-app cp /var/happy2.dev/controllers/DigestController.php /var/happy2/controllers/
+```
+
+各コンテナのログは app/log/ と db/log/ で確認できます。
+
 
 ## docker
 
@@ -81,11 +110,11 @@ dockerのインストーラは以下のページよりダウンロードでき�
 Happy2システムのdockerコンテナでは、まだ確認できない機能がいくつかあります。
 
 - ログイン後のホーム画面でリロードすると、値が初期化され、前の状態を表示できない。
-- 集計機能がない。
+- 定時集計機能がない。管理画面からの集計は可能。
 - 履歴が更新されなくなることがある。
 
 ## 更新履歴
 
-### 2017-11-29
--  appコンテナでWebSocketを起動。通知機能がONに。
-
+- 2018-01-05 開発環境に対応。
+- 2018-01-04 管理画面へのログインユーザとパスワードをadmin/passwordに初期化できるようにした。
+- 2017-11-29 appコンテナでWebSocketを起動。通知機能がONに。
