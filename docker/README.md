@@ -82,7 +82,7 @@ $ ls db/log
 query.log
 $ ls app/log
 access_log	error_log	ssl_access_log	ssl_error_log	ssl_request_log
-$ exec -it happy2-app cp /var/happy2.dev/controllers/DigestController.php /var/happy2/controllers/
+$ docker exec -it happy2-app cp /var/happy2.dev/controllers/DigestController.php /var/happy2/controllers/
 ```
 
 各コンテナのログは app/log/ と db/log/ で確認できます。

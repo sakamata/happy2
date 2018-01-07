@@ -235,8 +235,8 @@ ALTER TABLE `tbgvn`
 -- Indexes for table `tbset`
 --
 ALTER TABLE `tbset`
-  ADD PRIMARY KEY (`setNo`),
-  ADD UNIQUE KEY `setGvnNo_UNIQUE` (`setGvnNo`);
+  ADD PRIMARY KEY (`setNo`);
+--  ADD UNIQUE KEY `setGvnNo_UNIQUE` (`setGvnNo`);
 
 --
 -- Indexes for table `tbus`
