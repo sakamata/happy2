@@ -70,7 +70,7 @@ class AccountController extends Controller
 		}
 
 		if (count($errors) === 0) {
-			$this->db_manager->get('User')->insert($usId, $usPs, $usName);
+			$this->db_manager->get('User')->insert($usId, $usPs, $usName, null);
 			// 自分に1クリックさせる
 			$n = $this->db_manager->get('User')->getUserNo($usId);
 			$usNo = $n['usNo'];
